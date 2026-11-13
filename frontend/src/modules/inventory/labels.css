@@ -1,0 +1,169 @@
+/* QR bin labels (blueprint §18) — the print surface's stylesheet.
+ *
+ * NOTE ON PLAIN CSS: everywhere else in this app, colors come from
+ * theme tokens and literal colors outside the theme layer are
+ * banned. This file is the deliberate exception, scoped to
+ * .tv-label-* classes: a printed label is a PHYSICAL object —
+ * black ink on white stock, identical in every theme. The sheet
+ * preview on screen renders the same black-on-white faces so what
+ * you see is exactly what prints. The page chrome AROUND the sheet
+ * (panels, controls) still uses the normal themed components.
+ */
+
+/* -- sheet + label faces (screen preview == print) ------------------ */
+
+.tv-labels-sheets {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: center;
+}
+
+.tv-label-sheet {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 2px 14px rgb(0 0 0 / 0.35);
+  box-sizing: border-box;
+  display: grid;
+  align-content: start;
+}
+
+.tv-label {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 0.09in;
+  padding: 0.05in 0.08in;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.tv-label-qr {
+  flex: none;
+  display: block;
+}
+
+.tv-label-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.tv-label-name {
+  font-weight: 700;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tv-label-sub {
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-label-mark {
+  position: absolute;
+  right: 0.07in;
+  bottom: 0.03in;
+  font-size: 5.5pt;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+/* 1″-tall stock (Avery 5160 + thermal 2×1) */
+.tv-label--short .tv-label-qr {
+  width: 0.8in;
+  height: 0.8in;
+}
+.tv-label--short .tv-label-name {
+  font-size: 10pt;
+}
+.tv-label--short .tv-label-sub {
+  font-size: 7.5pt;
+}
+
+/* 2″-tall bin stock */
+.tv-label--tall .tv-label-qr {
+  width: 1.62in;
+  height: 1.62in;
+}
+.tv-label--tall .tv-label-name {
+  font-size: 15pt;
+}
+.tv-label--tall .tv-label-sub {
+  font-size: 10pt;
+}
+
+/* Bin (location) labels: the location name IS the label */
+.tv-label--bin .tv-label-name {
+  font-size: 25pt;
+  -webkit-line-clamp: 2;
+}
+.tv-label--bin .tv-label-sub {
+  font-size: 12pt;
+}
+
+/* -- print: the sheet is the only thing on the paper ---------------- */
+
+@page {
+  size: letter;
+  margin: 0;
+}
+
+@media print {
+  /* App chrome: banner, header (all variants), nav (sidebar / rail
+   * / drawer), footer, toasts, and this page's own controls. */
+  .tv-construction-banner,
+  .tv-header,
+  .tv-rail,
+  .tv-footer,
+  .tv-toast-viewport,
+  .tv-labels-noprint {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  /* Unwind the shell's layout boxes around the routed page so the
+   * sheet starts at the paper's true origin. */
+  .tv-shell,
+  .tv-body,
+  .tv-content-col,
+  .tv-main,
+  .tv-main-inner,
+  .tv-labels-page {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  .tv-labels-sheets {
+    display: block !important;
+  }
+
+  .tv-label-sheet {
+    box-shadow: none !important;
+    margin: 0 !important;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .tv-label-sheet:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+}

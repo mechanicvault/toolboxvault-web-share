@@ -1,0 +1,11 @@
+/* Rail Steel theme — split into per-area part files in the
+   2026-10-26 CSS filing split (was one 90 KB file). The parts
+   below are imported in the theme's original section order;
+   their concatenation is byte-identical to the pre-split
+   file, so the cascade is unchanged. */
+@import "./railsteel-core.css";
+@import "./railsteel-panels.css";
+@import "./railsteel-home.css";
+@import "./railsteel-settings.css";
+@import "./railsteel-signedout.css";
+@import "./railsteel-light.css";

@@ -1,0 +1,520 @@
+/* TEASER PAGE styles: this file belongs to TeaserPage.tsx ONLY
+ * (the pre-launch front door, owner order 2026-10-26 + the
+ * doomsday refinement + the owner correction the same evening).
+ * Scoped to tv-teaser-* classes so it can never restyle the
+ * landing it temporarily replaces — when the teaser switch goes
+ * off, this file simply stops being reached and the merged
+ * landing renders exactly as before. Layout: the ORIGINAL
+ * center lockup on the dimmed stage — a logo coin with text,
+ * no corner plates (the evening's floating brand plate was
+ * struck by the owner the same night) — the headline, the
+ * doomsday countdown as a single bordered die per unit on a
+ * full-bleed brushed band, the two doors, and the current
+ * teaser trailer (custom controls) when one is set. The
+ * language picker sits at the very bottom of the page: its
+ * top row was removed later the same evening, the composition
+ * was raised into the reclaimed space, and on short viewports
+ * the rhythm tightens so the countdown lands whole in the
+ * first viewport (see the short-viewport block below). All
+ * colors/spacing come from tokens except the owner's exact
+ * material literals (die face, hot-second orange, the bar's
+ * Google gray); the only glow is the live accent, per Steel
+ * law. */
+
+/* -- Page root: the whole front door -------------------------- */
+.tv-teaser {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  min-height: 100dvh;
+  padding-bottom: var(--space-5, 3rem);
+}
+.tv-teaser--splash {
+  place-items: center;
+  min-height: 60dvh;
+  padding-bottom: 0;
+}
+
+/* -- Bottom row: the language picker, last on the page -------
+ * (Owner, 2026-10-26 evening: the picker left the top-right
+ * row it floated in and closed the page instead — below the
+ * doors, and below the trailer when one is set — so the
+ * composition could be raised and the countdown fits the
+ * landing viewport. Same switcher, same compact right-hand
+ * seat, new end of the page.) */
+.tv-teaser-bottom {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-5, 3rem);
+  padding: 0 var(--space-2);
+}
+/* The language picker is a compact corner control on this page,
+ * not a full-width form field (the shared Select stretches to
+ * its container by default). */
+.tv-teaser-bottom select {
+  width: min(16rem, 62vw);
+}
+/* The visitor counter (owner, 2026-10-26): bare digits at the
+ * bottom row's left end — small, dim, tabular, no words. Its
+ * auto right margin is what seats it left while the picker
+ * keeps the right end; until the count arrives it renders
+ * nothing and the row is exactly the picker's row, as before. */
+.tv-teaser-visitors {
+  margin-right: auto;
+  align-self: center;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+/* -- The lockup's brand mark: a logo coin with text ------------
+ * The emblem's sized stage (128px hero scale; the splash hold's
+ * is a touch larger). The component fills its box — surfaces.css
+ * owns the 3D geometry. No filter/transform here: either would
+ * flatten the rotor's preserve-3d. No plate, frame or backdrop
+ * either: the coin and the wordmark sit directly on the stage,
+ * exactly as the original build had them. */
+.tv-teaser-emblem {
+  display: block;
+  width: 128px;
+  height: 128px;
+  max-width: 40vw;
+  max-height: 40vw;
+}
+.tv-teaser-emblem--splash {
+  width: 136px;
+  height: 136px;
+}
+.tv-teaser-wordmark {
+  width: 420px;
+  max-width: 82vw;
+  height: auto;
+}
+
+/* -- THE SPIN: why the coin could read as STAGNANT, and the fix
+ * (owner correction, 2026-10-26 evening: "a spinning logo where
+ * the stagnant logo was") --------------------------------------
+ * The site emblem turns at 9s per revolution (surfaces.css
+ * .tv-emblem3d-rotor). Two stand-downs could freeze this page's
+ * coin SOLID, and both were live: surfaces.css sets the rotor's
+ * animation to none under prefers-reduced-motion, and base.css
+ * flattens EVERY animation on the page to 0.01ms × 1 iteration
+ * under the same preference (a global !important rule). Any
+ * visitor whose OS or browser asks for reduced motion — a
+ * common setting — got a logo that never moved at all, which
+ * is exactly what the owner reported. And even with motion
+ * allowed, a 9s turn dwells near face-on, reading as still in
+ * a short look.
+ * The owner's order for THIS page is a visibly spinning logo
+ * as its centerpiece, so the teaser's emblem carries its own
+ * brisker 6s turn and, on this surface only, is exempt from
+ * the reduced-motion stand-down — the !important is required
+ * to override base.css's !important flattening. Every other
+ * surface keeps the site posture untouched: 9s, stood down on
+ * request. */
+@keyframes tv-teaser-emblem-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+.tv-teaser-emblem .tv-emblem3d-rotor {
+  animation: tv-teaser-emblem-spin 6s linear infinite !important;
+}
+
+/* -- Stage: a dimmed cinematic band, headline riding it ------- */
+.tv-teaser-stage {
+  display: grid;
+  align-content: start;
+}
+.tv-teaser-art {
+  border-radius: 0;
+  overflow: hidden;
+  line-height: 0;
+}
+.tv-teaser-art img {
+  width: 100%;
+  height: clamp(240px, 34vw, 440px);
+  object-fit: cover;
+  object-position: center 42%;
+  display: block;
+  /* Slow-burn: the scene sits darker than the landing's hero —
+   * the countdown is the light on this page, not the photo. */
+  filter: brightness(0.66) saturate(0.88);
+  -webkit-mask-image: linear-gradient(to bottom, black 42%, transparent 98%);
+  mask-image: linear-gradient(to bottom, black 42%, transparent 98%);
+}
+.tv-teaser-lockup {
+  /* The SAME clamp as the band height: the lockup's top lands
+   * ~34px into the band, exactly like the original build (and
+   * the merged landing). The lockup is the whole brand stack —
+   * coin, wordmark, slogan, headline, identity — riding the
+   * dimmed art and spilling onto the ground below it. */
+  margin-top: calc(clamp(240px, 34vw, 440px) * -1 + 34px);
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  text-align: center;
+  padding: 0 var(--space-2);
+}
+
+/* -- The identity lines ---------------------------------------- */
+.tv-teaser-slogan {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  text-shadow: 0 1px 10px var(--bg), 0 0 22px var(--bg);
+}
+.tv-teaser-headline {
+  margin: 0;
+  font-family: var(--font-display, var(--font));
+  font-size: clamp(2.1rem, 5.6vw, 3.4rem);
+  line-height: 1.06;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 3px var(--bg), 0 0 18px var(--bg), 0 0 34px var(--bg);
+}
+.tv-teaser-identity {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px var(--bg), 0 0 16px var(--bg), 0 0 30px var(--bg);
+}
+
+/* -- The countdown band: full-bleed brushed steel --------------
+ * The band wears the header's own brushed material edge to
+ * edge; the block inside carries the radial accent bloom as
+ * its own background rule. Each unit is ONE bordered
+ * die — number and label together on a dark machined face. */
+.tv-teaser-band {
+  margin-top: 65px;
+  padding: 25px var(--space-2);
+  background: var(--header-bg);
+  border-block: 1px solid rgb(var(--ink-rgb) / 0.08);
+  display: grid;
+  justify-items: center;
+}
+.tv-teaser-countblock {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  padding: var(--space-3) clamp(0.75rem, 5vw, 3.5rem);
+  border-radius: var(--radius);
+  background: radial-gradient(60% 90% at 50% 0%, rgb(var(--accent-rgb, 242 118 10) / 0.13), transparent 65%);
+}
+.tv-teaser-countlabel {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.42em;
+  /* The letterspaced line centers on its text, not its trailing
+   * space. */
+  text-indent: 0.42em;
+  color: var(--accent);
+  text-shadow: 0 0 18px rgb(var(--accent-rgb, 242 118 10) / 0.45);
+}
+.tv-teaser-count {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(5.4rem, 8.75rem));
+  gap: var(--space-2);
+}
+.tv-teaser-unit {
+  display: grid;
+  gap: var(--space-1, 0.5rem);
+  justify-items: center;
+  padding: var(--space-3) var(--space-1, 0.5rem);
+  border: 1px solid rgb(var(--ink-rgb) / 0.18);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #26221e, #17140f);
+  box-shadow: inset 0 1px 0 rgb(var(--ink-rgb) / 0.08);
+}
+/* The die's ink is a LITERAL, never the --text token (owner
+ * defect fix, 2026-11-03): the die face above is a hard-coded
+ * dark gradient in every mode, but --text flips to near-black
+ * in light mode — dark ink on the dark face made the days,
+ * hours and minutes digits vanish entirely on the Silver Grey
+ * palette (measured #1c1e20 on #26221e). The literal below is
+ * exactly the value dark mode computes from the token, so
+ * dark rendering is unchanged and light mode finally reads.
+ * The unit label under each digit gets the same treatment
+ * with the dark palette's muted literal. */
+.tv-teaser-num {
+  font-family: var(--font-display, var(--font));
+  font-size: clamp(2.2rem, 9vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #e6e1d8;
+  text-shadow: 0 2px 14px rgb(0 0 0 / 0.6);
+}
+.tv-teaser-num--hot {
+  color: #f26a1b;
+  text-shadow: 0 0 22px rgb(242 106 27 / 0.45);
+}
+.tv-teaser-unitlabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  text-transform: uppercase;
+  /* Literal for the same reason as .tv-teaser-num above: this
+   * label sits ON the dark die, not on the page ground. */
+  color: #9a927f;
+}
+.tv-teaser-date {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-shadow: 0 1px 3px var(--bg), 0 0 14px var(--bg);
+}
+.tv-teaser-launched {
+  margin: 0;
+  font-family: var(--font-display, var(--font));
+  font-size: clamp(1.3rem, 3.4vw, 1.9rem);
+  font-weight: 700;
+  color: var(--accent);
+  text-shadow: 0 1px 3px var(--bg), 0 0 18px var(--bg);
+}
+
+/* -- The two doors ---------------------------------------------- */
+.tv-teaser-doors {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: var(--space-5, 3rem);
+  padding: 0 var(--space-2);
+}
+
+/* -- The Downloads door (owner, 2026-11-08) ----------------------
+ * The free Downloads page's door on the front page: one
+ * door-scale secondary button in its own centered row directly
+ * under the two doors. It follows the app-links exception's
+ * seating law — rides BELOW the doors in flow, so the countdown
+ * band and the doors keep their proven first-viewport seats and
+ * only the rows under it (stores, trailer) move down by its
+ * height. */
+.tv-teaser-downloads {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-3);
+  padding: 0 var(--space-2);
+}
+
+/* -- The Facebook invitation (owner, 2026-11-09) -----------------
+ * One quiet line in its own centered row directly under the
+ * Downloads door: the Facebook glyph in the platform's own
+ * blue beside the invitation text, the whole line the link to
+ * the brand's Facebook page. Quieter than the doors — it is an
+ * invitation, not a fourth door — but set at reading size so a
+ * visitor actually reads it. Like the other exceptions it
+ * rides below the doors in flow, so the band and the doors
+ * keep their proven seats. */
+.tv-teaser-facebook {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-3);
+  padding: 0 var(--space-2);
+}
+.tv-teaser-facebook-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  text-shadow: 0 1px 3px var(--bg), 0 0 14px var(--bg);
+}
+.tv-teaser-facebook-link svg {
+  height: 18px;
+  width: auto;
+  display: block;
+}
+.tv-teaser-facebook-link:hover,
+.tv-teaser-facebook-link:focus-visible {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+/* -- The app links (owner, 2026-10-31) ---------------------------
+ * A slim row under the doors carrying direct links to the apps
+ * in both stores. The layout mirrors the merged landing's store
+ * block (.tv-lm-stores-row: a centered, wrapping flex row with
+ * the same gap) and the links wear the same secondary-button
+ * dress — the teaser's copy of that block, in its own classes.
+ * The row flows BELOW the doors, so it can never lift the
+ * countdown band or the doors out of their first-viewport
+ * seats; on phones the two links sit side by side and wrap to
+ * stacked when the screen is too narrow for both. */
+.tv-teaser-stores {
+  margin-top: var(--space-3);
+  padding: 0 var(--space-2);
+  display: grid;
+  justify-items: center;
+}
+.tv-teaser-stores-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.tv-teaser-store-link {
+  text-decoration: none;
+}
+
+/* -- The teaser trailer ------------------------------------------
+ * A steel frame for the current video (site-hosted MP4 only),
+ * rendered ONLY when a video is set — no empty frame ever.
+ * The player (see TeaserPage.tsx) wears exactly ONE visible
+ * control (owner reversal, 2026-10-26): a fullscreen button
+ * seated bottom-right over the picture — dark, thin border,
+ * Lucide-style line icon in light gray, semi-transparent so it
+ * stays quiet over the film and stays visible in fullscreen. */
+.tv-teaser-videoslot {
+  margin-top: var(--space-5, 3rem);
+  padding: 0 var(--space-2);
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+}
+.tv-teaser-trailer {
+  margin: 0;
+  font-family: var(--font-display, var(--font));
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.tv-teaser-video-frame {
+  width: min(880px, 100%);
+  padding: 6px;
+  border: 1px solid rgb(var(--ink-rgb) / 0.2);
+  border-radius: var(--radius);
+  background: rgb(0 0 0 / 0.5);
+  box-shadow:
+    inset 0 1px 0 rgb(var(--ink-rgb) / 0.1),
+    0 10px 34px rgb(0 0 0 / 0.5);
+}
+.tv-teaser-player {
+  display: flex;
+  flex-direction: column;
+}
+.tv-teaser-videowrap {
+  position: relative;
+  line-height: 0;
+}
+.tv-teaser-video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: calc(var(--radius) - 2px);
+  background: #000;
+  display: block;
+}
+/* The ONE visible control: fullscreen, bottom-right over the
+ * picture. It lives inside the player element, so it remains
+ * on screen — and tappable for the exit — while fullscreen. */
+.tv-teaser-fsbtn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 8px;
+  background: rgb(0 0 0 / 0.55);
+  color: #9aa0a6;
+  cursor: pointer;
+}
+.tv-teaser-fsbtn:hover {
+  background: rgb(0 0 0 / 0.72);
+  color: var(--text, #e6e1d8);
+}
+/* Fullscreen: the whole player goes — the picture flexes to
+ * fill it and the one button rides over its corner. */
+.tv-teaser-player:fullscreen {
+  height: 100%;
+  background: #000;
+  padding: 6px;
+}
+.tv-teaser-player:fullscreen .tv-teaser-videowrap {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.tv-teaser-player:fullscreen .tv-teaser-video {
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+/* -- Short viewports: the countdown must land whole ------------
+ * (Owner, 2026-10-26 evening.) With the picker row gone the
+ * composition starts at the stage; on SHORT screens the rhythm
+ * also tightens — the band's dramatic 65px rise becomes 28px,
+ * the band breathes a little less, the doors come a step
+ * closer — so the countdown band (and, at the proven sizes,
+ * the doors as well) sits fully inside the first viewport,
+ * proven at 390×740 and 1440×800. Taller screens keep the full
+ * rhythm untouched. Nothing here resizes the coin, the type
+ * or the dice. */
+@media (max-height: 830px) {
+  .tv-teaser-band {
+    margin-top: 28px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+  .tv-teaser-doors {
+    margin-top: var(--space-4);
+  }
+}
+
+/* -- Phone: designed, not shrunk -------------------------------- */
+@media (max-width: 560px) {
+  .tv-teaser-count {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+    max-width: 24rem;
+  }
+  .tv-teaser-unit {
+    padding: var(--space-2) 2px;
+  }
+  .tv-teaser-doors {
+    width: 100%;
+    max-width: 22rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .tv-teaser-doors > * {
+    flex: 1 1 9rem;
+  }
+  /* The Downloads door spans the same measure as the doors
+   * block above it, its button full-width like a wrapped door. */
+  .tv-teaser-downloads {
+    width: 100%;
+    max-width: 22rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .tv-teaser-downloads > * {
+    flex: 1 1 9rem;
+  }
+}
+

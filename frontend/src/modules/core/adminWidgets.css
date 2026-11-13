@@ -1,0 +1,55 @@
+/* The admin Home widgets (admin lane 2026-11-07; polish lane
+   2026-11-07): the widgets wear the standard Home widget
+   chrome (components.css + the railsteel sheets own the panel,
+   cover, head and row rules); this sheet only carries the
+   admin rows' own anatomy — a stat row is a label cell and a
+   value cell on the standard row rhythm (the .tv-widget-rows
+   3px cadence, small text), the value right-aligned and
+   weighted, delta notes muted. Rows never stretch: the rowset
+   is a plain column at the content's own height, so a panel
+   fits the lines it shows. God + moderator_admin seats only;
+   the blocks never render for anyone else. */
+
+.tv-admin-rows .tv-widget-row {
+  padding: 1px 2px;
+}
+
+.tv-admin-label {
+  flex: 1 1 auto;
+}
+
+.tv-admin-value {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+}
+
+.tv-admin-note {
+  color: var(--text-muted);
+  font-weight: 400;
+  /* Uniformity 2026-11-10: no private size — the note inherits
+   * the row register it sits in (small), like every other
+   * muted note in a widget body. The one-off 0.9rem is retired. */
+}
+
+.tv-admin-subhead {
+  margin-top: 0.35rem;
+  padding: 0.1rem 2px;
+  /* Heading hierarchy (owner rule, 2026-11-10): the subhead
+   * heads content groups, so it takes the full ink like
+   * .tv-widget-group-label — the heading register of the
+   * micro-label family. */
+  color: var(--text);
+  /* Uniformity 2026-11-10: the subhead wears the widget kit's
+   * micro-label register verbatim (display family / 0.72rem /
+   * 700 / 0.12em / uppercase — the same values as
+   * .tv-widget-group-label in theme/widget-kit.css), not its
+   * own 0.85rem body-family variant. */
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}

@@ -1,0 +1,436 @@
+/* Reports page redesign (2026-11-06): the main-tab-layout
+   header (the Repairs page's recipe), the saved-template lists
+   (Quick Reports + Accounting), the wizard, and the History
+   filters. Documents themselves wear the uniform navy report
+   frame — that lives in the renderers, not here. */
+
+/* -- page header (mirrors .tv-repairs-head) ------------------- */
+
+.tv-reports-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.tv-reports-thumb {
+  flex: 0 0 auto;
+  width: 10.5rem;
+  max-width: 42vw;
+  aspect-ratio: 3 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--bevel);
+  color: var(--accent);
+  font-size: 3.25rem;
+}
+
+.tv-reports-head-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.tv-reports-title {
+  margin: 0;
+}
+
+.tv-reports-facts {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin: 0.45rem 0 0;
+}
+
+.tv-reports-fact {
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.tv-reports-fact dt {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-reports-fact dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.tv-reports-head-actions {
+  flex: 0 0 auto;
+}
+
+.tv-reports-tab {
+  display: grid;
+  gap: 1rem;
+}
+
+.tv-reports-generate-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* -- saved-template lists -------------------------------------- */
+
+.tv-reports-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.tv-reports-box-title {
+  margin: 0;
+}
+
+.tv-reports-box-body {
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.tv-reports-tpl-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tv-reports-tpl-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  transition: box-shadow 120ms ease, border-color 120ms ease;
+}
+
+/* The row itself is inert (Ryan, 2026-11-07): no hover
+   treatment on the row — the format buttons on its right are
+   the click targets and carry the Main highlight effect. */
+.tv-reports-tpl-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+  text-align: left;
+}
+
+.tv-reports-fmt-btn {
+  /* Icon BESIDE its label in one fixed box (Ryan, 2026-11-07:
+   * the stacked column made skinny tall towers — a 21px-wide
+   * icon over its label in narrow padding). The artwork keeps
+   * its natural 64×80 aspect; the fixed width/height make
+   * every format button on every row the identical size, with
+   * the label's length absorbed inside the box. */
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 5.25rem;
+  height: 2.6rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  cursor: pointer;
+  transition: box-shadow 120ms ease, transform 120ms ease, border-color 120ms ease;
+}
+
+/* Choice tiles get the full Main highlight: lift + glow. */
+.tv-reports-fmt-btn:hover:not(:disabled),
+.tv-reports-fmt-btn:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), var(--glow);
+  color: var(--text);
+}
+
+.tv-reports-fmt-btn:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.tv-reports-fmt-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.tv-reports-tpl-name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.tv-reports-tpl-desc {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.tv-reports-tpl-side {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Narrow screens: three fixed-width format chips would crush
+   the name column, so the button group wraps UNDER it,
+   right-aligned; the buttons themselves never change size. */
+@media (max-width: 560px) {
+  .tv-reports-tpl-row {
+    flex-wrap: wrap;
+  }
+
+  .tv-reports-tpl-side {
+    margin-left: auto;
+  }
+}
+
+.tv-reports-chip {
+  border: 1px solid var(--edge-strong);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.tv-reports-tpl-remove {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--danger, #c0392b);
+  background: transparent;
+  color: var(--danger, #c0392b);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tv-reports-tpl-remove:hover {
+  background: var(--danger, #c0392b);
+  color: #fff;
+}
+
+/* -- wizard ------------------------------------------------------ */
+
+.tv-reports-wizard-steps {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.tv-reports-wizard-step {
+  color: var(--text-muted);
+}
+
+.tv-reports-wizard-step--active {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.tv-reports-wizard-body {
+  display: grid;
+  gap: 1rem;
+}
+
+.tv-reports-group-label {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tv-reports-type-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tv-reports-type-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  transition: box-shadow 120ms ease, transform 120ms ease, border-color 120ms ease;
+}
+
+/* Choice cards get the full Main highlight: lift + glow. */
+.tv-reports-type-row:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), var(--glow);
+}
+
+.tv-reports-type-row--selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.tv-reports-type-row:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.tv-reports-type-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.tv-reports-type-name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.tv-reports-type-desc {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.tv-reports-type-off {
+  color: var(--danger, #c0392b);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tv-reports-form {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 26rem;
+}
+
+.tv-reports-date-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 480px) {
+  .tv-reports-date-pair {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tv-reports-hint {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.tv-reports-preview-frame {
+  width: 100%;
+  height: 60vh;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.tv-reports-preview-text {
+  max-height: 60vh;
+  overflow: auto;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 0.85rem;
+  font-size: 0.8rem;
+  white-space: pre;
+  margin: 0;
+}
+
+.tv-reports-preview-card {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.tv-reports-radio-row {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* -- history ------------------------------------------------------ */
+
+.tv-reports-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 0.85rem;
+}
+
+.tv-reports-filter {
+  min-width: 10rem;
+}
+
+.tv-reports-filter--search {
+  flex: 1 1 14rem;
+}
+
+.tv-reports-history-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.tv-reports-history-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.tv-reports-spacer {
+  flex: 1;
+}
+
+/* -- request tab ---------------------------------------------------- */
+
+.tv-reports-request {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+}
+
+.tv-reports-request p {
+  margin: 0;
+  color: var(--text-muted);
+  max-width: 42rem;
+}

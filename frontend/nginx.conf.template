@@ -1,0 +1,251 @@
+# Served from /etc/nginx/templates/ by the nginx image entrypoint,
+# which envsubst's ${APP_DOMAIN} / ${FILES_DOMAIN} on container start.
+# TLS terminates at Cloudflare for public traffic; since the
+# 2026-10-28 security audit the container ALSO speaks HTTPS on 443
+# with a Let's Encrypt cert (mounted from the host), ready for the
+# owner's Cloudflare Flexible -> Full (Strict) flip.
+
+# Main site: React app + /api/* -> FastAPI.
+server {
+    listen 80;
+    # Origin TLS (security audit 2026-10-28): the same block also
+    # serves 443 with the Let's Encrypt cert from the mounted host
+    # store, so Cloudflare Full (Strict) has a valid origin endpoint
+    # the moment the owner flips the dashboard switch. Port 80 stays
+    # live — until that flip, Cloudflare still fetches over 80.
+    listen 443 ssl;
+    ssl_certificate /certs/live/toolboxvault.com/fullchain.pem;
+    ssl_certificate_key /certs/live/toolboxvault.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    server_name ${APP_DOMAIN} www.${APP_DOMAIN};
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Upload ceiling (bug lane 2026-11-09): the app accepts
+    # uploads up to 100 MB (print / STEP / video files) and
+    # refuses larger ones in its own words — this edge cap sat
+    # at 20m and silently 413'd a member's 31 MB phone video
+    # before the API ever saw it. 110m = the app's 100 MB cap
+    # plus multipart overhead, so the app's refusal is the one
+    # a member reads. (Cloudflare's own 100 MB request ceiling
+    # still sits in front for public traffic.)
+    client_max_body_size 110m;
+    # A 100 MB upload on a slow uplink needs minutes, not the
+    # 60s default, to finish arriving.
+    client_body_timeout 300s;
+
+    # ACME HTTP-01 challenges (security audit 2026-10-28): certbot on
+    # the host writes <token> files under /acme/.well-known/ (a mounted
+    # host dir); serve them as plain files, never the SPA fallback.
+    location ^~ /.well-known/acme-challenge/ {
+        root /acme;
+        default_type "text/plain";
+        try_files $uri =404;
+    }
+
+    # Security headers (blueprint §11; deep audit F4-04 grew the CSP
+    # from frame-ancestors-only into a full policy + HSTS). `always`
+    # so error responses carry them too. Framing is denied outright —
+    # nothing embeds this app. The script-src sha256 pins index.html's
+    # inline boot-theme script BYTE-FOR-BYTE: any edit to that script
+    # changes its hash and the browser refuses to run it (the app
+    # still loads; the pre-paint theme just falls back) — recompute
+    # the hash when touching the boot script. The two cloudflareinsights
+    # hosts are Cloudflare Web Analytics: the beacon script is injected
+    # by the CF edge (it is not in this repo), and blocking it silently
+    # killed the owner's analytics — pinned to its exact hosts.
+    # frame-src carries blob: on purpose (owner bug 2026-11-09): the
+    # inspection wizard frames its just-generated PDF — a blob: URL —
+    # in the preview step. Without blob: the browser refuses the frame
+    # and the visitor gets a broken-document icon instead of the form.
+    # blob: URLs are minted by the page itself, so this opens no
+    # external framing surface (frame-ancestors still denies embeds).
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header Permissions-Policy "camera=(self), microphone=(), geolocation=()" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-Ys/Gt0ksXAq6TlmR4KPQjtgRPK9fyRK2rHHyTJypImY=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://${FILES_DOMAIN} https://tile.openstreetmap.org https://i.ytimg.com; font-src 'self'; connect-src 'self' https://${FILES_DOMAIN} https://cloudflareinsights.com; media-src 'self' blob: https://${FILES_DOMAIN}; frame-src https://${FILES_DOMAIN} blob: https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'" always;
+
+    location /api/ {
+        proxy_pass http://api:8000;
+        # Phone-video uploads are converted by the API before
+        # it answers (ffmpeg, up to 480s in the service); the
+        # 60s proxy defaults would cut a long conversion off
+        # mid-flight and show the member a failure for an
+        # upload that then lands — worse than waiting.
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Hashed build assets (Vite emits content-hashed filenames under
+    # /assets/): the filename IS the version, so cache them hard.
+    # A miss is a hard 404 — never the SPA fallback — so a stale tab
+    # fails loudly (the app's chunk recovery then reloads into the
+    # fresh build) instead of receiving index.html as a "script".
+    # NOTE: a location with its own add_header inherits NONE of the
+    # server-level ones, so the security headers repeat here.
+    location /assets/ {
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Permissions-Policy "camera=(self), microphone=(), geolocation=()" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-Ys/Gt0ksXAq6TlmR4KPQjtgRPK9fyRK2rHHyTJypImY=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://${FILES_DOMAIN} https://tile.openstreetmap.org https://i.ytimg.com; font-src 'self'; connect-src 'self' https://${FILES_DOMAIN} https://cloudflareinsights.com; media-src 'self' blob: https://${FILES_DOMAIN}; frame-src https://${FILES_DOMAIN} blob: https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'" always;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        try_files $uri =404;
+    }
+
+    # The entry document is never stored: every navigation
+    # revalidates, so a new deploy is picked up immediately instead
+    # of a cached index pointing at chunk files that no longer
+    # exist (the blank-page-after-deploy bug). SPA route requests
+    # land here too via the internal redirect from location /, so
+    # client-side routes get the same policy. Security headers
+    # repeat for the same add_header inheritance reason as above.
+    location = /index.html {
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Permissions-Policy "camera=(self), microphone=(), geolocation=()" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-Ys/Gt0ksXAq6TlmR4KPQjtgRPK9fyRK2rHHyTJypImY=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://${FILES_DOMAIN} https://tile.openstreetmap.org https://i.ytimg.com; font-src 'self'; connect-src 'self' https://${FILES_DOMAIN} https://cloudflareinsights.com; media-src 'self' blob: https://${FILES_DOMAIN}; frame-src https://${FILES_DOMAIN} blob: https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'" always;
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+    }
+
+    # The Downloads page's own entry document (social-share fix,
+    # 2026-11-08): generated from index.html at build time with
+    # the Downloads Open Graph tags swapped in (vite.config.ts),
+    # so a shared /downloads link previews as the Downloads page
+    # while every other route keeps the site defaults. The
+    # exact-match locations below only choose the file; the
+    # internal redirect lands in = /downloads.html, which carries
+    # the same never-cache + security header treatment as the
+    # main entry document.
+    location = /downloads.html {
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Permissions-Policy "camera=(self), microphone=(), geolocation=()" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-Ys/Gt0ksXAq6TlmR4KPQjtgRPK9fyRK2rHHyTJypImY=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://${FILES_DOMAIN} https://tile.openstreetmap.org https://i.ytimg.com; font-src 'self'; connect-src 'self' https://${FILES_DOMAIN} https://cloudflareinsights.com; media-src 'self' blob: https://${FILES_DOMAIN}; frame-src https://${FILES_DOMAIN} blob: https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'" always;
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+    }
+
+    location = /downloads {
+        try_files /downloads.html =404;
+    }
+
+    location = /downloads/ {
+        try_files /downloads.html =404;
+    }
+
+    # The Landing page's SPA route (fix lane 2026-11-11): /landing
+    # is a real client-side route, but public/landing/ is also a
+    # directory of landing art in the built output, so location /
+    # found that DIRECTORY for /landing and nginx answered with its
+    # automatic trailing-slash redirect — built from the internal
+    # http scheme (TLS terminates at Cloudflare) it downgraded
+    # https to http, and /landing/ then 404'd because the art
+    # directory has no index file. These exact matches take
+    # /landing and /landing/ away from both location / and the
+    # rendition regex below (exact match beats regex); art files
+    # under /landing/<file> still hit the regex block untouched.
+    # The header set repeats in full — including the entry
+    # document's never-cache policy — because a location carrying
+    # any add_header of its own inherits none of the server-level
+    # ones, and try_files serves /index.html from THIS location
+    # rather than re-entering = /index.html (production /downloads
+    # shows exactly that: full security headers, no Cache-Control).
+    location = /landing {
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Permissions-Policy "camera=(self), microphone=(), geolocation=()" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-Ys/Gt0ksXAq6TlmR4KPQjtgRPK9fyRK2rHHyTJypImY=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://${FILES_DOMAIN} https://tile.openstreetmap.org https://i.ytimg.com; font-src 'self'; connect-src 'self' https://${FILES_DOMAIN} https://cloudflareinsights.com; media-src 'self' blob: https://${FILES_DOMAIN}; frame-src https://${FILES_DOMAIN} blob: https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'" always;
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        try_files /index.html =404;
+    }
+
+    location = /landing/ {
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Permissions-Policy "camera=(self), microphone=(), geolocation=()" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-Ys/Gt0ksXAq6TlmR4KPQjtgRPK9fyRK2rHHyTJypImY=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://${FILES_DOMAIN} https://tile.openstreetmap.org https://i.ytimg.com; font-src 'self'; connect-src 'self' https://${FILES_DOMAIN} https://cloudflareinsights.com; media-src 'self' blob: https://${FILES_DOMAIN}; frame-src https://${FILES_DOMAIN} blob: https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'" always;
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        try_files /index.html =404;
+    }
+
+    # Public rendition directories (deep audit F3-13): slot-sized
+    # brand renditions (/brand/), landing art (/landing/) and the
+    # retired gear originals (/accents/). Filenames change when the
+    # art changes (renditions are regenerated under new names), so
+    # cache them like hashed assets instead of Cloudflare's 4-hour
+    # default. Security headers repeat (add_header inheritance).
+    location ~ ^/(brand|landing|accents)/ {
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+        add_header Permissions-Policy "camera=(self), microphone=(), geolocation=()" always;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        try_files $uri =404;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+# Object storage: presigned file URLs live here.
+# The path is forwarded UNCHANGED so S3 signatures stay valid.
+server {
+    listen 80;
+    # Origin TLS: same treatment as the app block (see above).
+    listen 443 ssl;
+    ssl_certificate /certs/live/toolboxvault.com/fullchain.pem;
+    ssl_certificate_key /certs/live/toolboxvault.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    server_name ${FILES_DOMAIN};
+
+    # Same ceiling as the app block (bug lane 2026-11-09):
+    # presigned PUT uploads carry the same app-capped files.
+    client_max_body_size 110m;
+
+    # ACME HTTP-01 challenges for the files name (same SAN cert as the
+    # app): answered from the mounted webroot, never proxied to storage.
+    location ^~ /.well-known/acme-challenge/ {
+        root /acme;
+        default_type "text/plain";
+        try_files $uri =404;
+    }
+
+    # Edge headers for the files origin. Two deliberate differences
+    # from the main site (deep audit F4-04): NO X-Frame-Options, and
+    # frame-ancestors names the APP origin — the AttachmentViewer's
+    # PDF view frames presigned file URLs, and DENY/'none' blocked
+    # exactly that. Nothing else may frame files. User content still
+    # can't execute here: objects are served with their allowlisted
+    # declared type + nosniff, and uploaded bytes are magic-byte
+    # sniffed at attach (F4-06).
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header Content-Security-Policy "frame-ancestors https://${APP_DOMAIN}" always;
+
+    location / {
+        proxy_pass http://storage:8333;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

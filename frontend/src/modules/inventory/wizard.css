@@ -1,0 +1,559 @@
+/* Add-tool / add-battery wizard styles (fork, quick lookup,
+   drawer autofill). Split out of theme/components.css in the
+   2026-10-26 CSS filing split; imported by the wizard components
+   (AddWizardPage, WizardLookup, DrawerAutofill) so the rules ship
+   with the inventory wizard chunk. Rule order preserved verbatim
+   from their original positions. */
+
+/* Design notes that travelled with these rules from
+ * theme/components.css: */
+
+/* Wizard lookup step (owner fix, 2026-10-25): ONE input group,
+ * ONE button, and the hit as ONE tidy card — name up top, specs
+ * as labeled rows, where-it-came-from in plain text. Token-driven
+ * so it reads clean in dark Steel and Silver Grey alike. */
+
+/* AI drawer autofill (2026-10-25): the tier-2 "Look up
+ * drawers" block in the location create flows — a quiet card
+ * with the find, its source, and the confirm controls. Plain
+ * body type at normal weights throughout (the owner's standing
+ * rule for AI prose), token-driven for both themes. */
+
+/* Grounded-lookup additions (2026-10-25): the wizard hit
+ * card's photo offer and the drawer block's configuration
+ * choices + editable name list. New classes only; the blocks
+ * above keep their shipped look. */
+
+/* Wizard fork (owner rebuild, 2026-10-25): two tappable photo
+ * rows — real photo left, answer text right, whole row is the
+ * button. Every text element pins the plain body face at normal
+ * weights with no caps/shadow so this screen can never fall
+ * back to the condensed engraved look the owner flagged twice.
+ * Box skin (owner, 2026-10-25): the rows carry .tv-panel — the
+ * SAME class the Home Overview stat cards wear (StatCard ->
+ * Panel) — so plate background + texture, edge/frame border,
+ * radius, shadow stack, top bloom and panel padding match the
+ * Overview boxes by construction, in every mode. The stat
+ * tiles' own metal repaint in themes/railsteel.css (worn grain
+ * over --surface + bevel/drop shadow, and the Silver Grey
+ * repaint list) names .tv-fork-row in its selectors too, so
+ * the tile finish matches as well, not just the Panel base.
+ * .tv-fork-row itself carries only the row layout and the
+ * interaction. */
+
+.tv-wizard-lookup-intro {
+  margin: 0 0 var(--spacing);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tv-wizard-lookup-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+.tv-wizard-lookup-video {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  border-radius: var(--radius);
+  margin-top: 0.75rem;
+}
+
+.tv-wizard-lookup-note {
+  margin: 0.9rem 0 0;
+  color: var(--text-muted);
+}
+
+.tv-wizard-hit {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+.tv-wizard-hit-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.tv-wizard-hit-source {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-wizard-hit-rows {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.75rem 0 0;
+}
+
+.tv-wizard-hit-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tv-wizard-hit-row dt {
+  min-width: 110px;
+  font-weight: 600;
+}
+
+.tv-wizard-hit-row dd {
+  margin: 0;
+}
+
+.tv-wizard-hit-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.9rem;
+}
+
+/* The grounded description under the hit card's spec rows
+   (AI wizard completion, 2026-11-07): the product page's own
+   words, full width, readable line length. */
+.tv-wizard-hit-desc {
+  margin: 0.7rem 0 0;
+  line-height: 1.45;
+}
+
+/* The photo-identification block under the lookup form: a
+   second path into the same lookup, set off by a hairline. */
+.tv-wizard-photoid {
+  margin-top: 1.1rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--border);
+}
+
+.tv-drawer-autofill {
+  display: grid;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.7rem 0.8rem;
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
+  font-family: var(--font);
+  text-transform: none;
+}
+
+.tv-drawer-autofill-hint,
+.tv-drawer-autofill-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-drawer-autofill-confirm {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.tv-drawer-autofill-found {
+  margin: 0;
+  font-weight: 700;
+}
+
+.tv-drawer-autofill-source {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-drawer-autofill-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.tv-wizard-hit-photo {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  margin-top: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.tv-wizard-hit-photo-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.tv-wizard-hit-photo-side {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.tv-drawer-autofill-configs {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.tv-drawer-autofill-names {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.tv-drawer-autofill-name-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tv-drawer-autofill-name-row > :first-child {
+  flex: 1;
+}
+
+.tv-fork-rows {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tv-fork-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font);
+  color: var(--text);
+  cursor: pointer;
+  /* Hover + focus are the SITE-WIDE HOVER SYSTEM's (owner,
+   * 2026-11-05): the fork boxes were one of its two reference
+   * surfaces, so their old local hover (full-accent border,
+   * 1px lift) is unified onto the system's exact values in
+   * theme/themes/railsteel-panels.css, bottom section. The
+   * transition here matches the system's triple so the row
+   * animates even before the theme layer's own base rule. */
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.tv-fork-img {
+  width: 132px;
+  height: 99px;
+  object-fit: cover;
+  border-radius: var(--radius-sm, 6px);
+  flex: none;
+}
+
+.tv-fork-text {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.tv-fork-label {
+  font-family: var(--font);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+  text-shadow: none;
+}
+
+.tv-fork-hint {
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  text-shadow: none;
+  color: var(--text-muted);
+}
+
+@media (max-width: 560px) {
+  .tv-fork-img {
+    width: 104px;
+    height: 78px;
+  }
+}
+
+/* -- sweep E3: health-check photo ignore + fix-all wizard --------
+ * Values mirror HealthCheckPage's settled row/panel treatment
+ * (the DO-NOT-LOSE model surface) — same gaps, edge, and padding,
+ * expressed as classes so the inline-style baseline does not grow. */
+.tv-health-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.7rem;
+}
+
+.tv-health-plain {
+  margin: 0;
+}
+
+.tv-health-muted-line {
+  margin: 0 0 0.4rem;
+  color: var(--text-muted);
+}
+
+.tv-health-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.tv-health-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--edge);
+  padding: 0.6rem 0;
+}
+
+.tv-health-row-name {
+  min-width: 10rem;
+}
+
+.tv-health-row-end {
+  margin-left: auto;
+}
+
+/* -- owner rebuild 2026-11-12: the flagged-items list as a TRUE
+ * list — one row per item, one column per field the scan checks,
+ * a check box in every cell (grey = has it, red = missing).
+ * Head and rows share one grid template so the columns can
+ * never drift; at phone width the row folds into labelled
+ * facts (the site's phone-table pattern) — the head steps
+ * aside and each check cell carries its own column label, so
+ * every column stays reachable and named.
+ *
+ * Restyled 2026-11-12 (owner order) onto the INVENTORY MAIN
+ * LIST's presentation: the container carries .tv-inv-list
+ * itself (the framed panel surface), and the head/rows below
+ * take the inventory table's own values verbatim — header
+ * treatment (muted, 0.78rem, 700, caps, 0.06em), row padding
+ * (0.45rem 0.75rem), grid gap (0.4rem 1rem), --table-edge
+ * dividers with the last row open, and the row hover. The
+ * phone fold follows the inventory list's pattern at its own
+ * 640px breakpoint: header steps aside, the name + Fix it
+ * ride line one, the check facts spread line two under their
+ * own labels (a bare check box can't carry its field's name
+ * the way the inventory status pill carries its words, so the
+ * label is how the fact carries itself). */
+
+/* The section's control row above the framed list: the gap
+ * filters, with "Ignore all missing photos" riding the right
+ * end (it acts on the photo gap wherever the filter stands). */
+.tv-health-filters {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.tv-health-ignore-all {
+  margin-left: auto;
+}
+
+.tv-health-legend {
+  margin: 0 0 0.7rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tv-health-thead,
+.tv-health-trow {
+  display: grid;
+  grid-template-columns:
+    minmax(8rem, 1.6fr) minmax(5.2rem, 1fr) minmax(7.4rem, 1.1fr)
+    minmax(5.2rem, 1fr) minmax(5.2rem, 1fr) auto;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 44rem;
+  padding: 0.45rem 0.75rem;
+}
+
+.tv-health-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--table-edge);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+.tv-health-th {
+  text-align: center;
+}
+
+.tv-health-th--name {
+  text-align: left;
+}
+
+.tv-health-trow {
+  border-bottom: 1px solid var(--table-edge);
+}
+
+.tv-health-table > .tv-health-trow:last-child {
+  border-bottom: none;
+}
+
+.tv-health-trow:hover {
+  background: var(--table-row-hover);
+}
+
+.tv-health-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  text-align: center;
+  min-width: 0;
+}
+
+.tv-health-cell--name {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.tv-health-cell--actions {
+  align-items: flex-end;
+}
+
+.tv-health-item-name {
+  overflow-wrap: anywhere;
+}
+
+/* The column label inside a check cell: phone only — the head
+ * row names the columns at desktop width. */
+.tv-health-cell-label {
+  display: none;
+}
+
+.tv-health-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 1.5px solid var(--edge-strong);
+  color: var(--text-muted);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.tv-health-mark svg {
+  width: 13px;
+  height: 13px;
+}
+
+.tv-health-mark--missing {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.tv-health-mark-link {
+  display: inline-flex;
+  border-radius: 5px;
+}
+
+.tv-health-mark-link:hover .tv-health-mark {
+  box-shadow: var(--focus-ring-danger);
+}
+
+.tv-health-mark-link:focus-visible {
+  outline: 2px solid var(--danger);
+  outline-offset: 2px;
+}
+
+.tv-health-piece-names {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .tv-health-thead {
+    display: none;
+  }
+
+  .tv-health-trow {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      "name name name actions"
+      "ident photo date pieces";
+    min-width: 0;
+    row-gap: 0.55rem;
+  }
+
+  .tv-health-cell--name {
+    grid-area: name;
+  }
+
+  .tv-health-cell--ident {
+    grid-area: ident;
+  }
+
+  .tv-health-cell--photo {
+    grid-area: photo;
+  }
+
+  .tv-health-cell--date {
+    grid-area: date;
+  }
+
+  .tv-health-cell--pieces {
+    grid-area: pieces;
+  }
+
+  .tv-health-cell--actions {
+    grid-area: actions;
+  }
+
+  .tv-health-cell-label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+}
+
+.tv-health-wiz {
+  display: grid;
+  gap: var(--spacing);
+}
+
+.tv-health-wiz-step {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.tv-health-wiz-name {
+  margin: 0 0 0.2rem;
+  font-size: 1.15rem;
+}
+
+.tv-health-wiz-ident {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.tv-health-wiz-summary-line {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.tv-health-wiz-list-title {
+  margin: 0 0 0.3rem;
+}
+
+.tv-health-wiz-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}

@@ -1,0 +1,253 @@
+/* Admin as a main tab layout page (owner order, 2026-11-07):
+ * header zone (art tile + admin facts), then the shared real
+ * tabs — one tab per admin section. All layout for the new
+ * chrome lives here so the page gains no inline styles
+ * (ratchet discipline). Classes mirror the Reports page's
+ * header vocabulary (reports.css) — the proven pattern for a
+ * non-record main-tab-layout page, matched. The tab strip's
+ * sideways-only scrolling is the shared .tv-tabs behavior in
+ * surfaces.css; nothing here may wrap it to a second row. */
+
+.tv-admin-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.tv-admin-thumb {
+  flex: 0 0 auto;
+  width: 10.5rem;
+  max-width: 42vw;
+  aspect-ratio: 3 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--bevel);
+  color: var(--accent);
+  font-size: 3.25rem;
+}
+
+.tv-admin-head-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.tv-admin-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+}
+
+.tv-admin-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.tv-admin-facts {
+  display: flex;
+  gap: 0.6rem 1.75rem;
+  flex-wrap: wrap;
+  margin: 0.65rem 0 0;
+}
+
+.tv-admin-fact dt {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tv-admin-fact dd {
+  margin: 0.15rem 0 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+/* Announcements (release machinery, 2026-11-08): the composer
+ * form + history loading line. Layout lives here so the page
+ * carries no inline styles (ratchet discipline). */
+.tv-announce-form {
+  display: grid;
+  gap: var(--space-3);
+}
+.tv-announce-intro {
+  margin: 0;
+}
+.tv-announce-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.tv-announce-loading {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Settings blocks added without inline styles (ratchet
+ * discipline): a titled block with a muted explainer and an
+ * actions row — the shape the older settings sections build
+ * inline. */
+.tv-admin-setblock {
+  display: grid;
+  gap: var(--space-3);
+}
+.tv-admin-settitle {
+  font-weight: 700;
+  margin: 0;
+}
+.tv-admin-setnote {
+  color: var(--text-muted);
+  margin: 0;
+}
+.tv-admin-setactions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+/* Conversion requests queue (2026-11-10): the god-only decision
+ * list's few layout pieces, classed rather than inline. */
+.tv-admin-muted {
+  color: var(--text-muted);
+  margin: 0;
+}
+.tv-admin-stack {
+  display: grid;
+  gap: var(--space-3);
+}
+/* Site pulse (sweep D4): the containment pattern from
+ * surfaces.css (.tv-crew-tools / .tv-stack) — the pulse's grid
+ * children give up their automatic minimum size so a wide
+ * table scrolls inside its .tv-table-wrap instead of widening
+ * the page at phone widths (measured 545px at a 390px viewport
+ * before this rule). */
+.tv-admin-pulse > *,
+.tv-admin-pulse .tv-admin-setblock > * {
+  min-width: 0;
+}
+.tv-admin-loading {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin: 0;
+}
+.tv-admin-actions {
+  display: inline-flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* FIX4 phone tables (2026-11-11, sweep 09b-F12): the Users
+ * table kept its desktop columns at phone width — emails
+ * cut mid-string, badges truncated, and five columns sat
+ * off the right edge with no scroll hint. At phone width
+ * the rows RESTACK (the shared DataTable itself is
+ * untouched; only this page's wrapper opts in): line one is
+ * the name with its Tier beside it, the email gets a full
+ * line of its own and may wrap instead of cutting, and the
+ * remaining facts (account · groups · plan · joined) flow
+ * across the lines below in column order. The row tap that
+ * opens the account still works — the whole row is on
+ * screen. The header row hides at this width; the desktop
+ * true list is untouched above 640px. */
+@media (max-width: 640px) {
+  .tv-admin-users .tv-table-wrap {
+    overflow-x: visible;
+  }
+  .tv-admin-users .tv-table thead {
+    display: none;
+  }
+  .tv-admin-users .tv-table,
+  .tv-admin-users .tv-table tbody {
+    display: block;
+  }
+  .tv-admin-users .tv-table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 0.9rem;
+    padding: 0.45rem 0.25rem;
+  }
+  .tv-admin-users .tv-table td {
+    display: block;
+    border-bottom: none;
+    padding: 0.15rem 0.5rem;
+  }
+  /* Name (with its badges) + Tier on line one. */
+  .tv-admin-users .tv-table td:nth-child(1) {
+    order: 1;
+    flex: 1 1 55%;
+    font-weight: 600;
+  }
+  .tv-admin-users .tv-table td:nth-child(6) {
+    order: 2;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+  /* Email: a full line, wraps anywhere rather than cutting. */
+  .tv-admin-users .tv-table td:nth-child(2) {
+    order: 3;
+    flex: 1 1 100%;
+    overflow-wrap: anywhere;
+  }
+  .tv-admin-users .tv-table td:nth-child(3),
+  .tv-admin-users .tv-table td:nth-child(4),
+  .tv-admin-users .tv-table td:nth-child(5),
+  .tv-admin-users .tv-table td:nth-child(7) {
+    order: 4;
+  }
+  .tv-admin-users .tv-table td:nth-child(7) {
+    color: var(--text-muted);
+  }
+}
+
+/* 09b-F9: the teaser-video file input wears the site's button
+ * treatment on its chooser instead of the raw OS control — the
+ * button half is styled through ::file-selector-button (same
+ * accent, radius and weight family as the shared Button); the
+ * chosen file's name stays in the field's own text. */
+.tv-admin-file-input {
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  max-width: 100%;
+}
+.tv-admin-file-input::file-selector-button {
+  font: inherit;
+  font-weight: 600;
+  color: var(--btn-primary-text);
+  background: var(--accent);
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  padding: 0.45rem 0.9rem;
+  margin-right: var(--space-2);
+  cursor: pointer;
+}
+.tv-admin-file-input:disabled::file-selector-button {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* 09b-F12a: at phone width the Modules cards widened the whole
+ * page (measured 555px at a 390px viewport): the cards' Provides
+ * badges are nowrap pills up to ~420px, and as flex items their
+ * min-content sized the section's grid track. The grid and its
+ * children now give up their automatic minimum size, and inside
+ * the module cards a long badge may wrap its own text instead of
+ * forcing the card — and the page — wider than the screen. */
+.tv-admin-modules-grid,
+.tv-admin-modules-grid > * {
+  min-width: 0;
+}
+.tv-admin-module-badges .tv-badge,
+.tv-admin-module-badges .tv-badge-label {
+  white-space: normal;
+}

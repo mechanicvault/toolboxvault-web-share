@@ -1,0 +1,1143 @@
+/* Dealer directory + dealer company record styles. Split out of
+   theme/components.css in the 2026-10-26 CSS filing split;
+   imported by DealersPage and CompanyDetailPage so the rules ship
+   with the dealers chunks. Rule order preserved verbatim. */
+
+.tv-rec-stats {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.tv-rec-stat {
+  display: grid;
+  grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.tv-rec-stat dt {
+  color: var(--text-muted);
+}
+
+.tv-rec-stat dd {
+  margin: 0;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.tv-rec-item-meta {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tv-rec-item-right {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  display: inline-flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.tv-rec-item-right strong {
+  color: var(--text);
+}
+
+/* The dealer page's claim lists (dealer page pass,
+   2026-11-06): a true list — a header row and one row per
+   claim, facts spread in columns. The whole row is the link
+   into the claim; its hover/focus treatment is the ROWS
+   family of the site-wide hover system
+   (railsteel-panels.css), which names .tv-dealer-claim-row.
+   Header and rows share ONE fixed-track template (the
+   standing no-auto rule) inside a sideways scroll below the
+   table's min-width. */
+.tv-dealer-claim-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-dealer-claim-thead,
+.tv-dealer-claim-row {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1fr) minmax(105px, 0.45fr)
+    minmax(150px, 0.65fr) minmax(105px, 0.45fr);
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 660px;
+  padding: 0.55rem 0.25rem;
+}
+
+.tv-dealer-claim-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-dealer-claim-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+  color: inherit;
+  text-decoration: none;
+}
+
+.tv-dealer-claim-name {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.tv-dealer-claim-more {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-rec-actions {
+  display: inline-flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tv-dir-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.tv-dir-toggle {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: var(--space-3);
+}
+
+.tv-dir-name-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.tv-dir-name-link:hover,
+.tv-dir-name-link:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Truck accounts on the company page + the dealers status strip
+   (agent revision, 2026-10-31). The tab's list (dealer page
+   pass, 2026-11-06) is a true list in the directory table's
+   shape: a total line, a header row, one row per account —
+   header and rows share one fixed-track template inside a
+   sideways scroll below the table's min-width. */
+.tv-dealer-truck-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-dealer-truck-total {
+  margin: 0 0 0.4rem;
+  font-size: 1.02rem;
+}
+
+.tv-dealer-truck-thead,
+.tv-dealer-truck-row {
+  display: grid;
+  grid-template-columns:
+    minmax(160px, 1fr) minmax(115px, 0.5fr)
+    minmax(115px, 0.5fr) minmax(130px, 0.55fr)
+    minmax(348px, 0.85fr);
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 935px;
+  padding: 0.55rem 0.25rem;
+}
+
+.tv-dealer-truck-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-dealer-truck-party {
+  min-width: 0;
+}
+
+.tv-dealer-agent-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+.tv-dealer-agent-link:hover,
+.tv-dealer-agent-link:focus-visible {
+  text-decoration: underline;
+}
+
+.tv-dealer-truck-status {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* The row's action pair (Quick pay · View Account) sits side
+   by side on ONE line, always — nowrap is the point (owner,
+   2026-11-06: the wrapped stack read as two mismatched
+   buttons piled on each other). The track above is sized for
+   the pair; below the table's min-width the table scrolls
+   sideways rather than stacking them. */
+.tv-dealer-truck-actions {
+  display: inline-flex;
+  gap: 0.4rem;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+/* The pair never shrinks or wraps its labels: the track is
+   sized for their natural widths (348px), and a button that
+   can't fit says so by overflowing, never by crushing its
+   label onto two lines. */
+.tv-dealer-truck-actions .tv-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Stage 2 (2026-11-05): the header's truck stats line. */
+.tv-dealer-head-truck {
+  margin: 0.3rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.tv-dealer-head-truck-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Personal edits (2026-11-05): the subtle "your details" line in
+   the Company details panel — one muted line, no banner. */
+.tv-dealer-personal-note {
+  margin: 0.6rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* The Reset confirm modal's body copy sits flush, like the
+   delete confirm's. */
+.tv-dealer-reset-note {
+  margin: 0;
+}
+
+.tv-dealer-truck-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-dealer-truck-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+/* My dealer list (owner directive, 2026-10-31): the per-user
+   pick-list customization — directory rows with their hidden
+   state, and the user's own list entries. */
+
+/* Directory customize mode (owner correction, 2026-11-01):
+   Customize edits the directory IN PLACE, like Home's Edit
+   view — this bar (the Add menu) sits at the TOP of the
+   directory section while editing, and the tiles/rows
+   themselves carry the red ×. */
+.tv-dir-editbar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing);
+}
+
+.tv-dir-editbar .tv-add-wrap {
+  margin-top: 0;
+}
+
+/* The red × while its row change is in flight. */
+.tv-dir-row .tv-box-x:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+/* Directory LIST view (owner correction, 2026-11-01): a true
+   list — one dealer per row, facts spread in columns across
+   the row (dealer / preferred agent / phone / email /
+   website / next route day), with one more column for the ×
+   while customizing. Every track is a fixed minmax — never
+   `auto` — so the header row and the body rows share one
+   geometry (the standing alignment rule). The table scrolls
+   sideways on narrow screens rather than crushing the
+   columns — which needs the section (a grid item) to be
+   allowed to shrink below the table's min-content width. */
+.tv-dir-section {
+  min-width: 0;
+}
+
+/* The tab-panel stack (main tab layout, lane 6): the sections
+   a tab carries stack with the page's own rhythm — the old
+   stacked page's grid gap, kept. */
+.tv-dealers-tabstack {
+  display: grid;
+  gap: var(--spacing);
+}
+
+.tv-dir-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-dir-thead,
+.tv-dir-row {
+  display: grid;
+  grid-template-columns:
+    minmax(170px, 1.1fr) minmax(120px, 0.7fr)
+    minmax(130px, 0.75fr) minmax(170px, 1fr)
+    minmax(150px, 0.9fr) minmax(120px, 0.65fr);
+  gap: 0.4rem 1rem;
+  /* ONE vertical seat for every cell: the row's midline
+   * (owner fix, 2026-11-12). The name cell centers its text
+   * on the 56px logo tile; with align-items: start the fact
+   * cells top-aligned instead, so the preferred agent's name
+   * (and phone/email/website) floated ~20px above the dealer
+   * name's line in every row. Centering puts every cell's
+   * content on the same midline — rows with and without a
+   * preferred agent are structurally interchangeable. */
+  align-items: center;
+  min-width: 1020px;
+  padding: 0.55rem 0.25rem;
+}
+
+.tv-dir-table--editing .tv-dir-thead,
+.tv-dir-table--editing .tv-dir-row {
+  grid-template-columns:
+    minmax(170px, 1.1fr) minmax(120px, 0.7fr)
+    minmax(130px, 0.75fr) minmax(170px, 1fr)
+    minmax(150px, 0.9fr) minmax(120px, 0.65fr) 2rem;
+  min-width: 1068px;
+}
+
+.tv-dir-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-dir-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+  position: relative;
+}
+
+/* The whole row is the dealer's link (owner, 2026-11-06):
+   a real anchor laid over the row — the Home widget cover
+   pattern (.tv-widget-cover) — so any click on the row's
+   plain surface opens the dealer's page. The row's own
+   links (dealer name, agent, phone, email, website) are
+   raised above the cover and hit-test as THEMSELVES in
+   real clicks, never shadowed by the row link (the
+   cover-anchor lesson, 2026-11-02). In customize mode the
+   cover is not rendered at all and the rows never
+   navigate. The row's hover/focus treatment is the ROWS
+   family of the site-wide hover system (railsteel-panels
+   .css), which already names .tv-dir-row. */
+.tv-dir-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.tv-dir-row a:not(.tv-dir-cover),
+.tv-dir-row button {
+  position: relative;
+  z-index: 2;
+}
+
+.tv-dir-cell-name {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.tv-dir-cell-name-text {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  font-weight: 600;
+}
+
+/* One contact fact per cell (preferred agent / phone /
+   email / website / next route day). Long facts ellipsize
+   inside their track instead of stretching the row. No
+   padding-top nudge: the row's align-items: center is the
+   one vertical seat (owner fix, 2026-11-12). */
+.tv-dir-cell-fact {
+  min-width: 0;
+}
+
+.tv-dir-fact-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The row's phone number: the same accent treatment the
+   facts stack used, minus the label and the copy button. */
+.tv-dir-phone {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tv-dir-phone:hover,
+.tv-dir-phone:focus-visible {
+  text-decoration: underline;
+}
+
+.tv-dir-none {
+  color: var(--text-muted);
+}
+
+/* The customize × cell carries no top nudge either — the
+   row's centered seat places it (owner fix, 2026-11-12). */
+
+/* My companies LIST view (owner list standard, 2026-11-02):
+   the DirectoryTable pattern with one column per fact the
+   private-company panels carry (company / phone / email /
+   website / address / actions). Like the directory table it
+   scrolls sideways on narrow screens rather than crushing
+   the columns; the section already carries min-width: 0 via
+   .tv-dir-section. Notes prose is NOT a column — it lives on
+   the company's own page, so rows stay in the clean band. */
+.tv-myco-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-myco-thead,
+.tv-myco-row {
+  display: grid;
+  /* The name track is sized for what the cell actually
+   * holds — the fixed 132px logo tile + gap + a readable
+   * measure of name text. The old 170px floor left the
+   * text ~27px: the name span (an inline-flex borrowed
+   * from the directory cell) could not shrink below its
+   * longest word / the retailer badge, so it overflowed
+   * the cell's right edge and painted across the phone
+   * column, while the phone facts crushed into three
+   * lines per phone and the two cells' lines interleaved
+   * (coordinator find, 2026-11-12; the phone track's
+   * floor rises with it so label + number + copy stack
+   * in two lines, not three). */
+  grid-template-columns:
+    minmax(300px, 1.25fr) minmax(190px, 0.95fr)
+    minmax(170px, 1fr) minmax(140px, 0.85fr)
+    minmax(170px, 1fr) 22rem;
+  gap: 0.4rem 1rem;
+  /* Same one-seat rule as the directory grid above: the
+   * name cell centers on the logo tile, so the facts center
+   * on the row's midline too (owner fix, 2026-11-12). */
+  align-items: center;
+  min-width: 1410px;
+  padding: 0.55rem 0.25rem;
+}
+
+.tv-myco-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-myco-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-myco-row > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* The My Companies name cell is its OWN cell, not the
+ * directory's (.tv-dir-cell-name): the text stack is a
+ * column — the name wraps inside its own measure, the
+ * kind badge sits on its own line under the name — and
+ * the stack may shrink (min-width: 0, flex: 1), so the
+ * text wraps within the cell instead of the cell's
+ * content painting over the phone column. Owning the
+ * cell also keeps the directory restack's `order` rule
+ * (max-width: 700px below) off this grid: as a grid item
+ * the borrowed cell took order 1 and was exiled to the
+ * last (actions) track at phone widths, leaving the
+ * phone facts under the COMPANY header (2026-11-12). */
+.tv-myco-cell-name {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.tv-myco-cell-name-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.tv-myco-phones {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.tv-myco-fact {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.tv-fact-label {
+  color: var(--text-muted);
+}
+
+.tv-fact-link {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Inside the My Companies table a fact link is a bare
+ * inline link (a phone number, an email, a website) —
+ * not the header-stats label/value door the shared
+ * .tv-fact-link class describes in surfaces.css. The
+ * door's flex column forced every phone number onto its
+ * own line, and its negative margin (-0.55rem) yanked
+ * the number 8.8px left of its label and copy button,
+ * out of the fact's stack. In this table the link flows
+ * inline like the text it is. (The directory's email
+ * link keeps the door class — its .tv-dir-fact-text
+ * block seat was measured and settled 2026-11-12.) */
+.tv-myco-table .tv-fact-link {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.tv-myco-address {
+  white-space: pre-line;
+  font-size: 0.92rem;
+}
+
+.tv-myco-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Edit-mode toolbar (owner, 2026-11-01 — Home Edit view's
+   pattern): Add menu at the top, Restore beside it, the
+   Edit/Done control at the row's right edge. */
+.tv-dlist-toolbar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.tv-dlist-toolbar-spacer {
+  flex: 1;
+}
+
+.tv-dlist-toolbar .tv-add-wrap {
+  margin-top: 0;
+}
+
+/* The red × while its row's change is in flight. */
+.tv-dlist-row .tv-box-x:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.tv-dlist-rows {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.tv-dlist-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-dlist-main {
+  flex: 1 1 240px;
+  min-width: 0;
+  margin: 0;
+}
+
+
+.tv-dlist-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tv-dlist-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tv-dlist-phone-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Company page header + Actions menu (owner, 2026-10-31): the
+   header mirrors the item pages — logo thumbnail at the left
+   (clickable into a larger view), the name and headline facts
+   beside it, one Actions dropdown at the top-right. */
+.tv-dealer-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.tv-dealer-head-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.tv-dealer-head-name {
+  margin: 0 0 0.45rem;
+  font-size: 1.35rem;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-dealer-head-actions {
+  margin-left: auto;
+}
+
+.tv-dealer-logo-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--radius);
+  display: block;
+}
+
+.tv-dealer-logo-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tv-dealer-logo-large {
+  display: flex;
+  justify-content: center;
+}
+
+.tv-dealer-actions-caret {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.tv-dealer-menu-sep {
+  border-top: 1px solid var(--border);
+  margin: 0.3rem 0;
+}
+
+/* -- Agent codes + takeover (2026-11-03) ------------------------
+   The owner's per-agent area on the company page (record head,
+   the code guidance box, pending takeover asks), the claim-a-
+   record card on the Dealers page, and the Open Claims tool
+   picker. Class-styled only — no inline styles (ratchet). */
+
+.tv-agents-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.tv-agent-card {
+  border-top: 1px solid var(--border);
+  padding-top: 0.9rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.tv-agents-list > .tv-agent-card:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+
+.tv-agent-name {
+  margin: 0;
+}
+
+.tv-agent-meta {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Stage 2 (2026-11-05): missed payments on the agent record's
+   truck slot read as missed, in the danger tone. */
+.tv-agent-missed {
+  color: var(--danger, #c0392b);
+  font-weight: 600;
+}
+
+/* Find local Agent (stage 3, 2026-11-05): the shared ZIP +
+   radius search panel — form row, results summary, and the
+   true-list cells that need inner layout. */
+.tv-find-local-intro {
+  color: var(--text-muted);
+  margin-top: 0;
+}
+
+.tv-find-local-form {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.tv-find-local-field-zip {
+  flex: 0 1 11rem;
+  min-width: 8rem;
+}
+
+.tv-find-local-field-radius {
+  flex: 0 1 12rem;
+  min-width: 9rem;
+}
+
+.tv-find-local-field-custom {
+  flex: 0 1 8rem;
+  min-width: 6rem;
+}
+
+.tv-find-local-error {
+  margin-top: var(--space-3);
+}
+
+.tv-find-local-results {
+  margin-top: var(--space-4);
+}
+
+.tv-find-local-summary {
+  color: var(--text-muted);
+  margin-top: 0;
+}
+
+.tv-find-local-agent {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.tv-find-local-photo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.tv-find-local-name {
+  font-weight: 600;
+}
+
+.tv-find-local-companies {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.tv-find-local-company {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-find-local-state {
+  display: inline-flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.tv-find-local-contact {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.tv-find-local-contact a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tv-agent-notes {
+  margin: 0;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+}
+
+.tv-agent-codebox {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem 0.9rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.tv-agent-codebox h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.tv-agent-coderow {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-agent-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.tv-agent-steps {
+  margin: 0;
+  padding-left: 1.3rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.tv-agent-message {
+  margin: 0;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+}
+
+.tv-agent-req {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 0.6rem;
+}
+
+.tv-agent-req p {
+  margin: 0;
+}
+
+.tv-row-actions {
+  display: inline-flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tv-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Agent card import (agent card import lane, 2026-11-07): the
+   preview modal is a TRUE list like the borrower import's —
+   one card per row under a header row: pick · name · contact
+   · dealer (a select: the card's ORG suggests, the owner
+   confirms or changes). The table scrolls sideways inside the
+   modal on narrow screens rather than crushing columns. */
+.tv-agent-import {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.tv-agent-import-intro {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.tv-agent-import-error {
+  margin: 0;
+  color: var(--danger, #c0392b);
+  font-weight: 600;
+}
+
+.tv-agent-import-errors {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text-muted);
+  display: grid;
+  gap: 0.25rem;
+}
+
+.tv-agent-import-file {
+  display: none;
+}
+
+.tv-agent-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-agent-thead,
+.tv-agent-row {
+  display: grid;
+  grid-template-columns:
+    2.75rem minmax(130px, 1fr) minmax(130px, 1fr) minmax(170px, 1.2fr);
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 640px;
+  padding: 0.55rem 0.25rem;
+}
+
+.tv-agent-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-agent-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-agent-cell-sub {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin-top: 0.2rem;
+}
+
+.tv-claimcode-form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tv-claimcode-form .tv-claimcode-input {
+  flex: 1 1 220px;
+}
+
+.tv-picker-list {
+  display: grid;
+  gap: 0.4rem;
+  max-height: 46vh;
+  overflow-y: auto;
+}
+
+.tv-picker-row {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.6rem;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.tv-picker-row:hover {
+  border-color: var(--accent);
+}
+
+.tv-picker-row-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  gap: 0.1rem;
+}
+
+.tv-picker-search {
+  margin-bottom: 0.7rem;
+}
+
+.tv-claims-tabbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.7rem;
+}
+
+.tv-agent-code-sm {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+/* -- The roster + agent record (stage 1, 2026-11-04) ------------
+   The Agents tab's true list (the shared DataTable) and the
+   record view it opens: name cell badges, the record's fact
+   grid, its contact action row, the switch prompt's per-claim
+   choices, and the delete/disconnect zone. Class-styled only. */
+
+.tv-roster-namecell {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* The selected agent's contact card under the roster list
+   (dealer page pass, 2026-11-06): the list stays on the page
+   above it; the card is the full record in its own Panel. */
+.tv-roster-card {
+  margin-top: 1.1rem;
+}
+
+/* The roster's two labeled sections (owner, 2026-11-04):
+   "Your agents" over the dealer's "Listed agents" — the
+   heading treatment matches the record facts' stencil labels. */
+.tv-roster-group + .tv-roster-group {
+  margin-top: 1.15rem;
+}
+
+.tv-roster-group-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.tv-record-contact {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.tv-record-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.7rem 1.2rem;
+  margin: 0;
+}
+
+.tv-record-facts dt {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tv-record-facts dd {
+  margin: 0.15rem 0 0;
+}
+
+.tv-record-danger {
+  border-top: 1px solid var(--border);
+  padding-top: 0.8rem;
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+
+/* FIX4 phone tables (2026-11-11, sweep 03-F3): the directory
+ * kept its 1020px desktop grid in a sideways scroll with no
+ * cue, so at phone width only the logo + name showed and the
+ * phone numbers — the facts the directory exists for — sat
+ * off the right edge. At phone width the row RESTACKS: line
+ * one is the dealer (logo + name) with its PHONE beside it,
+ * tappable as always; the remaining facts (preferred agent ·
+ * email · website · next route day) spread across the line
+ * below in column order. In customize mode the red × rides
+ * line one beside the name instead, and the phone drops to
+ * the facts line with the rest. The header row hides at
+ * this width; the desktop true list is untouched above
+ * 700px. */
+@media (max-width: 700px) {
+  .tv-dir-table {
+    overflow-x: visible;
+  }
+  .tv-dir-thead {
+    display: none;
+  }
+  .tv-dir-row,
+  .tv-dir-table--editing .tv-dir-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    min-width: 0;
+    gap: 0.35rem 0.9rem;
+  }
+  .tv-dir-row > * {
+    order: 3;
+    min-width: 0;
+  }
+  .tv-dir-cell-name {
+    order: 1;
+    flex: 1 1 52%;
+  }
+  .tv-dir-cell-phone {
+    order: 2;
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding-top: 0;
+  }
+  .tv-dir-table--editing .tv-dir-cell-phone {
+    order: 3;
+    flex: 0 1 auto;
+    margin-left: 0;
+  }
+  .tv-dir-cell-x {
+    order: 2;
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding-top: 0;
+  }
+  .tv-dir-fact-text {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+

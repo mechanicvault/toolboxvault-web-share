@@ -1,0 +1,1015 @@
+/* Steel theme family — TWO shipping variants, one machinery.
+ *
+ * THE DESIGN LANGUAGE (owner's app login reference is the iron-clad
+ * source): blackened worn steel, diamond plate fields, bolted plates,
+ * painted-metal accent plates with under-glow, stencil caps. STRUCTURE
+ * = bomb-shelter door; ELECTRONICS = precision diagnostic instrument.
+ * Art never contains light: every glow is a live --accent element
+ * (tokens.css --glow-dot-*), so the color wheel re-skins every
+ * Steel variant live.
+ *
+ * ORGANIZATION (owner restructure 2026-10-17 — the nine-variant
+ * showcase retired; Steel 4 "Worn Workhorse" won and became Steel):
+ *  - THIS file: [data-theme^="steel"] SHARED defaults (the silver
+ *    material values + all geometry + the component-art construction
+ *    used by both variants). The prefix selector covers "steel" and
+ *    "steellight" alike.
+ *  - steel4.css: the [data-theme="steel"] token block (steelworn2
+ *    kit — the refined Steel 4) PLUS the chamfered-frame construction
+ *    scoped to steel + steellight (identical geometry; the kit and
+ *    ink tokens are what differ).
+ *  - steellight.css: the [data-theme="steellight"] token block
+ *    (steelworn3 kit — steelworn2 lifted into the silver range, dark
+ *    ink; see that file for the measured contrast pairs).
+ *  - Kit image sources are named ONLY through the --pk-* / --np-*
+ *    variables; variant swaps are pure variable assignment.
+ *  - The retired variants' files (steel1/2/3/5/7/8/9.css and the old
+ *    in-file "steel" REDO block) are gone from the import graph; the
+ *    variant files stay on disk unimported.
+ *
+ * KITS: assets/steelworn2/ (Steel: worn kit, gain-lifted),
+ * assets/steelworn3/ (Steel Light: steelworn2 lifted into silver),
+ * assets/steelworn/ + assets/steelapp/ (derivation sources).
+ * See assets/steel9/SLICES.md for every slice rect and derivation.
+ */
+
+[data-theme^="steel"] {
+  --bg: #07080a;
+  --texture:
+    radial-gradient(560px 110px at 50% 108%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%),
+    linear-gradient(180deg, rgb(13 15 18 / 0.5) 0%, rgb(9 10 13 / 0.28) 55%, rgb(5 6 8 / 0.55) 100%),
+    url("../assets/steel9/grain.webp");
+  --surface: #12151a;
+  --surface-raised: #1b1f26;
+  --panel: #14171d;
+  --texture-panel:
+    linear-gradient(180deg, rgb(255 255 255 / 0.045), rgb(0 0 0 / 0.14)),
+    url("../assets/steel9/grain.webp");
+  /* Grain stock image for the flat component surfaces (tabs, badges,
+   * danger buttons, alerts, input wells). Variants swap the stock;
+   * construction references ONLY this variable. */
+  --grain-img: url("../assets/steel9/grain.webp");
+
+  --edge: #333842;
+  --edge-strong: #5d6572;
+  /* Machined bevel (supplement to the vector frame): bright top catch,
+   * dark undercut, faint side catches — for the surfaces the frame does
+   * not wrap (icon buttons, alerts, framed photos, inputs). */
+  --bevel:
+    inset 0 1px 0 rgb(255 255 255 / 0.17),
+    inset 0 -1px 0 rgb(0 0 0 / 0.65),
+    inset 1px 0 0 rgb(255 255 255 / 0.05),
+    inset -1px 0 0 rgb(0 0 0 / 0.45);
+  /* Vector machined frame (border-image shorthand): corners are fixed
+   * brackets with screw heads; rails stretch. See assets/frame.svg. */
+  --frame: url("../assets/frame.svg") 32 / 18px / 0 stretch;
+  --shadow: 0 3px 10px rgb(0 0 0 / 0.65);
+  --shadow-lg: 0 20px 48px rgb(0 0 0 / 0.75), 0 3px 12px rgb(0 0 0 / 0.6);
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+
+  --text: #e2e6ec;
+  --text-muted: #8f97a3;
+  --text-on-accent: #0b0d10;
+  --placeholder: #59616d;
+
+  --success: #3ecf6e;
+  --success-soft: rgb(62 207 110 / 0.14);
+  --warning: #e8b93e;
+  --warning-soft: rgb(232 185 62 / 0.14);
+  --danger: #e56a6a;
+  --danger-soft: rgb(229 106 106 / 0.16);
+
+  /* Indicators burn bright in steel. --glow itself is re-derived inline
+   * by ThemeContext, so steel's extra bloom lives in these two tokens. */
+  --indicator-shadow:
+    0 0 6px var(--accent),
+    0 0 16px color-mix(in srgb, var(--accent) 55%, transparent);
+  /* Accent as MATERIAL (owner's app login reference): primary actions
+   * are WORN PAINTED-METAL PLATES in the accent color, with a strong
+   * UNDER-GLOW: light spilling from the plate's bottom edge onto the
+   * surface below. One stack, repeated exactly (primary buttons,
+   * active tab, active nav item, brand mark, current page).
+   * QA RULE (2026-10-17 live review): the plate color derives from the
+   * accent HUE with controlled saturation/lightness — color-mix steps
+   * pin the gradient into a painted-metal range (lit top edge, a wide
+   * SATURATED body at the pure accent, deep worn base) so the plate
+   * reads as the accent color at ANY wheel position, vivid orange
+   * included: never a dark plate with a tinted label. */
+  --accent-plate-bg:
+    radial-gradient(120% 90% at 18% 0%, rgb(255 255 255 / 0.30), transparent 55%),
+    radial-gradient(90% 120% at 85% 115%, rgb(0 0 0 / 0.26), transparent 55%),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 58%, #ffffff) 0%,
+      color-mix(in srgb, var(--accent) 84%, #ffffff) 34%,
+      var(--accent-plate-mid, var(--accent)) 58%,
+      color-mix(in srgb, var(--accent) 84%, #000000) 84%,
+      color-mix(in srgb, var(--accent) 66%, #000000) 100%);
+  --accent-plate-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    inset 0 -2px 0 rgb(0 0 0 / 0.35),
+    0 10px 22px -8px color-mix(in srgb, var(--accent) 62%, transparent),
+    0 4px 10px -2px rgb(0 0 0 / 0.5);
+  --btn-primary-shadow: var(--accent-plate-shadow);
+  --panel-glow:
+    radial-gradient(110px 18px at 50% -4px, color-mix(in srgb, var(--accent) 50%, transparent), transparent 70%);
+  /* Grayscale wear texture laid over the accent plate on primary
+   * buttons (overlay blend: follows the wheel, shows the wear).
+   * Variants that want plate art set the image + opacity. */
+  --btn-plate-art: none;
+  --btn-plate-art-opacity: 0;
+
+  --input-bg: #0b0d10;
+  --input-edge: #454c57;
+  /* Machined recess: the field is milled INTO the panel. */
+  --input-shadow:
+    inset 0 2px 5px rgb(0 0 0 / 0.65),
+    inset 0 -1px 0 rgb(255 255 255 / 0.06);
+  /* Optional recessed-well ART for inputs (the app reference's milled
+   * trough strip): three pieces, caps + stretch. Variants without the
+   * art leave these `none` and the grain well shows instead. */
+  --in-l: none;
+  --in-m: none;
+  --in-r: none;
+  --in-cap-w: 0px;
+  --input-pad-l: 1.05rem;
+  /* Secondary buttons are nameplate plates (the generated np-mid
+   * material, channels and all) with dark labels — the same stock as
+   * table headers and the app header plate. */
+  --btn-secondary-bg:
+    var(--np-mid) center / 100% 100% no-repeat,
+    linear-gradient(180deg, #a7adb5, #83898f);
+  /* Primary CTA = the worn accent plate, with a real bolt seated at
+   * each end (owner's brand language: bolts belong on hero/primary
+   * elements) and a dark near-black stencil label. The plate color
+   * follows --accent, so the wheel re-paints it live. */
+  --btn-primary-bg:
+    url("../assets/screw.svg") left 7px center / 11px 11px no-repeat,
+    url("../assets/screw.svg") right 7px center / 11px 11px no-repeat,
+    var(--accent-plate-bg);
+  --btn-primary-hover-bg:
+    url("../assets/screw.svg") left 7px center / 11px 11px no-repeat,
+    url("../assets/screw.svg") right 7px center / 11px 11px no-repeat,
+    radial-gradient(120% 90% at 18% 0%, rgb(255 255 255 / 0.38), transparent 55%),
+    radial-gradient(90% 120% at 85% 115%, rgb(0 0 0 / 0.22), transparent 55%),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 64%, #ffffff) 0%,
+      color-mix(in srgb, var(--accent) 90%, #ffffff) 38%,
+      var(--accent) 62%,
+      color-mix(in srgb, var(--accent) 88%, #000000) 86%,
+      color-mix(in srgb, var(--accent) 72%, #000000) 100%);
+  --btn-primary-text: #17110a;
+
+  /* Brushed chrome nameplate (panel headers, plate strips): vector
+   * chrome stock with a real screw head seated at each end, exactly
+   * like the mockup's plates. Fallback gradient under the asset. */
+  --plate:
+    url("../assets/screw.svg") left 8px center / 13px 13px no-repeat,
+    url("../assets/screw.svg") right 8px center / 13px 13px no-repeat,
+    url("../assets/brushed-chrome.svg") center / 100% 100% no-repeat,
+    linear-gradient(180deg, #bcc2ca 0%, #9299a2 42%, #6e747c 54%, #878e96 82%, #a7adb5 100%);
+  --panel-header-bg: var(--plate);
+  --panel-header-text: #14161a;
+  --panel-header-edge: #08090b;
+  /* Engraved into the chrome: light lower lip, dark upper cut. */
+  --panel-header-text-shadow:
+    0 1px 0 rgb(255 255 255 / 0.42),
+    0 -1px 1px rgb(0 0 0 / 0.28);
+  /* Panel corner screws live in the vector frame (and plate-end
+   * screws in --plate), so the legacy rivet layer stands down. */
+  --rivets: none;
+  /* Ink colors for content sitting ON plate art (header band, name-
+   * plate pieces). Bright-chrome variants engrave DARK ink; the
+   * blackened variants flip these to light ink with a drop shadow.
+   * Construction never hardcodes plate ink — it reads these. */
+  --header-ink: #14161a;
+  --header-ink-shadow: var(--panel-header-text-shadow);
+  --header-hover-bg: rgb(0 0 0 / 0.1);
+  --btn-secondary-ink: #17191d;
+  --btn-secondary-ink-shadow: 0 1px 0 rgb(255 255 255 / 0.35);
+  --modal-close-ink: #14161a;
+  --modal-close-hover-ink: #000000;
+  --modal-close-hover-bg: rgb(0 0 0 / 0.1);
+
+  /* Table headers wear the generated nameplate material with
+   * engraved dark labels — the panel-header treatment, repeated. */
+  --table-header-bg:
+    var(--np-mid) center / 100% 100% no-repeat,
+    linear-gradient(180deg, #a7adb5, #767c84);
+  --table-header-text: #14161a;
+  --table-row-hover: #1e232b;
+  --table-row-alt: rgb(255 255 255 / 0.018);
+  --table-edge: #2c313a;
+
+  /* The app header is a PLATE mounted on the page field (foundation
+   * reset 2026-10-17): the nameplate-mid plate stock spans the full
+   * width, finished by chamfered end caps cut from the same stock
+   * (natural size, real alpha silhouette — assets np4-cap-l/r per
+   * kit) with a bolt seated on each cap. The retired construction
+   * stretched the near-black nameplate CAP slices (mean luminance
+   * ~25 against the stock's ~71) across the ends of a full-bleed
+   * bar — those were the "large black strips" the owner rejected.
+   * No layer in this stack can leave a dark void at the ends: the
+   * stock underlies everything, edge to edge. */
+  --header-bg:
+    url("../assets/screw.svg") left 15px center / 13px 13px no-repeat,
+    url("../assets/screw.svg") right 15px center / 13px 13px no-repeat,
+    var(--np-cap-l) left center / auto 100% no-repeat,
+    var(--np-cap-r) right center / auto 100% no-repeat,
+    var(--np-mid) center / 100% 100% no-repeat,
+    linear-gradient(180deg, #3a3f46, #26292e);
+  /* Chamfered header end caps (PIL-cut from each kit's np-mid stock;
+   * variants re-point these). Display width is intrinsic: cap art is
+   * 176x220, so at plate height the ends render ~48px wide. */
+  --np-cap-l: url("../assets/steelworn2/np4-cap-l.webp");
+  --np-cap-r: url("../assets/steelworn2/np4-cap-r.webp");
+  /* Page field (foundation reset): the owner's background design —
+   * fixed layer behind everything (construction below). --field-veil
+   * is a constant-shape top layer so both variants share one stack:
+   * Steel wears a fully transparent veil (measured: the art's calm
+   * center, mean luminance ~34-36, needs none); Steel Light wears a
+   * white veil that lifts the same art into its palette. */
+  --field-veil: linear-gradient(180deg, rgb(0 0 0 / 0), rgb(0 0 0 / 0));
+  --field-img-p: url("../assets/fielddesign/field-portrait.webp");
+  --field-img-l: url("../assets/fielddesign/field-landscape.webp");
+  --header-edge: #050607;
+  --header-shadow: 0 2px 10px rgb(0 0 0 / 0.6), inset 0 -1px 0 rgb(255 255 255 / 0.07);
+  --sidebar-bg: #0e1013;
+  /* Nav items are nameplate-material plates under a gunmetal tint
+   * (the np-mid channels and brush show through); the ACTIVE item is
+   * the worn accent plate, like the reference's active tab. */
+  --nav-item-bg:
+    linear-gradient(180deg, rgb(13 15 19 / 0.62), rgb(13 15 19 / 0.76)),
+    var(--np-mid) center / 100% 100% no-repeat,
+    linear-gradient(180deg, #3a3f46, #26292e);
+  --nav-item-hover-bg:
+    linear-gradient(180deg, rgb(13 15 19 / 0.50), rgb(13 15 19 / 0.66)),
+    var(--np-mid) center / 100% 100% no-repeat,
+    linear-gradient(180deg, #454b54, #2e3238);
+  --nav-active-bg: var(--accent-plate-bg);
+  --nav-active-text: #17110a;
+  --nav-active-shadow: var(--accent-plate-shadow);
+
+  --overlay: rgb(0 0 0 / 0.72);
+  --scrollbar-thumb: #4a515b;
+
+  /* ---- Component art kit geometry (pk-* / np-*) ----
+   * THIN WALLS (owner rule): rendered frame rails stay <= 10px on
+   * desktop and thinner on small screens — interior space is the
+   * priority, and the masters' thick proportions do NOT carry over.
+   * Every dimension is a clamp() (the same fluid trick used across
+   * the shell geometry), so panels stay fluid-width at every
+   * viewport: corners fixed, edges stretch, art only ever
+   * DOWNscales into its box. */
+  --pk-sw: clamp(6px, 0.9vw, 10px);   /* frame side rail */
+  --pk-hh: clamp(28px, 3vw, 34px);    /* art header row height */
+  --pk-bh: clamp(7px, 1vw, 10px);     /* bottom rail */
+  --pk-th: clamp(4px, 0.6vw, 7px);    /* headerless top rail */
+  --pk-notch-w: clamp(48px, 8vw, 76px); /* bottom center piece */
+  /* Header-inner content inset: clears the end cap + bolt so the
+   * brand and controls sit on the plate field between the caps. */
+  --np-cap-w: 54px;
+  /* Header glow-dot seats — RETIRED (foundation reset): the dots
+   * were seated in the old cap art and are gone with it. The tokens
+   * remain defined by the variant blocks but nothing reads them. */
+  --np-dot-size: 15px;
+  --np-dot-lf: 0.6094;
+  --np-dot-rf: 0.6156;
+
+  /* Kit image sources — the ONLY place kit files are named (silver
+   * kit defaults; variants re-point these variables). */
+  --pk-hl: url("../assets/steel9/pk-hl.webp");
+  --pk-hm: url("../assets/steel9/pk-hm.webp");
+  --pk-hr: url("../assets/steel9/pk-hr.webp");
+  --pk-tl: url("../assets/steel9/pk-tl.webp");
+  --pk-tm: url("../assets/steel9/pk-tm.webp");
+  --pk-tr: url("../assets/steel9/pk-tr.webp");
+  --pk-el: url("../assets/steel9/pk-el.webp");
+  --pk-er: url("../assets/steel9/pk-er.webp");
+  --pk-bl: url("../assets/steel9/pk-bl.webp");
+  --pk-br: url("../assets/steel9/pk-br.webp");
+  --pk-blrun: url("../assets/steel9/pk-blrun.webp");
+  --pk-brun: url("../assets/steel9/pk-brun.webp");
+  --pk-bm: url("../assets/steel9/pk-bm.webp");
+  --np-l: url("../assets/steel9/np-l.webp");
+  --np-mid: url("../assets/steel9/np-mid.webp");
+  --np-r: url("../assets/steel9/np-r.webp");
+
+  /* Condensed industrial display stack (no webfont import): falls
+   * back through the platform condensed faces to the base stack. */
+  /* Deep audit F3-11: the old stack named only Windows/Android
+   * faces, so on Apple devices Steel headings silently fell back
+   * to the generic system sans and lost the condensed stencil
+   * character. HelveticaNeue-CondensedBold ships with iOS/macOS
+   * and carries the same condensed display voice; the Windows /
+   * Android faces stay ahead of it, and the generic stack is the
+   * last resort. No webfont download added. */
+  --font-display: "Arial Narrow", "HelveticaNeue-CondensedBold", "Roboto Condensed", "Liberation Sans Narrow", var(--font);
+}
+
+/* ==================================================================
+ * COMPONENT ART CONSTRUCTION (shared by ALL Steel variants)
+ * Panels / modals / menus are BUILT from the sliced panel master on a
+ * ::before layer stack (header row in 3 pieces, corners, edges, and a
+ * 3-piece bottom rail with the center piece fixed); content is inset
+ * by exactly the frame geometry. The header element itself goes
+ * transparent — the title text overlays the art with the variant's
+ * ink treatment. Panels WITHOUT a header get the thin top rail
+ * instead of the band. The accent-edge variant keeps its identity
+ * (glowing accent stripe, no art kit).
+ * ================================================================== */
+
+[data-theme^="steel"] .tv-panel {
+  border-image: none;
+  border-color: #05060a;
+  border-radius: 3px;
+  padding: calc(var(--pk-th) + 0.95rem) calc(var(--pk-sw) + 0.95rem)
+    calc(var(--pk-bh) + 0.95rem);
+}
+[data-theme^="steel"] .tv-panel:has(> .tv-panel-header) {
+  padding-top: 0;
+}
+[data-theme^="steel"] .tv-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  background-repeat: no-repeat;
+  background-image:
+    var(--pk-tl), var(--pk-tr),
+    var(--pk-tm), var(--pk-el),
+    var(--pk-er), var(--pk-bl),
+    var(--pk-br), var(--pk-blrun),
+    var(--pk-brun), var(--pk-bm);
+  background-position:
+    left top, right top, left var(--pk-sw) top,
+    left top var(--pk-th), right top var(--pk-th),
+    left bottom, right bottom, left var(--pk-sw) bottom,
+    right var(--pk-sw) bottom, center bottom;
+  background-size:
+    var(--pk-sw) var(--pk-th), var(--pk-sw) var(--pk-th),
+    calc(100% - 2 * var(--pk-sw)) var(--pk-th),
+    var(--pk-sw) calc(100% - var(--pk-th) - var(--pk-bh)),
+    var(--pk-sw) calc(100% - var(--pk-th) - var(--pk-bh)),
+    var(--pk-sw) var(--pk-bh), var(--pk-sw) var(--pk-bh),
+    calc(50% - var(--pk-notch-w) / 2 - var(--pk-sw)) var(--pk-bh),
+    calc(50% - var(--pk-notch-w) / 2 - var(--pk-sw)) var(--pk-bh),
+    var(--pk-notch-w) var(--pk-bh);
+}
+/* With a header, the full band replaces the thin top rail. */
+[data-theme^="steel"] .tv-panel:has(> .tv-panel-header)::before {
+  background-image:
+    var(--pk-hl), var(--pk-hr),
+    var(--pk-hm), var(--pk-el),
+    var(--pk-er), var(--pk-bl),
+    var(--pk-br), var(--pk-blrun),
+    var(--pk-brun), var(--pk-bm);
+  background-position:
+    left top, right top, left var(--pk-sw) top,
+    left top var(--pk-hh), right top var(--pk-hh),
+    left bottom, right bottom, left var(--pk-sw) bottom,
+    right var(--pk-sw) bottom, center bottom;
+  background-size:
+    var(--pk-sw) var(--pk-hh), var(--pk-sw) var(--pk-hh),
+    calc(100% - 2 * var(--pk-sw)) var(--pk-hh),
+    var(--pk-sw) calc(100% - var(--pk-hh) - var(--pk-bh)),
+    var(--pk-sw) calc(100% - var(--pk-hh) - var(--pk-bh)),
+    var(--pk-sw) var(--pk-bh), var(--pk-sw) var(--pk-bh),
+    calc(50% - var(--pk-notch-w) / 2 - var(--pk-sw)) var(--pk-bh),
+    calc(50% - var(--pk-notch-w) / 2 - var(--pk-sw)) var(--pk-bh),
+    var(--pk-notch-w) var(--pk-bh);
+}
+/* The accent top bloom rides OVER the art (light sits on surfaces). */
+[data-theme^="steel"] .tv-panel::after {
+  z-index: 2;
+}
+/* (Selector carries .tv-panel as well so it outranks the plate
+ * variant's header rule in surfaces.css, which loads later.) */
+[data-theme^="steel"] .tv-panel .tv-panel-header {
+  position: relative;
+  z-index: 1;
+  height: var(--pk-hh);
+  margin: 0 calc(-1 * (var(--pk-sw) + 0.95rem)) 0.95rem;
+  padding: 0 calc(var(--pk-sw) + 1.15rem);
+  background: transparent;
+  border-bottom: none;
+  border-radius: 0;
+}
+/* Condensed industrial caps on the plate band (owner's app reference
+ * type). Applies to every Steel panel title. */
+[data-theme^="steel"] .tv-panel-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 800;
+  font-size: var(--font-size-base);
+  text-shadow: var(--panel-header-text-shadow);
+}
+/* Panel-header indicator dots — REMOVED (foundation reset
+ * 2026-10-17): a lit dot reads as a bulb stuck on the surface. Panel
+ * illumination is now a soft interior wash + a lit hairline under
+ * the header band (construction in steel4.css, shared with Steel
+ * Light). No ::before dot is painted on any panel or modal title. */
+/* Accent-edge panels: no art kit — the glowing stripe is the design. */
+/* F1-21: these rules are for the CLASSIC .tv-panel rendering
+ * (Steel Light). Unscoped, they also hit Steel's VaultPanel
+ * section (same variant class), adding outer padding + a second
+ * shadow frame — the Costs panel's ~17px offset/double frame.
+ * VaultPanel seats its accent stripe inside the well already
+ * (vaultpanel.css), so it needs none of this. */
+[data-theme^="steel"] .tv-panel.tv-panel--accent-edge {
+  padding: var(--spacing);
+  box-shadow: var(--shadow), var(--bevel),
+    -8px 0 22px -8px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+[data-theme^="steel"] .tv-panel.tv-panel--accent-edge::before {
+  background: none;
+}
+[data-theme^="steel"] .tv-panel.tv-panel--accent-edge .tv-panel-header {
+  height: auto;
+  margin: 0 0 0.95rem;
+  padding: 0.7rem 0.2rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--edge);
+}
+[data-theme^="steel"] .tv-panel.tv-panel--accent-edge .tv-panel-title {
+  text-shadow: none;
+}
+/* Auth (login-class) panel: real bolts at the four frame corners —
+ * hero-element brand language, existing screw asset, this panel only. */
+[data-theme^="steel"] .tv-auth-panel::after {
+  background:
+    url("../assets/screw.svg") left 2px top 9px / 11px 11px no-repeat,
+    url("../assets/screw.svg") right 2px top 9px / 11px 11px no-repeat,
+    url("../assets/screw.svg") left 2px bottom 2px / 11px 11px no-repeat,
+    url("../assets/screw.svg") right 2px bottom 2px / 11px 11px no-repeat,
+    var(--panel-glow);
+}
+
+/* ------------------------------ Modal ------------------------------ */
+
+[data-theme^="steel"] .tv-modal {
+  position: relative;
+  border-image: none;
+  border-color: #05060a;
+  border-radius: 3px;
+}
+[data-theme^="steel"] .tv-modal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-image:
+    var(--pk-hl), var(--pk-hr),
+    var(--pk-hm), var(--pk-el),
+    var(--pk-er), var(--pk-bl),
+    var(--pk-br), var(--pk-blrun),
+    var(--pk-brun), var(--pk-bm);
+  background-position:
+    left top, right top, left var(--pk-sw) top,
+    left top var(--pk-hh), right top var(--pk-hh),
+    left bottom, right bottom, left var(--pk-sw) bottom,
+    right var(--pk-sw) bottom, center bottom;
+  background-size:
+    var(--pk-sw) var(--pk-hh), var(--pk-sw) var(--pk-hh),
+    calc(100% - 2 * var(--pk-sw)) var(--pk-hh),
+    var(--pk-sw) calc(100% - var(--pk-hh) - var(--pk-bh)),
+    var(--pk-sw) calc(100% - var(--pk-hh) - var(--pk-bh)),
+    var(--pk-sw) var(--pk-bh), var(--pk-sw) var(--pk-bh),
+    calc(50% - var(--pk-notch-w) / 2 - var(--pk-sw)) var(--pk-bh),
+    calc(50% - var(--pk-notch-w) / 2 - var(--pk-sw)) var(--pk-bh),
+    var(--pk-notch-w) var(--pk-bh);
+}
+[data-theme^="steel"] .tv-modal-header {
+  position: relative;
+  z-index: 1;
+  height: var(--pk-hh);
+  padding: 0 calc(var(--pk-sw) + 1.15rem);
+  background: transparent;
+  border-bottom: none;
+  color: var(--panel-header-text);
+}
+[data-theme^="steel"] .tv-modal-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 800;
+  font-size: var(--font-size-base);
+  text-shadow: var(--panel-header-text-shadow);
+}
+[data-theme^="steel"] .tv-modal-close {
+  color: var(--modal-close-ink);
+}
+[data-theme^="steel"] .tv-modal-close:hover {
+  color: var(--modal-close-hover-ink);
+  background: var(--modal-close-hover-bg);
+}
+[data-theme^="steel"] .tv-modal-body {
+  padding: var(--spacing) calc(var(--pk-sw) + 0.95rem);
+}
+[data-theme^="steel"] .tv-modal-footer {
+  padding: 0.9rem calc(var(--pk-sw) + 0.95rem) calc(var(--pk-bh) + 0.8rem);
+  border-top: none;
+}
+
+/* ------------------------------ Menu ------------------------------- */
+/* Popovers wear the headerless frame kit over their raised stock. */
+
+[data-theme^="steel"] .tv-menu {
+  border-image: none;
+  border-color: #05060a;
+  border-radius: 3px;
+  padding: calc(var(--pk-th) + var(--space-2)) calc(var(--pk-sw) + var(--space-2))
+    calc(var(--pk-bh) + var(--space-2));
+  /* 12 layers: 10 frame pieces + the texture-panel gradient + grain
+   * (--texture-panel expands to two layers); lists are per-layer. */
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
+    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+  background-image:
+    var(--pk-tl), var(--pk-tr),
+    var(--pk-tm), var(--pk-el),
+    var(--pk-er), var(--pk-bl),
+    var(--pk-br), var(--pk-blrun),
+    var(--pk-brun), var(--pk-bm),
+    var(--texture-panel);
+  background-position:
+    left top, right top, left var(--pk-sw) top,
+    left top var(--pk-th), right top var(--pk-th),
+    left bottom, right bottom, left var(--pk-sw) bottom,
+    right var(--pk-sw) bottom, center bottom, 0 0, 0 0;
+  background-size:
+    var(--pk-sw) var(--pk-th), var(--pk-sw) var(--pk-th),
+    calc(100% - 2 * var(--pk-sw)) var(--pk-th),
+    var(--pk-sw) calc(100% - var(--pk-th) - var(--pk-bh)),
+    var(--pk-sw) calc(100% - var(--pk-th) - var(--pk-bh)),
+    var(--pk-sw) var(--pk-bh), var(--pk-sw) var(--pk-bh),
+    calc(50% - var(--pk-notch-w) / 2 - var(--pk-sw)) var(--pk-bh),
+    calc(50% - var(--pk-notch-w) / 2 - var(--pk-sw)) var(--pk-bh),
+    var(--pk-notch-w) var(--pk-bh), auto, auto;
+}
+
+/* --------------------------- Page field ---------------------------- */
+/* The owner's background design is the page backdrop (foundation
+ * reset): a FIXED layer, so scrolling never drags the art. Portrait
+ * art on tall/narrow viewports, the landscape sibling in landscape
+ * orientation; cover sizing keeps the detailed edges (gears, plate
+ * seams, rust plates) at the viewport edges while the art's calm
+ * center carries the content column. The shell itself goes
+ * transparent so the field shows through everywhere the plates and
+ * panels don't cover it. (body keeps --bg from base.css as the
+ * canvas color behind the layer.) */
+
+[data-theme^="steel"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--field-veil), var(--field-img-p);
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat;
+}
+@media (orientation: landscape) {
+  [data-theme^="steel"] body::before {
+    background-image: var(--field-veil), var(--field-img-l);
+  }
+}
+[data-theme^="steel"] .tv-shell {
+  background: transparent;
+  /* Breathing room: the plates float ON the field — a 16px reveal
+   * above the header plate and side gaps matching the content
+   * margins. */
+  padding: 1rem var(--spacing) 0;
+}
+/* Header overlap guard (owner report 2026-10-17: the Inventory
+ * "Add tool" row could end up hidden behind the header bar). The
+ * shell becomes a plain block container in steel themes so the
+ * sticky plate follows the canonical sticky pattern — a sticky
+ * child of a column flex container is handled inconsistently by
+ * mobile engines and can leave page content tucked under the
+ * plate. Scroll padding on the root keeps scrolled/anchored
+ * content clear of the plate, and the body gains a small air gap
+ * below it. */
+[data-theme^="steel"] .tv-shell {
+  display: block;
+}
+html[data-theme^="steel"] {
+  scroll-padding-top: calc(var(--header-h, 3.75rem) + 2.5rem);
+}
+[data-theme^="steel"] .tv-body {
+  margin-top: var(--space-3);
+}
+
+/* --------------------------- App header ---------------------------- */
+/* The header is an inset PLATE on the field: it spans the content
+ * width (the same 1600px cap as .tv-body), floats on the shell's
+ * top padding, and keeps floating when stuck (top: 1rem). Its
+ * background (token above) is plate stock edge to edge with
+ * chamfered end caps — no full-bleed bar, no black end strips.
+ * No clip-path: the user/appearance popovers live inside the header
+ * and must overflow it freely; the chamfers are the caps' own alpha
+ * silhouette, with the field showing through the cut. */
+
+[data-theme^="steel"] .tv-header {
+  top: 1rem;
+  align-self: center;
+  width: 100%;
+  max-width: 1600px;
+  border: 1px solid #05060a;
+  border-radius: 3px;
+  box-shadow: var(--shadow), var(--header-shadow);
+}
+[data-theme^="steel"] .tv-header-inner {
+  padding-left: calc(var(--np-cap-w) + 0.35rem);
+  padding-right: calc(var(--np-cap-w) + 0.35rem);
+}
+/* The sticky sidebar parks below the floating plate. */
+@media (min-width: 1024px) {
+  [data-theme^="steel"] .tv-sidebar {
+    top: calc(var(--header-h, 3.75rem) + 1rem);
+    height: calc(100vh - var(--header-h, 3.75rem) - 1rem);
+    height: calc(100dvh - var(--header-h, 3.75rem) - 1rem);
+  }
+}
+[data-theme^="steel"] .tv-brand {
+  color: var(--header-ink);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: var(--header-ink-shadow);
+}
+/* The brand mark USED to frame the official logo plate with the
+ * accent plate + under-glow. The mark is a spinning 3D plate now
+ * (owner review round 1, 2026-10-19) — the emblem is the object,
+ * so the socket stands empty: no plate, no frame behind it. */
+[data-theme^="steel"] .tv-brand-mark {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+}
+/* Header wordmark — RETIRED (foundation reset): the wordmark is the
+ * owner's sliced image in every theme (AppShell <img>, surfaces.css
+ * sizing). The CSS gradient-text construction and its VAULT
+ * wheel-recoloring are gone by owner ruling. */
+/* Ticker items read as header engraving in the steel themes. */
+[data-theme^="steel"] .tv-ticker {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--header-ink);
+  text-shadow: var(--header-ink-shadow);
+}
+[data-theme^="steel"] .tv-usermenu-btn {
+  color: var(--header-ink);
+  text-shadow: var(--header-ink-shadow);
+}
+[data-theme^="steel"] .tv-header .tv-btn--ghost {
+  color: var(--header-ink);
+}
+[data-theme^="steel"] .tv-header .tv-btn--ghost:hover {
+  background: var(--header-hover-bg);
+}
+
+/* ------------------------- Sidebar / nav --------------------------- */
+
+[data-theme^="steel"] .tv-sidebar {
+  border-right-color: #05060a;
+  box-shadow: inset -1px 0 0 rgb(255 255 255 / 0.05);
+}
+/* Section marker: a short lit rule — same move as the field labels. */
+[data-theme^="steel"] .tv-nav-item {
+  border-color: rgb(0 0 0 / 0.55);
+  border-radius: 3px;
+  text-shadow: 0 1px 1px rgb(0 0 0 / 0.45);
+}
+[data-theme^="steel"] .tv-nav-item.is-active {
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.3);
+}
+/* Active item's live glow edge bar. */
+[data-theme^="steel"] .tv-nav-item.is-active::before {
+  content: "";
+  align-self: stretch;
+  width: 3px;
+  margin: -0.6rem -0.1rem -0.6rem -0.75rem;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+/* ------------------------------ Table ------------------------------ */
+
+[data-theme^="steel"] .tv-table th {
+  text-shadow: var(--panel-header-text-shadow);
+  border-bottom: 2px solid #08090b;
+}
+
+/* ----------------------------- Buttons ----------------------------- */
+
+[data-theme^="steel"] .tv-btn {
+  border-radius: 3px;
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+}
+[data-theme^="steel"] .tv-btn--primary {
+  position: relative;
+  padding-inline: 1.9rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  border-color: color-mix(in srgb, var(--accent) 55%, #000000);
+}
+/* The worn-plate wear layer: grayscale plate texture (variant's
+ * --btn-plate-art) overlay-blended over the live accent plate stack,
+ * so the plate is painted metal in the wheel's color WITH the wear —
+ * the tint follows --accent because the color comes from underneath. */
+[data-theme^="steel"] .tv-btn--primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--btn-plate-art) center / 100% 100% no-repeat;
+  mix-blend-mode: overlay;
+  opacity: var(--btn-plate-art-opacity);
+  pointer-events: none;
+}
+[data-theme^="steel"] .tv-btn--secondary {
+  color: var(--btn-secondary-ink);
+  text-shadow: var(--btn-secondary-ink-shadow);
+}
+/* Danger keeps its status color but becomes material: worn gradient
+ * with the grain blended through it — no flat fills. */
+[data-theme^="steel"] .tv-btn--danger {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(0 0 0 / 0.22)),
+    var(--grain-img),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--danger) 82%, #ffffff),
+      color-mix(in srgb, var(--danger) 70%, #000000));
+  background-blend-mode: normal, overlay, normal;
+  border-color: color-mix(in srgb, var(--danger) 55%, #000000);
+  text-transform: uppercase;
+}
+[data-theme^="steel"] .tv-pagination .tv-btn.is-current {
+  background: var(--accent-plate-bg);
+  color: var(--btn-primary-text);
+  border-color: color-mix(in srgb, var(--accent) 55%, #000000);
+  box-shadow: var(--accent-plate-shadow);
+}
+
+/* ------------------------------- Tabs ------------------------------ */
+/* Segmented control per the reference: active = accent plate with
+ * under-glow; inactive = dark grain plate. */
+
+[data-theme^="steel"] .tv-tabs {
+  border-bottom: 2px solid #05060a;
+  gap: var(--space-2);
+}
+[data-theme^="steel"] .tv-tab {
+  border: 1px solid rgb(0 0 0 / 0.55);
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(0 0 0 / 0.2)),
+    var(--grain-img),
+    linear-gradient(180deg, #22262d, #14161a);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+[data-theme^="steel"] .tv-tab:hover {
+  color: var(--text);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(0 0 0 / 0.14)),
+    var(--grain-img),
+    linear-gradient(180deg, #2a2f37, #191c21);
+}
+[data-theme^="steel"] .tv-tab[aria-selected="true"] {
+  background: var(--accent-plate-bg);
+  color: var(--btn-primary-text);
+  border-color: #08090b;
+  box-shadow: var(--accent-plate-shadow);
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.3);
+}
+/* Starred-category link in its active (filter-set) state gets
+   the same accent plate as the selected view tab. */
+[data-theme^="steel"] .tv-tab.is-active {
+  background: var(--accent-plate-bg);
+  color: var(--btn-primary-text);
+  border-color: #08090b;
+  box-shadow: var(--accent-plate-shadow);
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.3);
+}
+[data-theme^="steel"] .tv-tabs-row--extra {
+  border-bottom-color: #05060a;
+}
+
+/* ------------------------- Forms: wells ---------------------------- */
+/* Recessed wells: an optional milled-trough ART strip (variant's
+ * --in-* pieces; `none` = plain grain well), the grain stock, and a
+ * small lit tick at the left edge (reference fields) — part of the
+ * unified glow system; the tick stretches and brightens on focus.
+ * Layer order is fixed: tick, strip L/M/R, grain. Selects append
+ * their chevrons after the grain. */
+
+[data-theme^="steel"] .tv-input {
+  background-image:
+    linear-gradient(180deg, transparent 8%,
+      color-mix(in srgb, var(--accent) 44%, transparent) 36%,
+      color-mix(in srgb, var(--accent) 38%, #ffffff) 50%,
+      color-mix(in srgb, var(--accent) 44%, transparent) 64%,
+      transparent 92%),
+    var(--in-l), var(--in-m), var(--in-r),
+    var(--grain-img);
+  background-position: left center, left center, center, right center, 0 0;
+  background-size:
+    3px 46%, var(--in-cap-w) 100%,
+    calc(100% - 2 * var(--in-cap-w)) 100%, var(--in-cap-w) 100%,
+    512px 512px;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+  padding-left: var(--input-pad-l);
+}
+[data-theme^="steel"] .tv-input:focus {
+  background-size:
+    3px 78%, var(--in-cap-w) 100%,
+    calc(100% - 2 * var(--in-cap-w)) 100%, var(--in-cap-w) 100%,
+    512px 512px;
+}
+[data-theme^="steel"] select.tv-input {
+  background-image:
+    linear-gradient(180deg, transparent 8%,
+      color-mix(in srgb, var(--accent) 44%, transparent) 36%,
+      color-mix(in srgb, var(--accent) 38%, #ffffff) 50%,
+      color-mix(in srgb, var(--accent) 44%, transparent) 64%,
+      transparent 92%),
+    var(--in-l), var(--in-m), var(--in-r),
+    var(--grain-img),
+    linear-gradient(45deg, transparent 48%, var(--text-muted) 48%, var(--text-muted) 52%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, var(--text-muted) 48%, var(--text-muted) 52%, transparent 52%);
+  background-position:
+    left center, left center, center, right center, 0 0,
+    right 0.95rem center, right 0.65rem center;
+  background-size:
+    3px 46%, var(--in-cap-w) 100%,
+    calc(100% - 2 * var(--in-cap-w)) 100%, var(--in-cap-w) 100%,
+    512px 512px, 6px 6px, 6px 6px;
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat, no-repeat;
+}
+[data-theme^="steel"] select.tv-input:focus {
+  background-size:
+    3px 78%, var(--in-cap-w) 100%,
+    calc(100% - 2 * var(--in-cap-w)) 100%, var(--in-cap-w) 100%,
+    512px 512px, 6px 6px, 6px 6px;
+}
+/* Stencil-caps labels with a short lit hairline rule (reference). */
+[data-theme^="steel"] .tv-field-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: var(--font-size-xs);
+}
+[data-theme^="steel"] .tv-field-label::after {
+  content: "";
+  height: 1px;
+  flex: 0 1 6.5rem;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--accent) 65%, transparent), transparent);
+}
+/* Toggle: machined channel + knob; on-state the knob IS a glow dot. */
+[data-theme^="steel"] .tv-switch {
+  border-radius: 4px;
+  background: #0b0d10;
+}
+[data-theme^="steel"] .tv-switch::after {
+  border-radius: 3px;
+}
+[data-theme^="steel"] .tv-switch[aria-checked="true"] {
+  background: color-mix(in srgb, var(--accent) 32%, #0b0d10);
+  border-color: color-mix(in srgb, var(--accent) 60%, #000000);
+}
+[data-theme^="steel"] .tv-switch[aria-checked="true"]::after {
+  background: var(--glow-dot-bg);
+  border-color: color-mix(in srgb, var(--accent) 55%, #000000);
+  box-shadow: var(--glow-dot-shadow);
+}
+
+/* ------------------------ Badges & status -------------------------- */
+
+[data-theme^="steel"] .tv-badge {
+  border-radius: 3px;
+  background-image: var(--grain-img);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+/* Every status dot sits in the same dark socket with a soft spill in
+ * its own color; the accent dot is the full unified treatment. */
+[data-theme^="steel"] .tv-badge-dot {
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 0.38);
+}
+[data-theme^="steel"] .tv-badge--accent .tv-badge-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--glow-dot-bg);
+  box-shadow: var(--glow-dot-shadow);
+}
+[data-theme^="steel"] .tv-badge--success .tv-badge-dot {
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 0.38),
+    0 0 6px color-mix(in srgb, var(--success) 55%, transparent);
+}
+[data-theme^="steel"] .tv-badge--warning .tv-badge-dot {
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 0.38),
+    0 0 6px color-mix(in srgb, var(--warning) 55%, transparent);
+}
+[data-theme^="steel"] .tv-badge--danger .tv-badge-dot {
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 0.38),
+    0 0 6px color-mix(in srgb, var(--danger) 55%, transparent);
+}
+
+/* ------------------- Remaining flat surfaces ----------------------- */
+/* Panel-sized Steel surfaces never sit on a flat fill: the grain
+ * stock goes over whatever tint the component carries. */
+
+[data-theme^="steel"] .tv-alert,
+[data-theme^="steel"] .tv-toast,
+[data-theme^="steel"] .tv-upload {
+  background-image: var(--grain-img);
+}
+/* The construction banner is a worn amber plate in the steel
+ * family: the grain stock blends OVER the warning amber with
+ * the overlay technique the worn accent plates use — laid on
+ * raw it is an opaque dark photo and would bury the amber (and
+ * the notice) entirely. Machined bevel + the condensed display
+ * face complete the plate; the copy keeps its sentence case
+ * (only the lead is caps) so the strip stays compact on
+ * phones. Ink stays the --banner-text hook (Steel Light flips
+ * it light for its darker amber). */
+[data-theme^="steel"] .tv-construction-banner {
+  background-image: var(--grain-img);
+  background-blend-mode: overlay;
+  box-shadow: var(--bevel);
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+}
+[data-theme^="steel"] .tv-footer {
+  background-image: var(--texture-panel);
+}
+
+/* ------------------------------ Type ------------------------------- */
+
+[data-theme^="steel"] .tv-main h1,
+[data-theme^="steel"] .tv-main h2 {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+/* Small screens: slim the SVG machined frame so it never crowds
+ * content. (The art kit needs no step here — its geometry tokens are
+ * clamp()s and already shrink fluidly with the viewport.) */
+@media (max-width: 560px) {
+  [data-theme^="steel"] {
+    --frame: url("../assets/frame.svg") 32 / 13px / 0 stretch;
+  }
+}
+/* ---------------------- Layout variants ----------------------
+ * The steel plate language follows the nav into its other
+ * presentations: the strip lives INSIDE the header plate, so its
+ * inner row takes the same nameplate-cap padding as the header's
+ * first tier; the rail parks under the floating plate exactly
+ * like the sidebar does and wears the sidebar's edge treatment.
+ * The active item's glow bar itself is re-geometried per layout
+ * in surfaces.css (the steel glow shadow rides along). */
+[data-theme^="steel"] .tv-topnav-inner {
+  padding-left: calc(var(--np-cap-w) + 0.35rem);
+  padding-right: calc(var(--np-cap-w) + 0.35rem);
+}
+[data-theme^="steel"] .tv-rail {
+  border-right-color: #05060a;
+  box-shadow: inset -1px 0 0 rgb(255 255 255 / 0.05);
+}
+@media (min-width: 1024px) {
+  [data-theme^="steel"] .tv-rail {
+    top: calc(var(--header-h, 3.75rem) + 1rem);
+    height: calc(100vh - var(--header-h, 3.75rem) - 1rem);
+    height: calc(100dvh - var(--header-h, 3.75rem) - 1rem);
+  }
+}
+/* Phone widths: the nameplate end caps slim down so the header
+ * row fits a phone (with the shared compression in surfaces.css)
+ * instead of pushing the user menu off-screen. */
+@media (max-width: 560px) {
+  [data-theme^="steel"] .tv-header-inner,
+  [data-theme^="steel"] .tv-topnav-inner {
+    padding-left: calc(var(--np-cap-w) * 0.45 + 0.25rem);
+    padding-right: calc(var(--np-cap-w) * 0.45 + 0.25rem);
+  }
+}

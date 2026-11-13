@@ -1,0 +1,263 @@
+/* Help & Support as a main tab layout page (owner-approved
+ * design, 2026-11-02): header zone (animated thumbnail + main
+ * facts — no Actions dropdown; the tabs are the menu, owner
+ * 2026-11-06), the open-tickets status strip, then the shared
+ * real tabs. All layout for the new chrome lives here so the
+ * page gains no new inline styles (ratchet discipline).
+ * Classes mirror the item pages' header and status-strip
+ * vocabulary (itemPage.css) — the proven pattern, matched. */
+
+/* ---------- Header zone ---------- */
+
+.tv-help-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.tv-help-thumb {
+  flex: 0 0 auto;
+  width: 10.5rem;
+  max-width: 42vw;
+}
+
+.tv-help-thumb-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.tv-help-thumb-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tv-help-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+}
+
+.tv-help-head-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.tv-help-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+}
+
+.tv-help-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.tv-help-facts {
+  display: flex;
+  gap: 0.6rem 1.75rem;
+  flex-wrap: wrap;
+  margin: 0.65rem 0 0;
+}
+
+.tv-help-fact dt {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tv-help-fact dd {
+  margin: 0.15rem 0 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.tv-help-thumb-large img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+}
+
+/* ---------- Status strip (open tickets) ---------- */
+
+.tv-help-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: center;
+  border: 1px solid var(--edge);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.85rem;
+}
+
+.tv-help-status-label {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tv-help-status-entry {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.95rem;
+  min-width: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 600;
+  text-align: left;
+}
+
+.tv-help-status-entry .tv-help-status-subject {
+  overflow-wrap: anywhere;
+}
+
+.tv-help-status-entry .tv-help-status-state {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.tv-help-status-entry:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Main tab: explainer + door cards ---------- */
+
+.tv-help-copy {
+  max-width: 44rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.tv-help-copy p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.tv-help-doors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.tv-help-door {
+  display: grid;
+  gap: 0.4rem;
+  align-content: start;
+  border: 1px solid var(--edge);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 0.85rem 0.95rem;
+}
+
+.tv-help-door h3 {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.tv-help-door p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.tv-help-door .tv-help-door-action {
+  margin-top: 0.25rem;
+}
+
+/* Explainer leads + door headers are tab links (owner
+ * 2026-11-03): the header text itself opens its tab. The
+ * button resets to the heading's own type — same words, same
+ * weight, same size — and takes the accent on hover/focus
+ * like the site's links; the global :focus-visible ring
+ * (base.css) marks keyboard focus. */
+.tv-help-leadlink,
+.tv-help-doorlink {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.tv-help-leadlink:hover,
+.tv-help-doorlink:hover,
+.tv-help-leadlink:focus-visible,
+.tv-help-doorlink:focus-visible {
+  color: var(--accent);
+}
+
+/* ---------- Videos tab ---------- */
+
+.tv-help-video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+}
+
+.tv-help-video {
+  display: grid;
+  gap: 0.45rem;
+  align-content: start;
+}
+
+.tv-help-video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+}
+
+.tv-help-video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.tv-help-video h3 {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.tv-help-video p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ---------- Phone: the header stacks ---------- */
+
+@media (max-width: 760px) {
+  .tv-help-thumb,
+  .tv-help-head-main {
+    flex: 1 1 100%;
+  }
+
+  .tv-help-thumb {
+    max-width: 14rem;
+  }
+}

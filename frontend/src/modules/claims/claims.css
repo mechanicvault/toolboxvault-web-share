@@ -1,0 +1,497 @@
+/* Claims styles (claim pages, status timeline, broken-item prompt,
+   warranty block). Split out of theme/components.css and
+   theme/themes/railsteel.css in the 2026-10-26 CSS filing split;
+   imported by the claims components so the rules ship with the
+   claims chunks. Rule order preserved verbatim from their original
+   positions (railsteel items first, then components items). */
+
+.tv-broken-form {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.tv-broken-muted {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.tv-broken-choices {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tv-broken-choice {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+}
+
+.tv-broken-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tv-broken-pieces {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tv-broken-piece-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  border-top: 1px solid var(--edge);
+  padding-top: 0.55rem;
+}
+
+/* Claims LIST (list standard, 2026-11-02): a true list — one
+   claim per row, a header row, every fact in its own column
+   (claim · kind · incident · status · dealer/insurer · agent ·
+   incident date · items · to-do · amount), the dealer
+   directory's grid-table pattern. The table scrolls sideways
+   inside its panel on narrow screens rather than crushing the
+   columns — which needs the panel (a grid item) and the wrap to
+   be allowed to shrink below the table's min-content width. */
+.tv-claims-panel {
+  min-width: 0;
+}
+
+.tv-claims-tablewrap {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-claims-thead,
+.tv-claims-trow {
+  display: grid;
+  /* Claims separation (2026-11-05): the warranty table is eight
+     columns — claim · status · dealer · agent · opened · items ·
+     to-do · amount. The disaster table overrides below.
+     Column floors retuned (repairs-list-width fix, 2026-11-10):
+     the old floors + the blanket min-width summed to ~1000px
+     against an 834px panel at a 1024px viewport, so the list
+     scrolled sideways on desktop. The new floors are the
+     measured one-line widths of the facts themselves (claim
+     number 114px, date 91px, amount 89px, the Spanish header
+     words "Distribuidor" 100px / "Artículos" 77px, longest
+     dealer/agent name words ~85px); the dealer column stays
+     the widest flexible share, the status column takes the
+     largest fr so its pill (which ellipsizes by the Badge's
+     own F1-06 design) shows in full as soon as the width
+     allows, and the blanket min-width is deleted — the floors
+     alone keep the in-table scroll honest on phones (the
+     board-width precedent, 2026-11-09). */
+  grid-template-columns:
+    minmax(116px, 0.85fr) minmax(112px, 1.35fr) minmax(100px, 1.05fr)
+    minmax(86px, 0.75fr) minmax(92px, 0.8fr) minmax(78px, 0.45fr)
+    minmax(72px, 0.9fr) minmax(90px, 0.65fr);
+  gap: 0.4rem 0.625rem;
+  align-items: center;
+  padding: 0.55rem 0.25rem;
+}
+
+/* Disaster Claims table: claim · incident · status · insurer ·
+   incident date · items · to-do · amount. Floors retuned with
+   the warranty table (2026-11-10): the insurer column is the
+   flexible one; the status labels here are short, so the
+   status floor is the one-badged line, not the warranty
+   ladder's long pills. Gate fix (2026-11-12): the status
+   floor grows and takes a larger fr share (the insurer
+   column, plain wrapping text, gives some back) because the
+   status cell also carries the proof-of-loss badge, whose
+   Spanish wording ("Prueba de pérdida por vencer") is long —
+   paired with the wrap rule below it now reads in full. */
+.tv-claims-table--disaster .tv-claims-thead,
+.tv-claims-table--disaster .tv-claims-trow {
+  grid-template-columns:
+    minmax(116px, 0.85fr) minmax(76px, 0.6fr) minmax(150px, 1.2fr)
+    minmax(104px, 1.1fr) minmax(92px, 0.8fr) minmax(78px, 0.45fr)
+    minmax(72px, 0.9fr) minmax(90px, 0.65fr);
+}
+
+/* Gate fix (2026-11-12): a status pill in the DISASTER list
+ * never ellipsizes its words away — the proof-of-loss badge
+ * is an urgency flag the user must be able to read in full
+ * ("PRUEBA DE PÉRDIDA POR …" shipped in ES). Inside the
+ * disaster status cell the pill wraps to a second line
+ * instead, the same treatment the inventory status cell
+ * already carries (sweep B2-F6). Scoped to this table only:
+ * the shared Badge and the warranty list are untouched. */
+.tv-claims-table--disaster .tv-claims-cell-status .tv-badge {
+  white-space: normal;
+}
+.tv-claims-table--disaster .tv-claims-cell-status .tv-badge-label {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.tv-claims-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-claims-trow {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-claims-cell-claim {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.tv-claims-table .tv-claim-id {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.02rem;
+  text-decoration: none;
+}
+
+.tv-claims-table .tv-claim-id:hover,
+.tv-claims-table .tv-claim-id:focus-visible {
+  text-decoration: underline;
+}
+
+.tv-claims-cell-status {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+/* To-do: the count plus the slim progress bar, side by side in
+   the one cell — the compact form of the old stacked block. */
+.tv-claims-todo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.tv-claims-todo .tv-progress {
+  flex: 1;
+  min-width: 36px;
+}
+
+.tv-claims-cell-amount,
+.tv-claims-th-amount {
+  text-align: right;
+}
+
+.tv-claim-muted {
+  color: var(--text-muted);
+}
+
+/* Phone cell labels: hidden while the table's header row
+ * speaks for the columns; the phone restack below turns them
+ * on (the FIX4 pattern the borrowing and directory tables
+ * already follow). */
+.tv-claims-cell-label {
+  display: none;
+}
+
+/* Sweep B5 F15 phone tables: at phone width the claims tables
+ * kept their desktop column floors inside a sideways scroll,
+ * so Status was ellipsized mid-word and Dealer · Agent ·
+ * Opened · Items · To-do · Amount — most of the row's facts —
+ * sat off the right edge. The rows now RESTACK at phone width
+ * instead of scrolling: line one is the claim number with its
+ * status beside it (both always on screen, the pill at its
+ * natural width so its words read in full), and the remaining
+ * facts spread across the lines below in header order, each
+ * carrying its column label. The header row hides at this
+ * width; the desktop true list is untouched above 700px.
+ * Applies to the warranty and disaster tables alike — they
+ * share the row geometry. */
+@media (max-width: 700px) {
+  .tv-claims-tablewrap {
+    overflow-x: visible;
+  }
+  .tv-claims-thead {
+    display: none;
+  }
+  .tv-claims-trow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    min-width: 0;
+    gap: 0.35rem 0.9rem;
+  }
+  .tv-claims-cell-label {
+    display: inline;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+  .tv-claims-trow > * {
+    order: 3;
+    min-width: 0;
+  }
+  .tv-claims-cell-claim {
+    order: 1;
+    flex: 1 1 42%;
+  }
+  .tv-claims-cell-status {
+    order: 2;
+    flex: 0 1 auto;
+    margin-left: auto;
+    justify-content: flex-end;
+  }
+  .tv-claims-cell-amount {
+    text-align: left;
+  }
+  .tv-claims-todo .tv-progress {
+    min-width: 64px;
+  }
+}
+
+/* Claims separation (2026-11-05): the two sections' pages share
+   one layout vocabulary — these classes carry the blocks both
+   list pages and both detail pages used to spell out inline. */
+.tv-claims-page {
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* Disaster Claims, tabbed (Main Tab Layout program lane 4,
+ * 2026-11-10): the tab contents' layout homes — the tab
+ * panels' stack, the Open tab's filing-door row, and the
+ * explainer's sections (the Shared Tools how anatomy, in this
+ * family's own classes). The old shell's .tv-claims-h1 /
+ * .tv-claims-toolbar / .tv-claims-viewswitch rules retired
+ * with the page shell they served — nothing else used them. */
+.tv-dc-tabgrid {
+  display: grid;
+  gap: var(--spacing);
+}
+.tv-dc-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.tv-dc-how {
+  display: grid;
+  gap: var(--space-3);
+}
+.tv-dc-how-title {
+  font-weight: 600;
+  margin: 0 0 var(--space-1);
+}
+.tv-dc-note {
+  color: var(--text-muted);
+  margin: 0;
+}
+.tv-dc-doors {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tv-claim-loading {
+  display: grid;
+  place-items: center;
+  padding: 2.5rem;
+}
+
+.tv-claim-headmeta {
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Claim detail status strip (sweep C3, main-tab record
+ * layout): one row of live states between the header panel
+ * and the tabs — the item page's .tv-item-status treatment in
+ * this family's own classes. Each entry is a badge + words and
+ * a jump to the tab holding the record. The strip renders
+ * nothing when the claim has no live states. */
+.tv-claim-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: center;
+  border: 1px solid var(--edge);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.tv-claim-status-entry {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.95rem;
+  min-width: 0;
+  color: var(--accent);
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.tv-claim-status-entry:hover {
+  text-decoration: underline;
+}
+
+.tv-claim-status-entry .tv-claim-status-text {
+  overflow-wrap: anywhere;
+}
+
+/* The claim Actions menu's danger items (Close claim, Delete
+ * draft) — the menu is portaled to the body, so the rule is
+ * unscoped; the declaration is identical to the inventory
+ * chunk's copy, and claims.css carries its own so the tone
+ * never depends on another module's CSS loading first. */
+.tv-menu-item-danger {
+  color: var(--danger);
+}
+
+.tv-claim-cols {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+  align-items: start;
+}
+
+/* A tab body's vertical stack on a claim detail page (the
+ * disaster Details tab: the checklist/details columns over
+ * the agent snapshot panel) — the page grid's own rhythm. */
+.tv-claim-detail-stack {
+  display: grid;
+  gap: 1.25rem;
+}
+
+
+.tv-claim-lines {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tv-claim-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--edge);
+  padding-top: 0.55rem;
+}
+
+
+.tv-claim-total {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--edge);
+  padding-top: 0.55rem;
+}
+
+
+.tv-claim-mut-sm {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tv-warranty-grid {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.tv-warranty-p {
+  margin: 0;
+}
+
+.tv-warranty-problem {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.tv-warranty-closed {
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+.tv-claim-backlink {
+  color: var(--accent);
+}
+
+[data-theme="railsteel"] .tv-claim-id {
+  font-family: var(--font-display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+[data-theme="railsteel"] .tv-claim-amount {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+}
+
+
+[data-theme="railsteel"] .tv-tl-item {
+  position: relative;
+}
+
+[data-theme="railsteel"] .tv-tl-item::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 26px;
+  bottom: -9px;
+  width: 2px;
+  background: var(--edge);
+}
+
+[data-theme="railsteel"] .tv-tl-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid var(--edge-strong);
+  background: var(--surface);
+  display: inline-grid;
+  place-items: center;
+  font-size: 0;
+  flex: 0 0 auto;
+  align-self: center;
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="railsteel"] .tv-tl-item--done .tv-tl-dot {
+  border-color: var(--success);
+}
+
+[data-theme="railsteel"] .tv-tl-item--current {
+  font-weight: 700;
+}
+
+[data-theme="railsteel"] .tv-tl-item--current .tv-tl-dot {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow:
+    0 0 6px var(--accent),
+    0 0 16px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* The Open / History view switch that used to live here
+ * retired in lane 4 (2026-11-10): the Disaster Claims page's
+ * views are Steel tabs now (Open claims · Closed claims). */

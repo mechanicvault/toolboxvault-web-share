@@ -1,0 +1,77 @@
+/* Repairs & Maintenance (merged page, 2026-11-05): the page's
+   header zone and the Out of service tab's toggle row. The tab
+   bodies wear the claims + maintenance modules' own styles —
+   their components import those sheets themselves. */
+
+.tv-repairs-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* The header thumbnail: the module's framed icon tile — the
+   search-group chip's recipe (framed plate, accent glyph) at
+   header scale. It depicts the page, nothing more: unlike the
+   record pages' thumbnails it is not a button, because there
+   is no larger view of a glyph to open. */
+.tv-repairs-thumb {
+  flex: 0 0 auto;
+  width: 10.5rem;
+  max-width: 42vw;
+  aspect-ratio: 3 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--bevel);
+  color: var(--accent);
+  font-size: 3.25rem;
+}
+
+.tv-repairs-head-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.tv-repairs-title {
+  margin: 0;
+}
+
+.tv-repairs-facts {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin: 0.45rem 0 0;
+}
+
+.tv-repairs-fact {
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.tv-repairs-fact dt {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-repairs-fact dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.tv-repairs-head-actions {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+/* The Out of service tab's borrowed-tools toggle row: sits
+   above the board, right-aligned like a view control. */
+.tv-repairs-toggle-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.6rem;
+}

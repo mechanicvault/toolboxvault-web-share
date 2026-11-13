@@ -1,0 +1,128 @@
+/* Settings as a main tab layout page (owner order, 2026-11-03):
+ * header zone (settings thumbnail + account facts + ONE Actions
+ * dropdown), then the shared real tabs — one tab per registry
+ * section. All layout for the new chrome lives here so the page
+ * gains no new inline styles (ratchet discipline). Classes
+ * mirror the Help & Support page's header vocabulary (help.css)
+ * — the proven pattern for a non-record main-tab-layout page,
+ * matched. */
+
+/* The cold-load hold (2026-11-10): the line shown while the
+ * my-modules read that decides a section bounce is in flight —
+ * the module gates' own spinner look, homed here so the shell
+ * gains no inline styles. */
+.tv-settings-loading {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* ---------- Header zone ---------- */
+
+.tv-settings-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.tv-settings-thumb {
+  flex: 0 0 auto;
+  width: 10.5rem;
+  max-width: 42vw;
+}
+
+.tv-settings-thumb-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.tv-settings-thumb-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tv-settings-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+}
+
+.tv-settings-head-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.tv-settings-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+}
+
+.tv-settings-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.tv-settings-facts {
+  display: flex;
+  gap: 0.6rem 1.75rem;
+  flex-wrap: wrap;
+  margin: 0.65rem 0 0;
+}
+
+.tv-settings-fact dt {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tv-settings-fact dd {
+  margin: 0.15rem 0 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.tv-settings-head-actions {
+  margin-left: auto;
+  /* The Admin door (2026-11-07) stacks directly UNDER the
+   * Actions button, right edges aligned. */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.tv-settings-actions-caret {
+  font-size: 0.75em;
+}
+
+.tv-settings-thumb-large img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+}
+
+/* Sweep B9 (09-F9 residual): the Actions jumper's current
+ * section — bold ink plus a check at the row's end, so the
+ * flat list of sections says where the user already is. */
+.tv-menu-item--current {
+  font-weight: 700;
+}
+.tv-menu-item--current::after {
+  content: "✓";
+  float: right;
+  margin-left: var(--space-3);
+  color: var(--accent-ink, var(--accent));
+}

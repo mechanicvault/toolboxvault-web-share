@@ -1,0 +1,623 @@
+/* Item detail pages (tool / battery / set) — the tabbed layout
+ * (owner spec, 2026-10-31): header zone (thumbnail + main facts +
+ * actions), the live-status strip, then the tab sections. All
+ * layout for the new chrome lives here so the pages gain no new
+ * inline styles (ratchet discipline). */
+
+/* ---------- Header zone ---------- */
+
+.tv-item-thumb {
+  flex: 0 0 auto;
+  width: 9.5rem;
+  max-width: 40vw;
+}
+
+.tv-item-thumb-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.tv-item-thumb-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tv-item-head-main {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+/* The main facts beside the thumbnail: quantity, price, purchase
+ * date — label over value, spread in a row, wrapping on phones. */
+.tv-item-facts {
+  display: flex;
+  gap: 0.6rem 1.75rem;
+  flex-wrap: wrap;
+  margin: 0.65rem 0 0;
+}
+
+.tv-item-fact dt {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tv-item-fact dd {
+  margin: 0.15rem 0 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+/* The header's third column (owner layout correction, 2026-11-02;
+ * re-seated by sweep B2-F2, 2026-11-12): the header is THREE
+ * columns — photo, main facts, and this right column, which now
+ * holds the ACTIONS dropdown pinned to the header's top-right
+ * corner (the seat the main-tab standard and the Inventory list
+ * header both use) with the LOCATION PLATE below it. (From
+ * 2026-11-03 to the sweep, Actions sat inline in the facts row
+ * and this column held the plate alone; the sweep found the
+ * button floating mid-page with the header's right half void.)
+ * The header row is top-aligned and the h1 carries no top
+ * margin, so the column's TOP edge aligns with the TOP of the
+ * item's name. The plate is deliberately quiet
+ * (the owner: stand out A LITTLE) — a recessed surface like an
+ * inactive tab's, a hairline edge, the pin in the live accent —
+ * and it breaks the tier path into its tiers with the site's
+ * tier labels (Place / Storage / Spot). No location recorded:
+ * no plate at all and the column collapses. The Details tab no
+ * longer repeats the location (owner, 2026-11-04) — the plate
+ * is the one place it renders on the page. */
+.tv-item-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  align-self: flex-start;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.tv-item-loc {
+  background: color-mix(in srgb, var(--panel) 52%, var(--bg));
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  padding: 0.55rem 0.75rem 0.65rem;
+  min-width: 10.5rem;
+  max-width: 17rem;
+}
+
+.tv-item-loc-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tv-item-loc-head svg {
+  color: var(--accent);
+  flex: 0 0 auto;
+}
+
+.tv-item-loc-tiers {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.45rem 0 0;
+}
+
+.tv-item-loc-tier {
+  display: grid;
+  grid-template-columns: 4.4rem minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.tv-item-loc-tier dt {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tv-item-loc-tier dd {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.98rem;
+  overflow-wrap: anywhere;
+}
+
+/* Phone: the three header columns stack — photo, main facts,
+ * then the right column (Actions + the location plate, in a
+ * row) — and the page never widens. The facts row (purchase
+ * date · status pill) wraps as a flex row rather than
+ * shrinking. */
+@media (max-width: 760px) {
+  .tv-item-thumb,
+  .tv-item-head-main,
+  .tv-item-side {
+    flex: 1 1 100%;
+  }
+
+  .tv-item-side {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+/* ---------- Status strip ---------- */
+
+/* One row of live states between the header and the tabs. Each
+ * entry is a badge + words; entries with a record behind them are
+ * links/buttons in the accent colour. Renders nothing at all when
+ * the item has no live states (the component returns null). */
+.tv-item-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: center;
+  border: 1px solid var(--edge);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.85rem;
+}
+
+.tv-item-status-entry {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.95rem;
+  min-width: 0;
+}
+
+a.tv-item-status-entry,
+button.tv-item-status-entry {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+button.tv-item-status-entry {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+a.tv-item-status-entry:hover,
+button.tv-item-status-entry:hover {
+  text-decoration: underline;
+}
+
+.tv-item-status-entry .tv-item-status-text {
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Tab bodies ---------- */
+
+/* Vertical stack inside a tab — the same rhythm the page used
+ * when the panels were one long scroll. */
+.tv-item-stack {
+  display: grid;
+  gap: var(--spacing);
+}
+
+/* Jump targets inside tabs (the status strip's anchors): keep
+ * the scrolled-to panel clear of the fixed header. */
+.tv-item-anchor {
+  scroll-margin-top: 5rem;
+}
+
+.tv-item-tabnote {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Sweep B2-F5: the Details panel's nothing-recorded sentence. */
+.tv-item-details-empty {
+  margin: 0 0 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Sweep B2-F18: the History panel's labelled loading note. */
+.tv-history-loading-note {
+  color: var(--text-muted);
+  margin: 0 0 0.55rem;
+}
+
+/* The warranty panel's inner rhythm (badge over rows), shared
+ * by the battery Warranty tab. */
+.tv-item-warranty-body {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.tv-item-nomargin {
+  margin: 0;
+}
+
+/* A label/value row in the tool page's Row layout (150px label
+ * column) for rows whose value isn't plain text — the Warranty
+ * tab's provider row, whose value can be a dealer link. */
+.tv-item-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.tv-item-row dt {
+  color: var(--text-muted);
+}
+
+.tv-item-row dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Links inside item values (the warranty provider → dealer). */
+.tv-item-link {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* The header Actions menu (owner amendment #4): the caret on
+ * the trigger, item separators, and the danger item — the menu
+ * panel and items themselves are the site's .tv-menu family. */
+.tv-item-actions-caret {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.tv-item-menu-sep {
+  border-top: 1px solid var(--border);
+  margin: 0.3rem 0;
+}
+
+.tv-menu-item-danger {
+  color: var(--danger);
+}
+
+/* The Actions menu's mark-replaced modal form. */
+.tv-replaced-form {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.tv-replaced-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+/* Battery warranty tab: the label/value cell grid the battery
+ * Details list uses, as classes so the split adds no inline
+ * styles. */
+.tv-item-cells {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem 1.5rem;
+  margin: 0;
+}
+
+.tv-item-cell dt {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-item-cell dd {
+  margin: 0.15rem 0 0;
+  font-weight: 600;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* -- Owner batch 2026-11-03 --------------------------------------
+ * The header status pill (§8): an inline guest of the facts
+ * flex row, centered against the fact cells, immediately after
+ * the purchase-date fact. */
+.tv-item-statuspill {
+  align-self: center;
+  display: inline-flex;
+}
+
+/* (The .tv-item-actions-inline seat retired with sweep B2-F2:
+ * Actions lives in the header's right column now — see
+ * .tv-item-side above.) */
+
+/* Each file area's own Add flow (§6): the Add button rides at
+ * the top of its area, right-aligned; the uploader (and the
+ * manuals link form) open under it, inside the same panel. */
+.tv-item-addfiles {
+  display: grid;
+  gap: 0.7rem;
+  margin-bottom: 0.9rem;
+}
+
+.tv-item-addfiles:last-child {
+  margin-bottom: 0;
+}
+
+.tv-item-addbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* The manuals add-by-link form (§7): set apart from the
+ * dropzone above it by the hairline, like the page's other
+ * sub-sections. */
+.tv-manual-linkform {
+  border-top: 1px solid var(--edge);
+  padding-top: 0.8rem;
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+
+.tv-manual-linkform .tv-field {
+  width: 100%;
+}
+
+/* The warranty tab's current-agent line (§10): the agent's
+ * account line rides muted after the name, the way the agents
+ * panel phrases it. */
+.tv-item-agentmeta {
+  color: var(--text-muted);
+}
+
+/* -- Details tab layout (owner, 2026-11-04 22:14) ----------------
+ * The Details box is two-sided: the detail rows on the left and a
+ * dedicated right column holding Category and Tags, nested in
+ * their own area instead of inline among the rows. The column is
+ * set off by a hairline; on phone widths it stacks below the
+ * details rather than squeezing them. The dealer row carries the
+ * agent on the SAME row: inline after the dealer name on the tool
+ * page (indented right), as an indented sub-line inside the
+ * dealer cell on the battery page. */
+.tv-details-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 15rem;
+  gap: 1rem 2rem;
+  align-items: start;
+}
+
+.tv-details-side {
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  border-left: 1px solid var(--edge);
+  padding-left: 1.25rem;
+}
+
+.tv-details-side dt {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-details-side dd {
+  margin: 0.15rem 0 0;
+  font-weight: 600;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Each fact's wrapper is the grid item here: without
+ * min-width 0 it sizes to its widest content, so one long
+ * tag chip blew the whole column (and, stacked on phones,
+ * the page) out past its track instead of the chip
+ * truncating inside it (pill tooltip rule, 2026-11-05). */
+.tv-details-side > div {
+  min-width: 0;
+}
+
+.tv-details-side dd.tv-details-side-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  font-weight: 400;
+}
+
+.tv-dealer-agent-inline {
+  margin-left: 1.5rem;
+}
+
+.tv-dealer-agent-label {
+  color: var(--text-muted);
+}
+
+.tv-dealer-agent-subline {
+  margin-top: 0.35rem;
+  padding-left: 0.9rem;
+}
+
+.tv-dealer-agent-subline .tv-dealer-agent-label {
+  font-size: 0.85rem;
+}
+
+@media (max-width: 760px) {
+  .tv-details-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tv-details-side {
+    border-left: none;
+    border-top: 1px solid var(--edge);
+    padding-left: 0;
+    padding-top: 1rem;
+  }
+}
+
+/* -- Documents & Receipts icon tiles (owner, 2026-11-04 22:27;
+ * redone 2026-11-05 17:05) ---
+ * "Documents should show up as icons of the document type with
+ * the name below it. Something like 4-6 in a row then it starts
+ * a new row if more documents are added." Each file is ONE
+ * cell: a uniform tile (full-color type artwork, the file name
+ * below it, a muted size/provenance line) with the "Delete
+ * file" link OUTSIDE the box, centered below it (owner,
+ * 2026-11-05: "move the delete file outside the box and put
+ * that link below it and use actual colored nice images").
+ * The cell's 1fr/auto rows stretch each row's boxes to one
+ * height so the below-box links line up across the row. The
+ * content column caps at 1200px, so an 11rem minimum track
+ * lands 4–6 tiles across on desktop; auto-fill keeps every
+ * tile the same size whether the section holds one file or
+ * twenty. On phone widths the grid pins to three across. */
+.tv-doc-tiles {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+}
+
+.tv-doc-tile-cell {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.tv-doc-tile {
+  display: grid;
+  gap: 0.45rem;
+  align-content: start;
+  height: 100%;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  padding: 0.85rem 0.6rem 0.6rem;
+  min-width: 0;
+}
+
+.tv-doc-tile-btn {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.45rem;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.tv-doc-tile-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tv-doc-tile-art {
+  display: block;
+  line-height: 0;
+}
+
+.tv-doc-tile-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.25;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.tv-doc-tile-meta {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.3;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.tv-doc-tile-del {
+  display: flex;
+  justify-content: center;
+}
+
+/* The tiles' below-the-box delete: a plain accent link, not a
+ * button (owner reference, 2026-11-05). The confirm row rides
+ * the same spot under the tile. */
+.tv-doc-del {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tv-doc-del-link {
+  background: none;
+  border: none;
+  padding: 0.15rem 0.3rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.tv-doc-del-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.tv-doc-del-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tv-doc-del-confirm {
+  font-size: 0.85rem;
+}
+
+.tv-doc-del-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 760px) {
+  .tv-doc-tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* FIX4 (2026-11-11, sweep 02-F12): at phone width the status
+ * strip squeezed its pill until the state word itself clipped
+ * ("BORROW…"). The strip now stacks: each entry puts its pill
+ * on its own line with the message full-width below it, and a
+ * pill is never allowed to truncate — it sizes to its word. */
+@media (max-width: 640px) {
+  .tv-item-status {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tv-item-status-entry {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+  .tv-item-status-entry .tv-badge {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .tv-item-status-entry .tv-badge-label {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  .tv-item-status-entry .tv-item-status-text {
+    overflow-wrap: anywhere;
+  }
+}

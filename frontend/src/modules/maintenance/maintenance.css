@@ -1,0 +1,106 @@
+/* Maintenance list tables (list-standard wave 6, 2026-11-02):
+   both boards are TRUE lists — one record per row, a header row,
+   each fact in its own column (the dealer DirectoryTable
+   pattern). Tables scroll sideways inside their panel on narrow
+   screens; the panel (a grid item) may shrink below the table's
+   min width. A repair's problem rides as a truncated single-line
+   cell — the full text lives on the item's Repairs panel. */
+
+.tv-maint-panel {
+  min-width: 0;
+}
+
+.tv-maint-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-maint-thead,
+.tv-maint-row {
+  display: grid;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  padding: 0.55rem 0.25rem;
+}
+
+/* Column floors retuned (repairs-list-width fix, 2026-11-10):
+   the old floors + the blanket min-widths summed past the
+   panel at desktop widths (1055px against an 834px panel at a
+   1024px viewport), so the lists scrolled sideways. The new
+   floors are the measured one-line widths of the facts
+   themselves (dates 91px, the "On schedule" pill 118px, the
+   "Open claim CL-…" link 182px, longest name words ~97px);
+   the flexible columns (item · problem · schedule) absorb the
+   rest, and the blanket min-widths are deleted — the floors
+   alone keep the in-table scroll honest on phones. The
+   out-of-service board's last column was a fixed 6.5rem while
+   its claim cluster needs 182px for the link alone: it is a
+   flexible column now, and the cluster wraps inside it (see
+   .tv-maint-claimcell). */
+.tv-maint-table--repairs .tv-maint-thead,
+.tv-maint-table--repairs .tv-maint-row {
+  grid-template-columns:
+    minmax(100px, 1.1fr) minmax(200px, 1.5fr) minmax(92px, 0.65fr)
+    minmax(112px, 0.75fr) minmax(190px, 1.2fr);
+}
+
+.tv-maint-table--schedules .tv-maint-thead,
+.tv-maint-table--schedules .tv-maint-row {
+  grid-template-columns:
+    minmax(98px, 1fr) minmax(100px, 0.95fr) minmax(80px, 0.6fr)
+    minmax(84px, 0.65fr) minmax(92px, 0.65fr) minmax(92px, 0.65fr)
+    minmax(118px, 0.75fr) 102px;
+  /* The eight-column table is the tightest on the page: its
+     column gaps run narrower so the floors fit a 1024px
+     desktop without a sideways scroll. */
+  gap: 0.4rem 0.5rem;
+}
+
+.tv-maint-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-maint-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-maint-cell-item {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.tv-maint-problem {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+/* The board row's claim cell (Repairs & Maintenance merge,
+   2026-11-05): the claim link and the claim's status badge ride
+   side by side, wrapping under each other on narrow rows.
+   It must be a block-level flex for that promise to hold: as
+   an inline-flex it sized to its max-content (link + badge on
+   one line, up to ~445px) and spilled out of its column at
+   every width — the out-of-service board's constant sideways
+   scroll (repairs-list-width fix, 2026-11-10). As a flex it is
+   capped by the cell and the badge wraps under the link, as
+   designed. */
+.tv-maint-claimcell {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+}

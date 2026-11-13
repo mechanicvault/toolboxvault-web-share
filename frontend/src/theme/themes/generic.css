@@ -1,0 +1,63 @@
+/* Generic theme — polished light professional. The default.
+ * Clean, high-end corporate; maximum readability. */
+
+[data-theme="generic"] {
+  /* Page ground: a light neutral GREY, not near-white (owner,
+   * 2026-10-18: the theme was "too light... everything is just a
+   * flat white"). Panels/cards stay white (--panel) so against
+   * this ground they read as raised surfaces, lifted further by
+   * --panel-shadow below. --text on this grey is ~13:1 and
+   * --text-muted ~4.6:1 — AA holds. */
+  --bg: #e8ebef;
+  --surface: #e4e9ef;
+  --surface-raised: #ffffff;
+  --panel: #ffffff;
+  --texture: none;
+  --texture-panel: none;
+
+  --edge: #d9dde3;
+  --edge-strong: #b4bac4;
+  /* NOT `none` — see tokens.css: a `none` layer voids every
+   * box-shadow list it is stacked into (panels, modals, menus). */
+  --bevel: 0 0 0 rgb(0 0 0 / 0);
+  --shadow: 0 1px 2px rgb(16 24 40 / 0.06), 0 4px 14px rgb(16 24 40 / 0.09);
+  --shadow-lg: 0 20px 44px rgb(16 24 40 / 0.2), 0 4px 12px rgb(16 24 40 / 0.1);
+  /* Soft layered float for panels: a contact line, a near lift,
+   * and a wide ambient fall — "almost floating," not cartoonish. */
+  --panel-shadow:
+    0 1px 2px rgb(16 24 40 / 0.05), 0 6px 16px rgb(16 24 40 / 0.07),
+    0 18px 38px rgb(16 24 40 / 0.08);
+  --shadow-raised:
+    0 4px 10px rgb(16 24 40 / 0.08), 0 16px 36px rgb(16 24 40 / 0.15),
+    0 30px 60px rgb(16 24 40 / 0.1);
+  /* The sticky header floats on the same panel shadow, so the
+   * bar separates from the grey ground while scrolling. */
+  --header-shadow: var(--panel-shadow);
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+
+  --text: #1a2230;
+  --text-muted: #5f6875;
+  --text-on-accent: #ffffff;
+  --placeholder: #8a94a3;
+
+  --input-bg: #ffffff;
+  /* Transparent zero shadow, not `none` — a `none` layer voids the
+   * whole stacked box-shadow in Chromium (see tokens.css). */
+  --input-shadow: 0 0 0 rgb(0 0 0 / 0);
+  --btn-secondary-bg: #ffffff;
+
+  --table-header-bg: #f1f3f6;
+  --table-row-hover: #f7f8fa;
+  --table-row-alt: transparent;
+
+  --header-bg: #ffffff;
+  /* A half-step lighter than the new grey ground: the rail reads
+   * as a soft slab between the white header and the grey page. */
+  --sidebar-bg: #eef1f5;
+  --nav-item-hover-bg: #e6e9ee;
+  --nav-active-bg: var(--accent-soft);
+
+  --overlay: rgb(13 17 23 / 0.45);
+}

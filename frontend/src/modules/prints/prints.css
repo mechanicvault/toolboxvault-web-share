@@ -1,0 +1,1129 @@
+/* 3D Print Files (Downloads Part 2, 2026-11-08). Class names
+ * only — the inline-style ratchet counts this module too.
+ * Tokens come from the theme layer, so both modes dress the
+ * shelf without a second stylesheet. The main highlight
+ * effect (owner's standing rule) rides the clickable things:
+ * choice cards and thumbs lift with the accent outline and
+ * glow; list rows take the outline-free tint, like the
+ * Downloads documents table. */
+
+.pr-page {
+  display: grid;
+  /* The column is capped at the container: an implicit auto
+   * track would size to the widest child's max-content
+   * and push the whole page sideways on a phone. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+/* -- Page header (main tab layout conversion, 2026-11-10) ---------
+ * The browse page's header is the shared SectionPageHeader kit
+ * (components/SectionPageHeader.tsx; .tv-secpage-* in theme/
+ * surfaces.css) — the page's own .pr-head block, its title/sub
+ * rules and its upload button are retired. .pr-title stays:
+ * the upload and edit sub-pages still wear it. */
+
+.pr-title {
+  margin: 0;
+  font-size: 1.7rem;
+}
+
+.pr-signin-note {
+  margin: 0;
+  color: var(--text-muted);
+  max-width: 22rem;
+  line-height: 1.5;
+}
+
+.pr-panel {
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius, 0.75rem);
+  box-shadow: var(--shadow);
+  padding: 1.1rem 1.2rem;
+  min-width: 0;
+}
+
+.pr-panel-title {
+  margin: 0 0 0.7rem;
+  font-size: 1.05rem;
+}
+
+.pr-step-note {
+  margin: 0 0 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.pr-muted {
+  color: var(--text-muted);
+}
+
+.pr-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  align-items: flex-end;
+}
+
+.pr-toolbar .tv-searchbar,
+.pr-toolbar > :first-child {
+  flex: 1 1 16rem;
+}
+
+.pr-filter {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.pr-load-error {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+  margin-top: 1rem;
+}
+
+/* The TRUE list (the standing list standard): one file per
+ * row, a header row, facts spread in columns. */
+.pr-table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+  min-width: 0;
+  margin-top: 1.1rem;
+}
+
+.pr-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.pr-table th {
+  text-align: left;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  padding: 0.55rem 0.7rem;
+  border-bottom: 2px solid var(--edge);
+  white-space: nowrap;
+  /* Positioning context for the .pr-sr-only header label:
+   * without it the label's containing block is the document,
+   * it escapes the table wrap's scroll clipping, and the
+   * whole page gains horizontal overflow on a phone. */
+  position: relative;
+}
+
+.pr-table td {
+  padding: 0.7rem;
+  border-bottom: 1px solid var(--edge);
+  vertical-align: middle;
+  line-height: 1.45;
+}
+
+.pr-table tbody tr:hover {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.pr-num {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.pr-file-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 12rem;
+}
+
+.pr-thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  border-radius: 0.5rem;
+  border: 1px solid var(--edge);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  color: var(--text-muted);
+  overflow: hidden;
+}
+
+.pr-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+a.pr-thumb {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+a.pr-thumb:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 14px var(--accent-soft);
+}
+
+.pr-file-title {
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.pr-file-title:hover {
+  text-decoration: underline;
+}
+
+.pr-rating-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.pr-stars {
+  display: inline-flex;
+  gap: 0.1rem;
+  color: var(--text-muted);
+}
+
+.pr-star-on {
+  color: var(--accent);
+}
+
+.pr-star-on svg {
+  fill: var(--accent);
+}
+
+.pr-stars-input {
+  gap: 0.25rem;
+}
+
+.pr-star-btn {
+  background: none;
+  border: none;
+  padding: 0.15rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-radius: 0.35rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pr-star-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 12px var(--accent-soft);
+}
+
+.pr-star-btn.pr-star-on {
+  color: var(--accent);
+}
+
+.pr-get-cell {
+  text-align: right;
+}
+
+.pr-download-btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--accent);
+  color: var(--text-on-accent, #17110a);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pr-download-step {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  margin-left: 0.5rem;
+}
+
+.pr-download-sm {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.9rem;
+}
+
+.pr-empty-cell {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 0.7rem !important;
+}
+
+.pr-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* -- record page ------------------------------------------- */
+
+.pr-back {
+  margin: 0;
+}
+
+.pr-record-head {
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius, 0.75rem);
+  box-shadow: var(--shadow);
+  padding: 1.1rem 1.2rem;
+  min-width: 0;
+}
+
+.pr-record-thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.5rem;
+  height: 6.5rem;
+  flex: 0 0 auto;
+  border-radius: 0.6rem;
+  border: 1px solid var(--edge);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  color: var(--text-muted);
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pr-record-thumb:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 14px var(--accent-soft);
+}
+
+/* The still plate (Sweep B7): a listing with nothing to open
+ * renders the same plate as a plain box — no pointer, no lift,
+ * no glow, because it is not a door. */
+.pr-record-thumb--still {
+  cursor: default;
+}
+.pr-record-thumb--still:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.pr-record-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pr-record-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pr-record-title {
+  margin: 0 0 0.6rem;
+  font-size: 1.45rem;
+  overflow-wrap: anywhere;
+}
+
+.pr-record-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.5rem 1.2rem;
+  margin: 0;
+}
+
+.pr-record-facts div {
+  min-width: 0;
+}
+
+.pr-record-facts dt {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.pr-record-facts dd {
+  margin: 0.15rem 0 0;
+  font-weight: 600;
+}
+
+.pr-actions {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.pr-actions-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.4rem);
+  z-index: 30;
+  display: grid;
+  min-width: 15rem;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: 0.6rem;
+  box-shadow: var(--shadow-lg, var(--shadow));
+  padding: 0.35rem;
+}
+
+/* Portaled seat (FIX 3, 2026-11-11): the menu now renders at
+ * the document root with position: fixed from the shared
+ * viewport placement (lib/menuPlacement) — same look, but the
+ * box is clamped/flipped inside the viewport and scrolls
+ * internally when capped. */
+.pr-actions-menu--portal {
+  position: fixed;
+  right: auto;
+  top: auto;
+  width: 15rem;
+  max-width: calc(100vw - 1rem);
+  box-sizing: border-box;
+  z-index: var(--z-modal);
+  overflow-y: auto;
+}
+
+.pr-actions-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.4rem;
+  color: var(--text);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.pr-actions-item:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.pr-actions-danger {
+  color: var(--lv-danger, #e5534b);
+}
+
+.pr-big-preview {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.pr-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+  gap: 1.1rem;
+  align-items: start;
+}
+
+.pr-description {
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0 0 1.2rem;
+}
+
+.pr-facts-list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0 0 1rem;
+}
+
+.pr-facts-list div {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.pr-facts-list dt {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.pr-facts-list dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.pr-detail-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 1.1rem;
+}
+
+.pr-detail-downloads .pr-download-step {
+  margin-left: 0;
+}
+
+.pr-rate-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.pr-current-chip,
+.pr-removed-chip {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.pr-removed-chip {
+  background: var(--danger-soft);
+  color: var(--lv-danger, #e5534b);
+}
+
+.pr-version-actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.pr-comments {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.pr-comment {
+  border-bottom: 1px solid var(--edge);
+  padding-bottom: 0.9rem;
+}
+
+.pr-comment-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+
+.pr-comment-actions {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 0.7rem;
+}
+
+.pr-text-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.pr-text-btn:hover {
+  text-decoration: underline;
+}
+
+.pr-comment-body {
+  margin: 0.35rem 0 0;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.pr-composer {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+  margin-top: 1.1rem;
+}
+
+.pr-composer > :first-child {
+  width: 100%;
+}
+
+/* -- my files + maker links --------------------------------- */
+
+.pr-my {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+.pr-my-actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.pr-my-actions > * + * {
+  margin-left: 0.45rem;
+}
+
+.pr-row-removed td {
+  opacity: 0.62;
+}
+
+.pr-links-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.pr-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.pr-link-label {
+  font-weight: 700;
+}
+
+.pr-link-url {
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+.pr-link-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: flex-end;
+}
+
+/* -- upload wizard ------------------------------------------- */
+
+/* The upload + edit pages wear the standard page width
+ * (Sweep C1, 07-F4): the pre-remake 46rem cap left the form
+ * in the left half of a huge empty screen. 75rem is the
+ * site's 1200px standard measure. */
+.pr-upload-page {
+  max-width: 75rem;
+  margin-inline: auto;
+  width: 100%;
+}
+
+/* -- the upload wizard's step flow (Sweep C1) ---------------
+ * The inspection wizard's language: a quiet "Step N of 3"
+ * progress line over the panel title, one topic per screen,
+ * and each screen rising into place. */
+
+.pr-progress {
+  margin: 0 0 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.pr-step-panel {
+  animation: pr-step-in 0.3s ease both;
+}
+
+@keyframes pr-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-step-panel {
+    animation: none;
+  }
+}
+
+.pr-pick-hint {
+  margin: 0.9rem 0 0;
+}
+
+.pr-choice span.pr-choice-go {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* Step 2/3 two-column anatomy: the details column and the
+ * files column side by side on desktop, one column on a
+ * phone — designed at 390, not fitted. */
+.pr-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 1.6rem;
+  align-items: start;
+}
+
+.pr-upload-col {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .pr-upload-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The designed file door (FileDoor.tsx) wears the shared
+ * .tv-upload drop-zone face; these are its module seats. */
+.pr-door-drop {
+  margin: 0 0 var(--space-3);
+}
+
+.pr-door-input {
+  display: none;
+}
+
+/* The Next door's missing-piece line sits at the footer's
+ * left, in words, while the doors stay right. */
+.pr-next-hint {
+  margin: 0 auto 0 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* The publish step's live summary: what will go up, read
+ * back in the form's own labels. Headings brighter than
+ * their text (the standing hierarchy rule): the row labels
+ * are the quiet side, the values carry the ink. */
+.pr-summary {
+  margin-top: 0.6rem;
+  border-top: 1px solid var(--edge);
+  padding-top: 0.8rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.pr-summary-title {
+  margin: 0 0 0.2rem;
+  font-size: 0.98rem;
+}
+
+.pr-summary-row {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.pr-summary-row span {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.pr-summary-row strong {
+  text-align: right;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.pr-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: 0.9rem;
+}
+
+.pr-choice {
+  display: grid;
+  gap: 0.4rem;
+  text-align: left;
+  padding: 1rem 1.1rem;
+  border-radius: 0.7rem;
+  border: 1px solid var(--edge);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pr-choice:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 14px var(--accent-soft);
+}
+
+.pr-choice span {
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* The photo seat shows the chosen picture under itself, so the
+ * publisher sees the image the listing will carry before the
+ * form ever submits (owner report, 2026-11-08). */
+.pr-preview-thumb {
+  display: block;
+  margin-top: 0.6rem;
+  max-width: 11rem;
+  max-height: 11rem;
+  border: 1px solid var(--edge);
+  border-radius: 0.55rem;
+}
+
+.pr-rule {
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  line-height: 1.5;
+}
+
+.pr-modal-hint {
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.pr-modal-actions {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+/* -- showcase media: the Photos / Video tab + the viewer --- */
+
+.pr-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(10.5rem, 100%), 1fr));
+  gap: 0.8rem;
+}
+
+/* Uniform tiles (the uniformity rule): every item — photo or
+ * video — wears the same box, and the click takes the main
+ * highlight effect like the shelf's other clickable things. */
+.pr-media-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 0;
+  border: 1px solid var(--edge);
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pr-media-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 14px var(--accent-soft);
+}
+
+.pr-media-tile img,
+.pr-media-tile-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pr-media-tile-video {
+  pointer-events: none;
+}
+
+.pr-media-tile-static {
+  cursor: default;
+}
+
+.pr-media-tile-static:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.pr-media-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #000 55%, transparent);
+  color: #fff;
+  font-size: 1rem;
+  padding-left: 0.15rem;
+}
+
+.pr-media-duration {
+  position: absolute;
+  right: 0.45rem;
+  bottom: 0.45rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #000 62%, transparent);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.pr-media-cover {
+  position: absolute;
+  left: 0.45rem;
+  top: 0.45rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--text-on-accent, #17110a);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.pr-viewer-count {
+  margin-right: auto;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.pr-viewer-stage {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--edge);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  max-height: 70vh;
+}
+
+.pr-viewer-img {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  user-select: none;
+  transition: transform 0.18s ease;
+}
+
+.pr-viewer-img[data-zoom="1.5"] {
+  transform: scale(1.5);
+}
+
+.pr-viewer-img[data-zoom="2"] {
+  transform: scale(2);
+}
+
+.pr-viewer-img[data-zoom="3"] {
+  transform: scale(3);
+}
+
+.pr-viewer-img[data-zoom="4"] {
+  transform: scale(4);
+}
+
+.pr-viewer-img[data-zoom="5"] {
+  transform: scale(5);
+}
+
+.pr-viewer-video {
+  width: 100%;
+  max-height: 70vh;
+  background: #000;
+}
+
+/* -- the listing edit page's media manager ------------------ */
+
+.pr-media-grid-edit {
+  margin-bottom: 1rem;
+}
+
+.pr-media-cell {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.pr-media-cell-actions {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.pr-media-cell-actions .pr-text-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  text-decoration: none;
+}
+
+.pr-media-remove {
+  margin-left: auto;
+  color: var(--lv-danger, #e5534b);
+}
+
+/* -- the upload form's staged media (2026-11-10) ------------
+ * Staged photos wear the edit page's own grid + tiles, so the
+ * set the publisher assembles in the form is the set the edit
+ * page and the Photos / Video tab will show. */
+
+.pr-staged-grid {
+  margin: 0.6rem 0;
+}
+
+.pr-staged-name {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pr-staged-video {
+  max-width: 22rem;
+  margin-top: 0.6rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.pr-staged-video-el {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--edge);
+  border-radius: 0.6rem;
+  background: #000;
+}
+
+/* -- Home widget teasers (2026-11-09): the flyer-widget pair's
+ * shape, square for print previews — a 2rem thumb (or the
+ * module's parts-icon face in the same box) beside the title. */
+.prints-widget-cell {
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.prints-widget-thumb {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border: 1px solid var(--edge-strong);
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.prints-widget-thumb--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+/* The phone-only second line inside the file cell (FIX4):
+ * hidden on desktop, where the facts live in their own
+ * columns; the phone rules below reveal it when those
+ * columns fold away. */
+.pr-file-meta {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .pr-record-head {
+    flex-wrap: wrap;
+  }
+
+  /* FIX4 phone tables (2026-11-11, sweep 07-F2): the browse
+   * list kept a 640px minimum inside a sideways scroll with
+   * no cue, so only 2 of 7 columns showed and the Download
+   * buttons — the page's whole point — were clipped off the
+   * right edge. At phone width the list FITS instead: the
+   * file cell (thumb + title, with the folded facts as a
+   * second line under the title) and the Download column
+   * stay; the secondary columns fold into that second line.
+   * Every fact remains on the row and on the detail page;
+   * the desktop true list is untouched above 640px. My
+   * Files gets the same treatment (its actions column is
+   * the one that must never scroll away). */
+  .pr-table {
+    min-width: 0;
+  }
+  .pr-table--browse th:nth-child(2),
+  .pr-table--browse th:nth-child(3),
+  .pr-table--browse th:nth-child(4),
+  .pr-table--browse th:nth-child(5),
+  .pr-table--browse th:nth-child(6),
+  .pr-table--browse td:nth-child(2),
+  .pr-table--browse td:nth-child(3),
+  .pr-table--browse td:nth-child(4),
+  .pr-table--browse td:nth-child(5),
+  .pr-table--browse td:nth-child(6),
+  .pr-table--my th:nth-child(2),
+  .pr-table--my th:nth-child(3),
+  .pr-table--my th:nth-child(4),
+  .pr-table--my td:nth-child(2),
+  .pr-table--my td:nth-child(3),
+  .pr-table--my td:nth-child(4) {
+    display: none;
+  }
+  .pr-file-cell {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  .pr-file-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .pr-file-meta {
+    display: block;
+    flex: 1 1 100%;
+    min-width: 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  .pr-my-actions {
+    white-space: normal;
+  }
+}
+
+/* New-content / per-file alert boxes (sweep E4): same row
+ * shape as the Downloads seat — name strong, help quiet, the
+ * switch at the right. */
+.ca-alert-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--surface, #1b1b1f);
+  border: 1px solid var(--edge, #2c2c33);
+  border-radius: 0.85rem;
+  padding: 1rem 1.25rem;
+  margin-top: 1.25rem;
+}
+.ca-alert-name {
+  margin: 0;
+  font-weight: 600;
+  /* Theme text tokens (defined in both modes): the heading
+   * takes the full ink, the help the muted step below it —
+   * the site's heading-over-description hierarchy. */
+  color: var(--text);
+}
+.ca-alert-help {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+}

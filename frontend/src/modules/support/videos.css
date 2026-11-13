@@ -1,0 +1,171 @@
+/* How-to videos — the landing page (/how-to-videos) and the
+ * Home widget (owner, 2026-11-06). ONE row anatomy in both
+ * seats: the video's thumbnail in the left column, its name
+ * and description in the right column. The rows' hover is the
+ * site-wide hover system's ROWS treatment — .tv-video-row is
+ * registered in that system's lists in railsteel-panels.css,
+ * so the accent outline/glow the owner calls the Main
+ * highlight effect comes from the one shared source.
+ *
+ * Row height is a single variable so the Home widget's list
+ * caps at EXACTLY three rows with the rest scrolling inside
+ * the widget (the Notifications capped-list pattern): every
+ * row is the same height, name on one line, description
+ * clamped to two, so three rows always measure the same. */
+
+.tv-video-list {
+  --tv-video-row-h: 5.5rem;
+}
+
+/* The Home widget's cap: three rows tall, the rest scroll. */
+.tv-video-list--capped {
+  max-height: calc(var(--tv-video-row-h) * 3);
+  overflow-y: auto;
+}
+
+.tv-video-row {
+  display: grid;
+  grid-template-columns: 7.33rem minmax(0, 1fr);
+  gap: 0.875rem;
+  align-items: center;
+  height: var(--tv-video-row-h);
+  padding: 0 0.75rem;
+  border: 0;
+  border-bottom: 1px solid var(--edge);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tv-video-row:last-child {
+  border-bottom: 0;
+}
+
+/* The landing page's now-playing row: a steady accent wash
+ * under the hover system's treatment (which overrides it
+ * while hovered — the stronger state wins, as it should). */
+.tv-video-row[data-selected] {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.tv-video-thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--edge);
+  border-radius: calc(var(--radius) - 2px);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.tv-video-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The play disc over the thumbnail — paint, not a control;
+ * the row itself is the click target. */
+.tv-video-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.tv-video-play::before {
+  content: "";
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.55);
+}
+
+.tv-video-play::after {
+  content: "";
+  position: absolute;
+  margin-left: 0.14rem;
+  border-left: 0.62rem solid #fff;
+  border-top: 0.4rem solid transparent;
+  border-bottom: 0.4rem solid transparent;
+}
+
+.tv-video-main {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.tv-video-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-video-desc {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* -- the page head is the shared section-page header kit
+ * (SectionPageHeader; its .tv-secpage-* styles live in
+ * theme/surfaces.css) — no per-module head rules remain. -- */
+
+/* -- the player (the Help tab's embed frame, full width) -- */
+
+.tv-video-player {
+  margin-bottom: 1rem;
+}
+
+.tv-video-player-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+}
+
+.tv-video-player-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.tv-video-player-title {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.tv-video-player-desc {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Phones: the thumbnail column narrows; the row height does
+ * not move (the uniformity rule — the cap stays three rows). */
+@media (max-width: 480px) {
+  .tv-video-row {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 0.625rem;
+    padding: 0 0.5rem;
+  }
+}

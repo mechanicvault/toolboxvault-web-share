@@ -1,0 +1,842 @@
+/* =====================================================================
+ * THE WIDGET KIT — the ONE definition site for Home widget BODY
+ * registers (widget uniformity lane, 2026-11-10; Ryan's standing
+ * law: all widgets share one centralized design — same fonts,
+ * sizes, weights and layouts; only the CONTENT adjusts, never
+ * the style. A widget body that needs a text treatment uses a
+ * register below or one of the kit's named siblings; it never
+ * invents its own font size, weight, family or spacing.)
+ *
+ * THE REGISTERS (each defined exactly once, at the site named):
+ *
+ * - Panel chrome + panel title — .tv-panel / .tv-panel-title
+ *   (theme/surfaces.css; the railsteel seat adds the display
+ *   family + caps in theme/themes/railsteel-core.css).
+ * - Widget title row — .tv-widget-head + .tv-stat-icon chip +
+ *   .tv-widget-title (base size) + .tv-widget-title-link
+ *   (theme/themes/railsteel-home.css).
+ * - Headline — .tv-widget-headline (700, base size;
+ *   railsteel-home.css). A widget's one lead line.
+ * - Lines + rows — .tv-widget-line / .tv-widget-row /
+ *   .tv-widget-cell (small size, soft ink; railsteel-home.css
+ *   seats the lines, THIS FILE seats the rows). Muted prose is
+ *   .tv-muted (railsteel-home.css); the activity list's text is
+ *   .tv-home-activity-text (this file).
+ * - Stat tile (CANONICAL — the small stat boxes Ryan praised:
+ *   label over value) — .tv-stat-label / .tv-stat-value
+ *   (theme/surfaces.css: label = xs / 700 / caps / 0.07em /
+ *   muted; value = 2xl / 800 / tabular, centered, stepping
+ *   down as its card narrows). A widget's own stat cells
+ *   (.tv-widget-stat-*, THIS FILE) wear the HEADER FACTS
+ *   register instead (.tv-fact-label / .tv-fact-value:
+ *   0.78rem / 600 label over 1.05rem / 700 value, left-aligned
+ *   as one unit) — the register the Header Studio's stage
+ *   facts wear; fix 5 (2026-11-11) moved the cells off the
+ *   tiles' 2xl / 800, which read cartoonish at cell widths.
+ * - Micro-label (section / group / tag labels inside bodies) —
+ *   display family / 0.72rem / 700 / 0.12em / uppercase, in two
+ *   inks by role (heading hierarchy, owner 2026-11-10): labels
+ *   heading CONTENT groups take full ink — .tv-widget-group-
+ *   label and the admin boxes' .tv-admin-subhead — while
+ *   labels heading VALUE columns stay muted (the stat
+ *   pattern): .tv-widget-row--head and .tv-panel-count
+ *   (railsteel-panels.css). .tv-qr-format wears the muted
+ *   register (a format tag, not a heading).
+ * - Showcase tiles — .tv-widget-tile-title (small / 600) +
+ *   .tv-widget-tile-sub (xs, muted) — THIS FILE.
+ * - Buttons — the shared .tv-btn via buttonClasses(); a widget
+ *   never styles its own button text.
+ * - Header facts (the header seat of the stat family: bare
+ *   facts in the header bar) — .tv-fact-label / .tv-fact-value
+ *   (theme/surfaces.css; label 0.78rem / 600 caps muted, value
+ *   1.05rem / 700). Section headers render them through
+ *   SectionPageFactItem, and the Home header stats render
+ *   through the SAME item into the SAME .tv-secpage-facts
+ *   row — since the uniformity lane's header commit there is
+ *   no Home-private stat register (the old .tv-home-hstat-*
+ *   grid of ringed cells is retired; Ryan: the stats look
+ *   like Inventory's facts, no boxes). One stat family, two
+ *   seats: the facts register in headers, the tile register
+ *   in cards — a stat wears its seat's register, and no
+ *   third treatment may be invented.
+ * - Section / category headings over text (text-hierarchy
+ *   rule, 2026-11-10; baseline: the Shared Tools 'How it
+ *   works' panel) — a heading is the strongest text over
+ *   what sits under it: full --text ink at 600–700
+ *   (.tv-panel-title, .tv-peer-how-title measured); group
+ *   heads in list surfaces (.tv-home-gallery-group h3,
+ *   .tv-block-opts-label, the stats picker's row/group
+ *   heads) wear the same full-ink heading register at
+ *   their scale. Quiet tones are for the text UNDER a
+ *   heading (descriptions, notes) and for stat/fact LABELS
+ *   (the label-over-value pattern) — never for a heading
+ *   over brighter entries.
+ * - List add/remove controls (owner rule, 2026-11-10) —
+ *   .tv-list-add-btn / .tv-list-remove-btn
+ *   (theme/surfaces.css): on lists, add is a green + disc
+ *   and remove a red − disc; never text buttons on a list.
+ *   Primary Add buttons are not lists and never wear these.
+ *   The discs are FULL RENDERED ICONS (owner correction,
+ *   2026-11-10): the glossy reference treatment — radial
+ *   gloss, white inset ring, white glyph with a depth edge,
+ *   soft drop shadow — never a flat tinted disc. The overlay-
+ *   seat sibling .tv-box-x (railsteel-home.css) wears the
+ *   identical treatment; the two definitions are one icon.
+ *
+ * Everything below moved here verbatim from theme/components.css
+ * (its tail, lines 1430+) in the uniformity lane so the widget
+ * body rules live in one file; the lane's normalizations are
+ * marked "uniformity 2026-11-10" where they land.
+ * ===================================================================== */
+/* ==================== Home notifications list ==================== */
+/* The Home block's activity list (NotificationsBlock). The base
+ * layout lived inline on the <ul> until 2026-11-01; it is a class
+ * now so the capped variant below can ride the same element. */
+.tv-home-activity {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.tv-home-activity-item {
+  color: var(--text);
+}
+/* Owner 2026-11-01: the Home notifications block shows only a few
+ * rows — the rest scroll inside the block (the global slim
+ * scrollbar in base.css styles the region). The component applies
+ * this class only when the list is longer than five, so short
+ * lists render exactly as before. The height is sized to five
+ * rows of the shipping theme's item metrics (railsteel-panels.css:
+ * 9px + 9px padding and a 1px rule around one 0.9375rem × 1.5 text
+ * line ≈ 2.594rem per row, plus the four 0.5rem grid gaps between
+ * five rows ≈ 14.97rem); a row whose text wraps simply shows a
+ * little less of the next one. */
+.tv-home-activity--capped {
+  max-height: 15rem;
+  overflow-y: auto;
+}
+
+/* The Home notifications block's one-line empty note (the
+ * unread-only caught-up line, Wave 4 batch A) — the class home
+ * for the muted, margin-less paragraph the block's older empty
+ * state still writes inline. */
+.tv-home-empty-note {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Widget options Wave 4 batch A: the cap is the block's rows
+ * option (3 / 5 / 8) — the 15rem base above IS the 5-row
+ * height, so each option is 3rem per row on the same sizing
+ * logic (the widget row sets' caps work the same way). */
+.tv-home-activity--capped[data-rows="3"] {
+  max-height: 9rem;
+}
+.tv-home-activity--capped[data-rows="5"] {
+  max-height: 15rem;
+}
+.tv-home-activity--capped[data-rows="8"] {
+  max-height: 24rem;
+}
+
+/* Read state + click-through (owner 2026-11-02): the Home rows
+ * ride the bell popup's inbox seam and click-through handler,
+ * but the read-state treatment is the dot ALONE (owner
+ * correction, later the same day): unread, the tone dot glows;
+ * read, it greys to the edge color with no glow. The text runs
+ * IDENTICAL read and unread — same weight, same ink — the lit
+ * dot is the only difference between a new row and a read one.
+ * (The bell popup and the notifications page keep their own
+ * text emphasis; this treatment is the Home widget's only.)
+ * Structural rules live here unscoped so every theme reads the
+ * same; the row's padding and rule stay in the theme layer
+ * (railsteel-panels.css). */
+.tv-home-activity-main {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
+}
+button.tv-home-activity-main {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+button.tv-home-activity-main:hover .tv-home-activity-text {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.tv-home-activity-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  margin-top: 7px;
+  background: var(--glow-dot-bg);
+  box-shadow: var(--glow-dot-shadow);
+}
+.tv-home-activity-dot[data-tone="success"] {
+  background: var(--success);
+  box-shadow: none;
+}
+.tv-home-activity-dot[data-tone="warning"] {
+  background: var(--warning);
+  box-shadow: none;
+}
+.tv-home-activity-dot[data-tone="danger"] {
+  background: var(--danger);
+  box-shadow: none;
+}
+.tv-home-activity-item[data-read] .tv-home-activity-dot {
+  background: var(--edge-strong);
+  box-shadow: none;
+}
+.tv-home-activity-text {
+  overflow-wrap: anywhere;
+  /* No read-state rules on the text (owner 2026-11-02): read
+   * and unread rows share this exact weight and ink; only the
+   * dot above changes with read state. */
+}
+
+/* ==================== Home widget whole-box link ==================== */
+/* Owner 2026-11-02: a module widget's whole box is the link, not
+ * just its "Open" text. The cover anchor is a real element laid
+ * over the whole panel (.tv-panel is positioned; the anchor is
+ * inset 0), so the box is ONE real link — native hit testing,
+ * keyboard focus (the base :focus-visible ring hugs the whole
+ * box, the anchor being box-sized), and Enter all work. (An
+ * ::after stretch was tried first and dropped: geometry queries
+ * reported the pseudo-element on top, but real input hit-tested
+ * straight past it to the panel in this layout — proof caught
+ * it, 2026-11-02.) The visible "Open" face rides inside the
+ * anchor, positioned over the head row; an identical in-flow
+ * span in the head (the seat) holds the space and keeps the
+ * title clear of it. The widget body carries no other
+ * interactive elements, so the cover shadows nothing. In Edit
+ * view there is no cover and the head's face renders inert —
+ * the box never navigates while customizing. */
+.tv-widget-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--radius-lg);
+}
+.tv-widget-cta--cover {
+  position: absolute;
+  top: var(--spacing);
+  right: var(--spacing);
+}
+.tv-widget-cta--seat {
+  visibility: hidden;
+}
+.tv-home-widget:hover .tv-widget-title {
+  color: var(--accent);
+}
+
+/* ==================== Home widget rows + actions ==================== */
+/* Widget options Wave 1 framework: structured rows (columns of
+ * facts) and an actions slot (real buttons/links) a widget may
+ * supply alongside its plain lines. Both live in the widget's
+ * interactive layer — positioned above the whole-box cover
+ * anchor (z-index 1) — so a row link or an action button is
+ * hit-tested as ITSELF in real clicks, never shadowed by the
+ * box link (the cover-anchor lesson, 2026-11-02: this is proven
+ * with real clicks, not geometry reads). The plain lines stay
+ * under the cover, exactly as before: clicking line text still
+ * follows the box. */
+.tv-widget-rowset {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 3px;
+}
+.tv-widget-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tv-widget-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--text-soft);
+  font-size: var(--font-size-sm);
+}
+.tv-widget-cell {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.tv-widget-row--link {
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+.tv-widget-row--link:hover {
+  color: var(--accent);
+}
+.tv-widget-actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* ==================== Home widget row sets (Wave 2) ==================== */
+/* Capped row lists (the Notifications pattern): the first few
+ * rows show, the rest scroll inside the box on the slim global
+ * scrollbar. A widget row is one text line at the small size —
+ * line-height 1.5 ≈ 1.31rem — plus the 3px row gap, so each
+ * visible count's cap is N rows at ≈1.5rem plus a small bleed,
+ * the same sizing logic as the notifications cap (a row whose
+ * text wraps simply shows a little less of the next one). */
+.tv-widget-rows--capped {
+  overflow-y: auto;
+}
+.tv-widget-rows--capped[data-visible="1"] {
+  max-height: 1.7rem;
+}
+.tv-widget-rows--capped[data-visible="2"] {
+  max-height: 3.2rem;
+}
+.tv-widget-rows--capped[data-visible="3"] {
+  max-height: 4.7rem;
+}
+.tv-widget-rows--capped[data-visible="4"] {
+  max-height: 6.2rem;
+}
+.tv-widget-rows--capped[data-visible="5"] {
+  max-height: 7.7rem;
+}
+.tv-widget-rows--capped[data-visible="6"] {
+  max-height: 9.2rem;
+}
+/* The full-width table shape's column headings: stencil caps,
+ * the list standard's header row in miniature. */
+.tv-widget-row--head {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--edge);
+}
+/* Named row groups (Borrowing's two lists): stacked at half
+ * width; side by side at full width, each capped and scrolling
+ * on its own. */
+.tv-widget-groups {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: 3px;
+}
+.tv-widget-groups[data-side="true"] {
+  flex-direction: row;
+}
+.tv-widget-groups[data-side="true"] .tv-widget-group {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.tv-widget-group-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* Heading hierarchy (owner rule, 2026-11-10): a group label
+   * heads CONTENT (lines/tiles), so it is the stronger text of
+   * its pair — full ink, same as .tv-block-opts-label and the
+   * gallery group heads. The micro-labels that head VALUE
+   * columns (.tv-widget-row--head) stay muted: label-over-value
+   * is the praised stat pattern, a different family. */
+  color: var(--text);
+  margin-bottom: 3px;
+}
+/* ==================== Widget showcase strips + stats (dashboard-flare) ==================== */
+/* The glanceable stats grid: identical cells, so a widget's
+ * headline facts line up wherever the grid is used. Two
+ * columns on a narrow box, four across a wide one.
+ * Register (fix 5, 2026-11-11): the cells wear the HEADER
+ * FACTS register — the treatment the Header Studio's stage
+ * facts and the Home header facts wear (.tv-fact-label /
+ * .tv-fact-value in surfaces.css, measured live in the rig:
+ * label 0.78rem / 600 / caps / 0.05em / muted over value
+ * 1.05rem / 700 / tabular, the pair left-aligned as one
+ * unit). The cells previously wore the page tiles' 2xl / 800
+ * register (.tv-stat-value), which at widget-cell widths
+ * never stepped down far enough and read giant and
+ * cartoonish beside the header facts directly above them —
+ * the owner's own screenshot flagged "Free" and "394 of 20"
+ * shouting inside the Account & Plan widget. The PAGE tiles
+ * keep their own seat register in surfaces.css; this seat
+ * follows the facts. The value steps down as its cell
+ * narrows, re-derived from the new base (the cell is the
+ * container, and the same two-class specificity lesson from
+ * surfaces.css applies to the step rules). */
+.tv-widget-stats {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.tv-widget-stat {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
+  padding: var(--space-2);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2, transparent);
+}
+.tv-widget-stat-label {
+  /* The facts-register label, verbatim from .tv-fact-label
+   * (surfaces.css) — measured on the Studio stage at
+   * 12.48px / 600 / 0.624px spacing. */
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.25;
+  overflow-wrap: break-word;
+}
+.tv-widget-stat-value {
+  /* The facts-register value, verbatim from .tv-fact-value
+   * (surfaces.css) — measured on the Studio stage at
+   * 16.8px / 700. Left-aligned under its label, like the
+   * stage facts: label and value read as one unit. */
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+/* Step-downs re-derived from the facts base (16.8px): a
+ * gentle ladder — base size, then small — so narrow cells
+ * keep every character instead of truncating, and no step
+ * ever lands back in the old giant register. */
+@container (max-width: 280px) {
+  .tv-widget-stat .tv-widget-stat-value {
+    font-size: var(--font-size-base);
+  }
+}
+@container (max-width: 215px) {
+  .tv-widget-stat .tv-widget-stat-value {
+    font-size: var(--font-size-sm);
+  }
+}
+/* Showcase strips: tiles in a sideways-scrolling row inside
+ * the widget's interactive layer (above the whole-box cover).
+ * Every tile is the same size, its thumb the same frame —
+ * the uniformity rule — with the title under it and an
+ * optional sub-line (a count, a rating). Hover carries the
+ * main highlight effect: a small lift, the accent outline,
+ * a soft glow. */
+.tv-widget-strip-wrap {
+  position: relative;
+  z-index: 2;
+  margin-top: var(--space-3);
+}
+.tv-widget-strip {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: 2px 2px var(--space-2);
+  scrollbar-width: thin;
+}
+.tv-widget-tile {
+  flex: 0 0 auto;
+  width: 7.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-decoration: none;
+  color: var(--text-soft);
+  border-radius: var(--radius-sm);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+a.tv-widget-tile:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--text);
+}
+.tv-widget-tile-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2, transparent);
+  color: var(--text-muted);
+}
+.tv-widget-tile-thumb[data-dark="true"] {
+  background: #10151d;
+}
+/* A tile whose thumbnail node carries its own tile (the
+ * dealers' CompanyLogo): the strip frame steps aside — no
+ * second border or ground — and just centers the node. */
+.tv-widget-tile-thumb[data-bare="true"] {
+  border: none;
+  background: transparent;
+}
+/* Only the thumbnail img the strip itself renders (a direct
+ * child) crops to fill its frame. A thumbNode carries its own
+ * tile and its own img contract — the dealers' CompanyLogo
+ * letterboxes its artwork (.tv-logo-tile img, contain) — so
+ * this rule must not reach inside it. */
+.tv-widget-tile-thumb > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.tv-widget-tile-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.tv-widget-tile-sub {
+  /* Uniformity 2026-11-10: the sub-line register is the xs
+   * token (the one-off 0.78rem literal is retired). */
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+/* The videos strip's tiles are wider — a video thumbnail is
+ * a 16:9 frame. */
+.tv-widget-strip--videos .tv-widget-tile {
+  width: 10.5rem;
+}
+.tv-widget-strip--videos .tv-widget-tile-thumb {
+  aspect-ratio: 16 / 9;
+}
+/* Quick Reports widget rows (dashboard-flare): one report per
+ * row — name, the format it will run, and its Run button
+ * pinned right, the same seat on every row. */
+.tv-qr-rows {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 3px;
+}
+.tv-qr-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 3px 0;
+}
+.tv-qr-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+.tv-qr-name {
+  color: var(--text-soft);
+  font-size: var(--font-size-sm);
+  overflow-wrap: anywhere;
+}
+.tv-qr-format {
+  /* Uniformity 2026-11-10: the format tag wears the kit
+   * micro-label register verbatim (display family / 0.72rem /
+   * 700 / 0.12em / uppercase / muted — the same values as
+   * .tv-widget-group-label and .tv-widget-row--head above),
+   * not its own body-family variant. */
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+/* ==================== Floating save (dashboard-flare) ==================== */
+/* The seated save's anchor is a plain inline wrapper; the
+ * floating twin pins bottom-right above the content (below
+ * drawers and modals in the z scale) with a lift shadow so it
+ * reads as a control floating over the page in both themes. */
+.tv-sticky-save-anchor {
+  display: inline-flex;
+}
+.tv-sticky-save {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: calc(var(--z-header) + 10);
+}
+.tv-sticky-save .tv-btn {
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+}
+/* Full-width table grids: at full width a widget's rows line
+ * up in real columns (one template per widget, carried on the
+ * row set); at half width the rows stay the plain flex rows
+ * above. Buttons in a row (the truck + Entry) center against
+ * their row instead of riding the text baseline. */
+.tv-widget-rows--cols-truck[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 0.9fr) minmax(0, 1fr)
+    auto;
+  align-items: center;
+}
+.tv-widget-rows--cols-claims[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr) auto minmax(0, 1.2fr);
+  align-items: center;
+}
+/* Borrowing lend rows (Sweep B1, 01-F7): Item · Person · Due back. */
+.tv-widget-rows--cols-borrowing[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: center;
+}
+.tv-widget-rows--cols-inventory[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+  align-items: center;
+}
+.tv-widget-rows--cols-forum[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) auto minmax(0, 1fr);
+  align-items: center;
+}
+/* Maintenance coming-up rows (Wave 4 batch A): Item · What's
+ * due · Due date — the due-date column is the full-width gain. */
+.tv-widget-rows--cols-maintenance[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.6fr) minmax(0, 1fr);
+  align-items: center;
+}
+/* Wave 4 batch B full-width row grids: Support gains the
+ * last-updated column, Tool Expansion the fits-your-item
+ * column, My Parts the quantity, Tools For Sale the price,
+ * Messages the per-conversation unread count, Wishlist the
+ * priority marker. (Feedback and Shared tools ride the named
+ * row groups instead — no per-row grid.) */
+.tv-widget-rows--cols-support[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: center;
+}
+.tv-widget-rows--cols-expansion[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+  align-items: center;
+}
+.tv-widget-rows--cols-parts[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 0.7fr);
+  align-items: center;
+}
+.tv-widget-rows--cols-marketplace[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: center;
+}
+/* 3D Print Files widget rows (2026-11-09): File · Rating ·
+ * Downloads at full width; with ratings off the row is File ·
+ * Downloads (the -nr template). */
+.tv-widget-rows--cols-prints[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr) minmax(0, 0.6fr);
+  align-items: center;
+}
+.tv-widget-rows--cols-prints-nr[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 0.6fr);
+  align-items: center;
+}
+.tv-widget-rows--cols-messaging[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 0.7fr);
+  align-items: center;
+}
+.tv-widget-rows--cols-wishlist[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) auto;
+  align-items: center;
+}
+/* Dealers near you (widget wave 2): Dealer · Agent · Distance
+ * at full width. The dealer cell seats the directory's own
+ * CompanyLogo tile beside the company name; the agent cell
+ * seats the agent's photo where they published one. */
+.tv-widget-rows--cols-near[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: center;
+}
+.tv-near-dealer,
+.tv-near-agent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.tv-near-photo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+}
+/* Health checks due (widget wave 2): Item · Needs attention
+ * at full width. The item cell seats the item's own photo
+ * thumbnail (the scan's rendition) beside its name where the
+ * item has a photo — an item flagged FOR its photo simply
+ * carries no thumbnail. */
+.tv-widget-rows--cols-health[data-size="full"] .tv-widget-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.6fr);
+  align-items: center;
+}
+.tv-health-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.tv-health-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex: none;
+}
+/* The favorite star toggle (forum favorites, Wave 3): a quiet
+ * chip in a thread / board-post page header. Pressed = the
+ * member's star: accent ink and a filled star (the rail pin's
+ * trick — the Glyph svg takes the fill). */
+.tv-fav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  background: none;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tv-fav-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.tv-fav-btn[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.tv-fav-btn[aria-pressed="true"] svg {
+  fill: var(--accent);
+}
+.tv-fav-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+/* The truck quick entry (Wave 2): the per-row button and the
+ * form it opens inside the widget's actions layer. */
+.tv-widget-entry-btn {
+  background: none;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  padding: 2px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tv-widget-entry-btn:hover {
+  border-color: var(--accent);
+}
+.tv-widget-entry-form {
+  flex: 1 1 100%;
+  display: grid;
+  gap: var(--space-2);
+  border-top: 1px solid var(--edge);
+  padding-top: var(--space-2);
+}
+.tv-widget-entry-row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: end;
+}
+.tv-widget-entry-row > * {
+  min-width: 0;
+}
+.tv-widget-entry-note {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+.tv-widget-entry-error {
+  color: var(--danger);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+.tv-widget-entry-flash {
+  flex: 1 1 100%;
+  color: var(--text-soft);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+/* Quick Add widget (widget wave 2 build 3): one box — the name
+ * row (input + go button) over the photo drop zone, which wears
+ * the shared .tv-upload face at a widget-modest height. The
+ * same anatomy at half and full width; only the stretch
+ * differs. */
+.tv-quickadd {
+  flex: 1 1 100%;
+  display: grid;
+  gap: var(--space-2);
+}
+.tv-quickadd-form {
+  display: flex;
+  gap: var(--space-2);
+}
+.tv-quickadd-form > .tv-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.tv-quickadd .tv-upload {
+  padding: var(--space-3) var(--space-4);
+}

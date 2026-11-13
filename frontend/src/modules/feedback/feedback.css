@@ -1,0 +1,363 @@
+/* Feedback board LIST (list-standard Wave 5, 2026-11-02): a
+   true list — one post per ROW, its facts spread in COLUMNS
+   across the row (post / type / status / author / date /
+   comments / votes), with a header row. Built on the dealer
+   directory's proven CSS-grid role=table family (.tv-dir-table
+   in dealers.css): the table scrolls sideways on narrow
+   screens rather than crushing the columns, so the table
+   itself is allowed to shrink below the rows' min-content
+   width (min-width: 0 + overflow-x: auto). The post BODY no
+   longer rides the row as an excerpt paragraph — the full
+   text lives on the post detail page, where it already
+   rendered. The vote control stays in the row's Votes cell,
+   working exactly as it did in the panel.
+   Boards lane (2026-11-07): the URGENCY column joins between
+   Status and Author — the filer's Low/Medium/High pill, so
+   triage reads at a glance.
+   Tighten (owner, 2026-11-09): the column padding shrinks to
+   the tight standard — slimmer row padding, a narrower gutter
+   — and the row's moving parts become fixed-footprint (the
+   author cell and the vote control below), so a row's height
+   is set by its text alone, never by a control's state.
+   Width repair (owner catch, 2026-11-09): the board PAGE sat
+   in an 880px wrapper (BoardPage in pages.tsx, there since
+   the boards were built) while the row's own hard minimums —
+   the minmax floors below plus min-width: 920px — summed to
+   ~995px, so the list scrolled sideways inside a page that
+   already read as shrunk next to every full-width sibling.
+   The tighten lane's rig measured row heights and control
+   sizes but never the table's fit, so the disease survived
+   it. The page cap is gone (pages.tsx) and the grid below
+   now sizes like the rest of the site: the title takes the
+   slack (its 1.5fr), the fact columns carry honest minimums
+   that sum under any desktop container, and no row-level
+   min-width forces a floor past the container. On a phone
+   the track minimums still overflow the screen, so the
+   table keeps its sanctioned sideways scroll there. */
+/* The post page's narrow column (breadcrumbs over the door /
+   the error alert). Sweep B8 (2026-11-12): the post page's old
+   880px cap left the right of a desktop screen empty while
+   every sibling reads at the standard content width — the cap
+   is gone here and on the post page itself, both now riding
+   the shared --max-content-width token (the Health Check
+   page's 2026-11-09 repair is the precedent). */
+.tv-fb-narrow {
+  display: grid;
+  gap: 1rem;
+  max-width: var(--max-content-width);
+}
+
+.tv-fb-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-fb-thead,
+.tv-fb-row {
+  display: grid;
+  grid-template-columns:
+    minmax(140px, 1.5fr) 5rem minmax(105px, 0.7fr) 6rem
+    minmax(112px, 0.8fr) 6rem 7.5rem 4.5rem;
+  gap: 0.35rem 0.5rem;
+  align-items: center;
+  padding: 0.3rem 0.25rem;
+}
+
+.tv-fb-thead > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tv-fb-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-fb-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-fb-cell-title {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.tv-fb-cell-author,
+.tv-fb-cell-date {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* The author cell is a STACKED-COMPACT byline, identical on
+   every row (tighten, 2026-11-09): the name on its own line
+   (ellipsis if it ever outgrows the column), the account
+   number unbreakable on the line under it. As a bare inline
+   string it used to wrap wherever the column squeezed it —
+   mid-token, "TV-M-" over "000017" — stretching rows to two
+   or three uneven lines; a one-line treatment instead
+   ellipsized the name to a stub ("R…") at the board page's
+   narrow column. Stacked, both halves always read whole and
+   every row carries the same author block. */
+.tv-fb-cell-author {
+  display: grid;
+  gap: 0.05rem;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.tv-fb-cell-author-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tv-fb-cell-author-num {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* The vote control (tighten, 2026-11-09): a DEDICATED compact
+   control, not the shared Button. In the steel themes a
+   primary Button is a worn accent plate with 1.9rem of inline
+   padding, so the moment a post was voted, its control grew
+   ~40px wider than an unvoted one and stuck out past the
+   table's edge — the extension the owner screenshotted. This
+   box never changes size: one fixed footprint in both states,
+   the voted state told by the accent fill alone (the count
+   still reads at a glance). Signed-out readers get the same
+   box as a static span, so the column reads uniformly for
+   everyone. */
+.tv-fb-vote {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  width: 3.5rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge-strong);
+  background: var(--surface-2, rgba(127, 127, 127, 0.08));
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+
+.tv-fb-vote:hover {
+  border-color: var(--accent);
+}
+
+.tv-fb-vote:active {
+  transform: translateY(1px);
+}
+
+.tv-fb-vote:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tv-fb-vote[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent-strong);
+  color: var(--text-on-accent);
+}
+
+.tv-fb-vote--static {
+  cursor: default;
+}
+
+.tv-fb-vote--static:active {
+  transform: none;
+}
+
+/* The filing forms — Report a bug / Request a feature
+   (tighten, 2026-11-09): the same tighter standard as the
+   list, scoped to the compose panel + form so no other form
+   on the site moves. No field changes, the urgency toggle is
+   untouched, the submit behaves as before — only the air
+   between things shrinks (the form's own gap tightens in
+   pages.tsx alongside). */
+.tv-fb-compose-panel {
+  padding: 0.85rem var(--spacing) 0.95rem;
+}
+
+.tv-fb-compose .tv-field-label {
+  margin-bottom: 0.2rem;
+}
+
+.tv-fb-compose .tv-input {
+  padding-top: 0.34rem;
+  padding-bottom: 0.34rem;
+}
+
+.tv-fb-compose .tv-field-hint {
+  margin-top: 0.25rem;
+}
+
+/* The post page's header action cluster (Wave 3): the favorite
+   star + the status badge, riding at the title row's right. */
+.tv-post-head-actions {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+/* The urgency toggle (boards lane, 2026-11-07): the owner's
+   3-position switch with flare — one segmented steel switch,
+   the chosen segment filled with its level's color (low =
+   steel blue-grey, medium = amber, high = red), white text on
+   the lit segment in both themes. Unlit segments stay quiet:
+   panel surface, hairline seams, muted words. The segments
+   are real radio-role buttons, so the keyboard and screen
+   readers get the switch too. */
+.tv-urgency-toggle {
+  display: inline-flex;
+  border: 1px solid var(--edge, rgba(127, 127, 127, 0.35));
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--surface-2, rgba(127, 127, 127, 0.08));
+}
+
+.tv-urgency-seg {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.42rem 0.95rem;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.tv-urgency-seg + .tv-urgency-seg {
+  border-left: 1px solid var(--edge, rgba(127, 127, 127, 0.35));
+}
+
+.tv-urgency-seg:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.tv-urgency-seg:focus-visible {
+  outline: 2px solid var(--accent, #e07b39);
+  outline-offset: -2px;
+}
+
+.tv-urgency-seg:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.tv-urgency-seg--on[data-level="low"] {
+  background: #5b7a99;
+  color: #fff;
+}
+
+.tv-urgency-seg--on[data-level="medium"] {
+  background: #d97706;
+  color: #fff;
+}
+
+.tv-urgency-seg--on[data-level="high"] {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* The moderator panel's urgency block: stacked over the
+   status form, one rhythm with it. */
+.tv-fb-mod-urgency {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+/* The Home board widgets (boards lane, 2026-11-07): recent
+   posts as compact rows — title left, urgency pill + vote
+   count right, the whole row the link to the post (inert in
+   Home Edit view, where rows render as plain divs). */
+.tv-board-widget-rows {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.tv-board-widget-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+
+a.tv-board-widget-row:hover {
+  background: var(--surface-2, rgba(127, 127, 127, 0.08));
+}
+
+.tv-board-widget-name {
+  /* Uniformity 2026-11-10: the row register — small size at
+   * 600, the .tv-widget-tile-title weight — not the inherited
+   * base size every other widget row avoids. */
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tv-board-widget-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  /* Uniformity 2026-11-10: the small token, not the one-off
+   * 0.9rem literal. */
+  font-size: var(--font-size-sm);
+}
+
+.tv-board-widget-empty {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.tv-board-widget-foot {
+  margin-top: 0.6rem;
+}
+
+/* The tabbed page's tab body (main tab layout, lane 9,
+   2026-11-10): the board's blurb over the shared BoardBody,
+   stacked on the standard 1rem rhythm the standalone board
+   page's wrapper used to provide. */
+.tv-fb-tabbody {
+  display: grid;
+  gap: 1rem;
+}
+
+.tv-fb-blurb {
+  color: var(--text-muted);
+  margin: 0;
+}

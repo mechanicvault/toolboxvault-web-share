@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="96" viewBox="0 0 512 96" preserveAspectRatio="none">
+  <!-- Brushed chrome nameplate stock (Steel theme). Horizontal grain:
+       turbulence varies fast across Y, slow across X. Stretched to
+       header size with preserveAspectRatio="none" — the stretch runs
+       ALONG the grain, so brushing never distorts visibly. -->
+  <defs>
+    <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d3d8df"/>
+      <stop offset="0.28" stop-color="#aeb4bd"/>
+      <stop offset="0.52" stop-color="#7c828b"/>
+      <stop offset="0.62" stop-color="#666c74"/>
+      <stop offset="0.82" stop-color="#969ca5"/>
+      <stop offset="1" stop-color="#bcc1c9"/>
+    </linearGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.55" numOctaves="2" seed="5" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="512" height="96" fill="url(#chrome)"/>
+  <rect width="512" height="96" filter="url(#grain)" opacity="0.20"/>
+  <rect width="512" height="3" fill="#ffffff" opacity="0.45"/>
+  <rect y="93" width="512" height="3" fill="#000000" opacity="0.35"/>
+</svg>

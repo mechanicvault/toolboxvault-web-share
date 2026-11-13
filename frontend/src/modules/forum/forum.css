@@ -1,0 +1,143 @@
+/* Forum thread LIST (list-standard Wave 5, 2026-11-02): a true
+   list — one thread per ROW, its facts spread in COLUMNS across
+   the row (thread / author / replies / last activity), with a
+   header row. Built on the dealer directory's proven CSS-grid
+   role=table family (.tv-dir-table in dealers.css): the table
+   scrolls sideways on narrow screens rather than crushing the
+   columns, so the table itself is allowed to shrink below the
+   rows' min-content width (min-width: 0 + overflow-x: auto).
+   The thread EXCERPT no longer rides the row — the full opening
+   post lives on the thread page, where it already rendered.
+   Tighten (2026-11-09): the row padding/gutter match the
+   board list's tight standard (.tv-fb-row in feedback.css) —
+   the two lists are one family to the reader's eye, so they
+   carry the same air. The forum list shares no component
+   with the boards (its own markup, no vote column); only
+   the padding moves here. */
+.tv-thread-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-thread-thead,
+.tv-thread-row {
+  display: grid;
+  grid-template-columns:
+    minmax(240px, 1.6fr) minmax(170px, 1fr)
+    5.5rem minmax(150px, 0.8fr);
+  gap: 0.35rem 0.75rem;
+  align-items: start;
+  min-width: 700px;
+  padding: 0.3rem 0.25rem;
+}
+
+.tv-thread-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-thread-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-thread-cell-title {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.tv-thread-cell-last {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Forum front-page room index (Sweep C4 remake, 2026-11-12):
+   ONE true list for every room — a header row, then one room
+   per ROW with its facts spread in columns (room / threads /
+   posts / latest thread), built on the same CSS-grid role=table
+   family as the topic list above and the boards' list
+   (.tv-fb-table): the table scrolls sideways on narrow screens
+   rather than crushing the columns. The old front page stacked
+   one Panel per room and collapsed empty rooms into a second
+   "More rooms" panel — two furniture species for one job; now
+   an empty room is simply a row whose Latest cell says so in
+   words. Every room keeps its "what belongs here" line under
+   its name (boards lane, 2026-11-07), so the right room is
+   findable before the first post exists. */
+.tv-forum-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-forum-thead,
+.tv-forum-row {
+  display: grid;
+  grid-template-columns:
+    minmax(250px, 1.6fr) 5.5rem 5.5rem minmax(210px, 1.1fr);
+  gap: 0.35rem 0.75rem;
+  align-items: start;
+  min-width: 700px;
+  padding: 0.3rem 0.25rem;
+}
+
+.tv-forum-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+/* The boards' table header guard (.tv-fb-thead > span): a
+   long translated header word (ES "PUBLICACIONES" in the
+   5.5rem Posts column) ellipsizes inside its own column
+   instead of colliding with the next header. */
+.tv-forum-thead > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tv-forum-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-forum-cell-room {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.tv-forum-room-name {
+  font-weight: 700;
+}
+
+.tv-forum-room-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tv-forum-cell-latest {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.tv-forum-latest-date {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-forum-empty-note {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}

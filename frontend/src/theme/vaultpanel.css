@@ -1,0 +1,284 @@
+/* ============================ VaultPanel ============================
+ * The slim banner-reference frame as a manufactured component —
+ * integrated 2026-10-17 (owner ruling: the COMPACT variant is the
+ * design — continuous slim rim, lamps seated directly on the plain
+ * rim, NO channel tabs / side housings). Geometry rules are the
+ * validated panel-system rules: corner pieces are NEVER stretched,
+ * only uniformly scaled; straight runs TERMINATE at the corner
+ * territory — the corner alone owns the turn (the fixed assembly
+ * rule from the owner's "2nd vertical wall" acceptance test); the
+ * well is clipped to the octagon silhouette.
+ *
+ * SCALE — retuned 2026-10-17 to the dashboard mockup's proportions
+ * (owner verdict on the first ship: "the frame is way too big, too
+ * thick, it takes over the entire page"). The mockup's plates carry
+ * a THIN machined edge (~5–8px at dashboard scale) with tiny glow
+ * points at the edge centers, so the frame is now sized off ONE
+ * unit, --vp-u = the rendered top/bottom band thickness:
+ *
+ *   --vp-u = clamp(6.5px,
+ *                  min(100cqmin × 0.034,   ← smaller dimension rules
+ *                      100cqw  × 0.018 + 1px), ← width keeps phone
+ *                  9.4px)                     panels at phone rails
+ *
+ * Everything else is a fixed multiple of --vp-u taken from the
+ * authored kit (authored at band = 40px): sides ×1.06, corners
+ * 4.25u × 3.625u (the authored 170×145), lamps likewise. Rendered
+ * results: desktop panels get a 9–10px band and 40×34px corners;
+ * a short wide panel (1100×240) drops to an 8.2px band; small
+ * cards and phone-width panels sit at 7–8px rails. The corner
+ * height is additionally capped at 34% of panel height so a short
+ * panel is never corner-crushed; the cap compresses only the
+ * corner crop's well-melt zone, never the rim cross-section.
+ *
+ * The cq units resolve against .tv-vp-stack, which is a SIZE
+ * container: it is absolutely positioned at inset 0, so its size
+ * is definite (set by the panel box, never by content) and both
+ * axes are queryable — that is what lets the frame answer to the
+ * panel's smaller dimension instead of its width alone. (For the
+ * in-flow .tv-vp-content, whose nearest container is the outer
+ * inline-size container, cqmin falls back to the small viewport
+ * height on its block axis, so its --vp-u can only read ≥ the
+ * frame's — content padding errs a hair large on short wide
+ * panels, never small. Safe direction.)
+ *
+ * LAMPS ARE LIVE (standing Steel law — art carries no light): the
+ * four lamp layers are pure CSS radial gradients driven by
+ * --accent, screen-blended, sized from the validated lamp
+ * geometry re-expressed in --vp-u (hot core ≈ 0.75u × 0.225u —
+ * a few px at every scale). --vp-light is the intensity token
+ * (0 = dark panel). The kit artwork itself (corners/edges/well in
+ * assets/vaultpanel/) is metal only — no baked light anywhere.
+ *
+ * This component renders ONLY under the Steel theme (Panel.tsx keys
+ * the switch on theme === "steel"); Steel Light / Light / Dark keep
+ * the classic .tv-panel rendering, so these rules are written
+ * unscoped — they can only match VaultPanel markup.
+ */
+
+.tv-vault-panel {
+  position: relative;
+  container-type: inline-size;
+  /* Drop shadow follows the alpha silhouette (chamfered corners),
+   * as in the validated demo. */
+  filter: drop-shadow(0 18px 28px rgb(0 0 0 / 0.55));
+}
+.tv-vp-inner {
+  position: relative;
+  --vp-light: 1;
+  --vp-pad: 14px;
+  /* The frame unit: rendered top/bottom band thickness. Declared
+   * here as an unregistered custom property, so its cq units stay
+   * unresolved tokens until each consuming element resolves them
+   * against its own nearest query container (the stack for every
+   * frame layer). */
+  --vp-u: clamp(6.5px, min(calc(100cqmin * 0.034), calc(100cqw * 0.018 + 1px)), 9.4px);
+  --vp-band-tb: var(--vp-u);
+  --vp-band-lr: calc(var(--vp-u) * 1.06);
+  --vp-corner-w: calc(var(--vp-u) * 4.25);
+  --vp-corner-h: min(calc(var(--vp-u) * 3.625), 34%);
+  /* Chamfer legs of the corner silhouette (authored 46×45 of the
+   * 170×145 corner), so the well clip tracks the corner artwork. */
+  --vp-chamfer-x: calc(var(--vp-corner-w) * 0.2706);
+  --vp-chamfer-y: calc(var(--vp-corner-h) * 0.3103);
+  height: 100%;
+}
+
+.tv-vp-stack {
+  position: absolute;
+  inset: 0;
+  /* Size container: inset 0 gives it a definite size from the
+   * panel box alone, making cqw/cqh/cqmin inside the frame mean
+   * THIS panel's dimensions in both axes. */
+  container-type: size;
+  pointer-events: none;
+}
+.tv-vp-layer {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Well — brushed tile, clipped to the panel silhouette so the
+ * outside-chamfer triangles stay clear; inset shading gives the
+ * recessed depth (the tile itself is deliberately flat/neutral). */
+.tv-vp-well {
+  inset: 0;
+  background: url("./assets/vaultpanel/well.webp") repeat;
+  background-size: calc(var(--vp-u) * 14.25) calc(var(--vp-u) * 6.625);
+  clip-path: polygon(
+    var(--vp-chamfer-x) 0, calc(100% - var(--vp-chamfer-x)) 0,
+    100% var(--vp-chamfer-y), 100% calc(100% - var(--vp-chamfer-y)),
+    calc(100% - var(--vp-chamfer-x)) 100%, var(--vp-chamfer-x) 100%,
+    0 calc(100% - var(--vp-chamfer-y)), 0 var(--vp-chamfer-y));
+  box-shadow:
+    inset 0 calc(var(--vp-u) * 0.85) calc(var(--vp-u) * 0.75) calc(var(--vp-u) * -0.4) rgb(0 0 0 / 0.6),
+    inset 0 calc(var(--vp-u) * -0.85) calc(var(--vp-u) * 0.75) calc(var(--vp-u) * -0.4) rgb(0 0 0 / 0.6),
+    inset calc(var(--vp-u) * 0.95) 0 calc(var(--vp-u) * 0.8) calc(var(--vp-u) * -0.4) rgb(0 0 0 / 0.55),
+    inset calc(var(--vp-u) * -0.95) 0 calc(var(--vp-u) * 0.8) calc(var(--vp-u) * -0.4) rgb(0 0 0 / 0.55);
+}
+
+/* Edges — each run ENDS at the corner territory. background-position
+ * keeps the tile phase identical to full-extent tiling, so the butt
+ * seam at the corner is texture-continuous (assembly rule). */
+.tv-vp-edge-t {
+  top: 0; left: var(--vp-corner-w); right: var(--vp-corner-w);
+  height: var(--vp-band-tb);
+  background: url("./assets/vaultpanel/edge-top.webp") repeat-x left top;
+  background-size: auto var(--vp-band-tb);
+  background-position: calc(-1 * var(--vp-corner-w)) 0;
+}
+.tv-vp-edge-b {
+  bottom: 0; left: var(--vp-corner-w); right: var(--vp-corner-w);
+  height: var(--vp-band-tb);
+  background: url("./assets/vaultpanel/edge-bottom.webp") repeat-x left bottom;
+  background-size: auto var(--vp-band-tb);
+  background-position: calc(-1 * var(--vp-corner-w)) 100%;
+}
+.tv-vp-edge-l {
+  left: 0; top: var(--vp-corner-h); bottom: var(--vp-corner-h);
+  width: var(--vp-band-lr);
+  background: url("./assets/vaultpanel/edge-left.webp") repeat-y left top;
+  background-size: var(--vp-band-lr) auto;
+  background-position: 0 calc(-1 * var(--vp-corner-h));
+}
+.tv-vp-edge-r {
+  right: 0; top: var(--vp-corner-h); bottom: var(--vp-corner-h);
+  width: var(--vp-band-lr);
+  background: url("./assets/vaultpanel/edge-right.webp") repeat-y right top;
+  background-size: var(--vp-band-lr) auto;
+  background-position: 0 calc(-1 * var(--vp-corner-h));
+}
+
+/* Corners — fixed geometry, uniformly scaled off --vp-u, never
+ * stretched by panel size. They alone own the chamfer turn. */
+.tv-vp-corner {
+  width: var(--vp-corner-w);
+  height: var(--vp-corner-h);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.tv-vp-c-tl { left: 0; top: 0; background-image: url("./assets/vaultpanel/corner-tl.webp"); }
+.tv-vp-c-tr { right: 0; top: 0; background-image: url("./assets/vaultpanel/corner-tr.webp"); }
+.tv-vp-c-bl { left: 0; bottom: 0; background-image: url("./assets/vaultpanel/corner-bl.webp"); }
+.tv-vp-c-br { right: 0; bottom: 0; background-image: url("./assets/vaultpanel/corner-br.webp"); }
+
+/* Lamps — independent live light layers, screen blend, anchored at
+ * the edge centers and sized by --vp-u only (never stretched by
+ * panel size, never duplicated). Each stack: hot core (accent
+ * whitened toward the lens color) → tight bloom → short spill
+ * pooling into the well, with the falloff profile of the validated
+ * overlays. All sizes are the authored lamp geometry divided by
+ * the authored 40px band, i.e. expressed in --vp-u. */
+.tv-vp-lamp {
+  position: absolute;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: var(--vp-light);
+}
+/* F1-25 root-cause fix: the lamps were BARE radial gradients —
+ * glow with no fixture in the metal rim, so at panel scale they
+ * read as random glowing specks. Each lamp now carries a visible
+ * lens seat at its centre (dark machined ring + lit core the glow
+ * emits from), so the light is tied to a physical graphic. */
+.tv-vp-lamp::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--vp-u) * 0.62);
+  height: calc(var(--vp-u) * 0.62);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--accent) 30%, rgb(255 255 255)) 0 28%, var(--accent) 45%, rgb(10 10 12) 78%);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.65), inset 0 0 2px rgb(0 0 0 / 0.8);
+}
+.tv-vp-lamp-t {
+  width: calc(var(--vp-u) * 7.375); height: calc(var(--vp-u) * 3.875);
+  left: 50%; margin-left: calc(var(--vp-u) * -3.65); top: calc(var(--vp-u) * -1.15);
+  background:
+    radial-gradient(ellipse calc(var(--vp-u) * 0.75) calc(var(--vp-u) * 0.225) at 49.5% 49%,
+      color-mix(in srgb, var(--accent) 25%, rgb(255 255 255)) 0%,
+      color-mix(in srgb, var(--accent) 65%, transparent) 55%, transparent 75%),
+    radial-gradient(ellipse calc(var(--vp-u) * 2.05) calc(var(--vp-u) * 0.75) at 49.5% 49%,
+      color-mix(in srgb, var(--accent) 50%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse calc(var(--vp-u) * 3.125) calc(var(--vp-u) * 2.625) at 49.5% 68%,
+      color-mix(in srgb, var(--accent) 24%, transparent) 0%, transparent 70%);
+}
+.tv-vp-lamp-b {
+  width: calc(var(--vp-u) * 7.375); height: calc(var(--vp-u) * 4);
+  left: 50%; margin-left: calc(var(--vp-u) * -3.65); bottom: calc(var(--vp-u) * -1.325);
+  background:
+    radial-gradient(ellipse calc(var(--vp-u) * 0.75) calc(var(--vp-u) * 0.225) at 49.5% 42.5%,
+      color-mix(in srgb, var(--accent) 25%, rgb(255 255 255)) 0%,
+      color-mix(in srgb, var(--accent) 65%, transparent) 55%, transparent 75%),
+    radial-gradient(ellipse calc(var(--vp-u) * 2.05) calc(var(--vp-u) * 0.75) at 49.5% 42.5%,
+      color-mix(in srgb, var(--accent) 50%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse calc(var(--vp-u) * 3.125) calc(var(--vp-u) * 2.625) at 49.5% 32%,
+      color-mix(in srgb, var(--accent) 24%, transparent) 0%, transparent 70%);
+}
+.tv-vp-lamp-l {
+  width: calc(var(--vp-u) * 4.5); height: calc(var(--vp-u) * 5.125);
+  left: calc(var(--vp-u) * -0.35); top: calc(50% - var(--vp-u) * 2.625);
+  background:
+    radial-gradient(ellipse calc(var(--vp-u) * 0.225) calc(var(--vp-u) * 0.75) at 30.6% 48.8%,
+      color-mix(in srgb, var(--accent) 25%, rgb(255 255 255)) 0%,
+      color-mix(in srgb, var(--accent) 65%, transparent) 55%, transparent 75%),
+    radial-gradient(ellipse calc(var(--vp-u) * 0.75) calc(var(--vp-u) * 2.05) at 30.6% 48.8%,
+      color-mix(in srgb, var(--accent) 50%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse calc(var(--vp-u) * 2.625) calc(var(--vp-u) * 3.125) at 56% 48.8%,
+      color-mix(in srgb, var(--accent) 24%, transparent) 0%, transparent 70%);
+}
+.tv-vp-lamp-r {
+  width: calc(var(--vp-u) * 4.5); height: calc(var(--vp-u) * 5.125);
+  right: calc(var(--vp-u) * -0.375); top: calc(50% - var(--vp-u) * 2.625);
+  background:
+    radial-gradient(ellipse calc(var(--vp-u) * 0.225) calc(var(--vp-u) * 0.75) at 71.1% 48.8%,
+      color-mix(in srgb, var(--accent) 25%, rgb(255 255 255)) 0%,
+      color-mix(in srgb, var(--accent) 65%, transparent) 55%, transparent 75%),
+    radial-gradient(ellipse calc(var(--vp-u) * 0.75) calc(var(--vp-u) * 2.05) at 71.1% 48.8%,
+      color-mix(in srgb, var(--accent) 50%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse calc(var(--vp-u) * 2.625) calc(var(--vp-u) * 3.125) at 45% 48.8%,
+      color-mix(in srgb, var(--accent) 24%, transparent) 0%, transparent 70%);
+}
+
+/* Content — padded clear of the bands by construction (band + pad),
+ * exactly as validated. --vp-pad is a plain px measure. */
+.tv-vp-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  padding:
+    calc(var(--vp-band-tb) + var(--vp-pad))
+    calc(var(--vp-band-lr) + var(--vp-pad));
+}
+/* The header band sits INSIDE the well (title left, actions right),
+ * closed by a hairline — same Panel API, in-well placement. */
+.tv-vault-panel .tv-panel-header {
+  margin: 0 0 var(--spacing);
+  padding: 0 0 0.65rem;
+  background: none;
+  border-bottom: 1px solid var(--edge);
+  border-radius: 0;
+  color: var(--panel-header-text);
+}
+/* Accent-edge variant: the accent stripe moves inside the well's
+ * left edge (the manufactured frame itself is never painted over). */
+.tv-vault-panel.tv-panel--accent-edge .tv-vp-content {
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+
+/* ===================== Vault modal (Steel only) =====================
+ * The dialog wears THIS frame (Modal.tsx renders the stack inside
+ * .tv-modal--vault under theme === "steel"), retiring the steelworn2
+ * pk4 kit frame modals used before: same --vp-u unit, same rim
+ * proportions, same chamfered silhouette, same lamp points as every
+ * panel, so a dialog and a panel read as the same manufactured
+ * family. The rules below only neutralize/replace the OLD modal
+ * construction for the vault variant — Steel Light keeps the pk4
+ * modal (its selectors are untouched: every rule here is keyed to
+ * .tv-modal--vault, which only the Steel branch renders), and the
+ * other themes never see this markup at all. */
+/* Header/body/footer sit inside .tv-vp-content (already padded
+ * clear of the bands): the header takes the in-well placement the
+ * panel header uses — title left, close right, hairline beneath. */

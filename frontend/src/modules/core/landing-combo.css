@@ -1,0 +1,778 @@
+/* ============================================================
+ * THE OFFICIAL LANDING PAGE — the Combination (promoted from
+ * the landing test tree 2026-11-08, owner order). Every style
+ * for LandingComboPage lives in this ONE file under .lt-cb-*
+ * classes (the prefix is the page's own namespace, carried
+ * from the test tree so the promoted page is pixel-identical
+ * to the test page Ryan picked). One structural rule set,
+ * driven by per-dress custom properties: the page opens in
+ * the Steel dress, and its own Light/Dark toggle swaps the
+ * Navy dress in place. Nothing here restyles a shared site
+ * class.
+ * ============================================================ */
+.lt,
+.lt * {
+  box-sizing: border-box;
+}
+.lt img {
+  max-width: 100%;
+}
+
+/* ============================================================
+ * THE COMBINATION — one structural rule set below, driven by
+ * per-dress custom properties, so the two dresses (Steel,
+ * Navy) can differ in color/type/material and in NOTHING
+ * else. The hero copies the old landing's lockup geometry
+ * (band height clamp, lockup riding 34px into the band, fade
+ * mask); the doors are the square tiles (six); the lanes are
+ * the user-type slider at the shorter box height, four lanes.
+ * ============================================================ */
+.lt-cb {
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--cb-bg);
+  color: var(--cb-ink);
+  font-family: var(--cb-font);
+  padding-bottom: 12px;
+}
+.lt-cb-steel {
+  --cb-font: "Helvetica Neue", Arial, sans-serif;
+  --cb-bg: #070605;
+  --cb-ink: #e6e1d8;
+  --cb-muted: #9a927f;
+  --cb-surface: #181511;
+  --cb-edge: #3a342a;
+  --cb-accent: #f2760a;
+  --cb-halo: #070605;
+  --cb-hero-field: #070605;
+  --cb-hero-muted: #a89f92;
+  --cb-lanes-field: transparent;
+  --cb-link: #f2760a;
+  --cb-shadow: none;
+  --cb-plan-cta-bg: transparent;
+  --cb-plan-cta-ink: #e6e1d8;
+  --cb-plan-cta-border: #4a443c;
+}
+.lt-cb-navy {
+  --cb-font: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --cb-bg: #edf0f4;
+  --cb-ink: #16233a;
+  --cb-muted: #5a6b84;
+  --cb-surface: #ffffff;
+  --cb-edge: #d5dce5;
+  --cb-accent: #f2760a;
+  --cb-halo: #0d2247;
+  --cb-hero-field: linear-gradient(160deg, #0a1c38 0%, #123a6e 78%, #17508f 100%);
+  --cb-hero-muted: #c9d8ee;
+  --cb-lanes-field: linear-gradient(160deg, #0a1c38 0%, #123a6e 100%);
+  --cb-link: #17508f;
+  --cb-shadow: 0 8px 22px rgba(18, 38, 68, 0.13);
+  --cb-plan-cta-bg: #123a6e;
+  --cb-plan-cta-ink: #ffffff;
+  --cb-plan-cta-border: #123a6e;
+}
+/* — Top row (changes round): the navigation links and the
+ *    two app-store links on ONE row at the very top of the
+ *    page, wearing the hero's field so the row reads as the
+ *    page's own masthead in both dresses — */
+.lt-cb-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 18px;
+  flex-wrap: wrap;
+  padding: 12px 18px;
+  background: var(--cb-hero-field);
+}
+.lt-cb-topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.lt-cb-topnav a {
+  color: var(--cb-hero-muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.lt-cb-topnav a:hover {
+  color: var(--cb-accent);
+}
+.lt-cb-stores {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.lt-cb-store {
+  padding: 7px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #f4f2ee;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lt-cb-store:hover {
+  border-color: var(--cb-accent);
+  color: #fff;
+}
+/* — The Light/Dark toggle, next to the app-store links
+ *    (owner addition, 2026-11-08): a segmented pill; the
+ *    filled segment names the dress on screen (Light = the
+ *    navy dress, Dark = the steel dress). The seat matches
+ *    the store badges so the three read as one control
+ *    cluster, in both dresses — */
+.lt-cb-theme {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.3);
+  font: inherit;
+  cursor: pointer;
+}
+.lt-cb-theme span {
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(244, 242, 238, 0.72);
+}
+.lt-cb-theme span.is-on {
+  background: var(--cb-accent);
+  color: #fff;
+}
+.lt-cb-theme:focus-visible {
+  outline: 2px solid var(--cb-accent);
+  outline-offset: 2px;
+}
+/* — Hero (old page 1's top) — */
+.lt-cb-hero {
+  background: var(--cb-hero-field);
+  padding: 16px 16px 0;
+}
+.lt-cb-hero-art {
+  border-radius: 12px;
+  overflow: hidden;
+  line-height: 0;
+}
+.lt-cb-hero-art img {
+  width: 100%;
+  height: clamp(230px, 32vw, 420px);
+  object-fit: cover;
+  object-position: center 42%;
+  display: block;
+  -webkit-mask-image: linear-gradient(to bottom, black 42%, transparent 98%);
+  mask-image: linear-gradient(to bottom, black 42%, transparent 98%);
+}
+.lt-cb-lockup {
+  margin-top: calc(clamp(230px, 32vw, 420px) * -1 + 34px);
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  text-align: center;
+  padding: 0 16px 32px;
+}
+.lt-cb-logo {
+  width: 112px;
+  height: 112px;
+  max-width: 40vw;
+}
+.lt-cb-wordmark {
+  width: 420px;
+  max-width: 82vw;
+  height: auto;
+}
+.lt-cb-slogan {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--cb-accent);
+  text-shadow: 0 1px 10px var(--cb-halo), 0 0 22px var(--cb-halo);
+}
+.lt-cb-tagline {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #f4f2ee;
+  text-shadow: 0 1px 3px var(--cb-halo), 0 0 16px var(--cb-halo), 0 0 30px var(--cb-halo);
+}
+.lt-cb-herobody {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--cb-hero-muted);
+  text-shadow: 0 1px 3px var(--cb-halo), 0 0 16px var(--cb-halo), 0 0 30px var(--cb-halo);
+}
+.lt-cb-ctas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.lt-cb-btn {
+  display: inline-block;
+  padding: 13px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+}
+.lt-cb-btn-primary {
+  background: var(--cb-accent);
+  color: #fff;
+}
+.lt-cb-btn-primary:hover {
+  background: #d96704;
+}
+.lt-cb-btn-ghost {
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  color: #f4f2ee;
+}
+.lt-cb-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.lt-cb-free {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--cb-hero-muted);
+  text-shadow: 0 1px 3px var(--cb-halo), 0 0 14px var(--cb-halo);
+}
+/* — The no-ads promise, directly under the hero signup
+ *    buttons (owner order, 2026-11-08): a designed pill, not
+ *    a footnote — HIGHLIGHTED to stand out (owner order,
+ *    2026-11-08): the site's highlight vocabulary in the
+ *    dress's own accent — a clear accent border, an
+ *    accent-tinted fill, and a soft accent glow — with the
+ *    text at full-strength hero ink. The seat stays
+ *    dark-based because both heroes are dark where the
+ *    lockup rides; the geometry is untouched — */
+.lt-cb-noads {
+  margin: 2px 0 0;
+  padding: 8px 18px;
+  border: 1px solid var(--cb-accent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cb-accent) 20%, rgba(0, 0, 0, 0.42));
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--cb-accent) 45%, transparent),
+    0 0 5px color-mix(in srgb, var(--cb-accent) 35%, transparent);
+  color: #f4f2ee;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 3px var(--cb-halo);
+}
+.lt-cb-noads strong {
+  color: var(--cb-accent);
+  font-weight: 800;
+}
+/* — Sections — */
+.lt-cb-section {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 44px 22px 4px;
+}
+.lt-cb-h2 {
+  margin: 0 0 8px;
+  font-size: 27px;
+  line-height: 1.15;
+}
+.lt-cb-intro {
+  margin: 0 0 18px;
+  max-width: 46rem;
+  color: var(--cb-muted);
+}
+.lt-cb-eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cb-accent);
+}
+/* — Doors (old page 2's square bar; six boxes since the
+ *    changes round — Downloads joined) — */
+.lt-cb-doors {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+.lt-cb-door {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 18px 16px;
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-edge);
+  border-radius: 12px;
+  box-shadow: var(--cb-shadow);
+  color: var(--cb-ink);
+  text-decoration: none;
+}
+.lt-cb-door:hover {
+  transform: translateY(-2px);
+  border-color: var(--cb-accent);
+}
+.lt-cb-door-label {
+  font-weight: 700;
+  font-size: 15.5px;
+}
+.lt-cb-door-sub {
+  font-size: 13px;
+  color: var(--cb-muted);
+}
+.lt-cb-door-go {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cb-link);
+}
+/* — Lanes (old page 3's slider, at round-3 page 5's shorter
+ *    box geometry — owner order, 2026-11-08: the boxes are
+ *    the short 300px band, not the tall columns) — */
+.lt-cb-lanes {
+  display: flex;
+  gap: 6px;
+  min-height: 300px;
+  padding: 14px;
+  background: var(--cb-lanes-field);
+  border-radius: 14px;
+}
+.lt-cb-lane {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: flex 0.45s ease;
+}
+.lt-cb-lane:hover,
+.lt-cb-lane:focus-within {
+  flex: 2.1 1 0;
+}
+.lt-cb-lane img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.lt-cb-lane-body {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 52px 14px 15px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.88) 55%);
+  color: #f4f2ee;
+}
+.lt-cb-lane-body h3 {
+  margin: 0 0 5px;
+  font-size: 17px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.lt-cb-lane-pitch {
+  margin: 0 0 8px;
+  font-size: 13.5px;
+  color: #ddd8cf;
+  display: none;
+}
+.lt-cb-lane:hover .lt-cb-lane-pitch,
+.lt-cb-lane:focus-within .lt-cb-lane-pitch {
+  display: block;
+}
+.lt-cb-lane-body ul {
+  display: none;
+  margin: 0 0 12px;
+  padding-left: 16px;
+  font-size: 13px;
+  color: #cfc9bd;
+}
+.lt-cb-lane:hover ul,
+.lt-cb-lane:focus-within ul {
+  display: block;
+}
+.lt-cb-lane-cta {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: var(--cb-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13.5px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* — Abilities (page 1's spine) — */
+.lt-cb-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.lt-cb-tile {
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-edge);
+  border-radius: 12px;
+  box-shadow: var(--cb-shadow);
+  padding: 20px;
+}
+.lt-cb-medallion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 14px;
+  background: var(--cb-bg);
+  border: 1px solid var(--cb-edge);
+}
+.lt-cb-tile-title {
+  margin: 12px 0 6px;
+  font-weight: 700;
+  font-size: 16.5px;
+}
+.lt-cb-tile-body {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--cb-muted);
+}
+/* — Pricing (boxes centered on the page — changes round;
+ *    three catalog tiers since the feature-lists round) — */
+.lt-cb-plans {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-width: 1016px;
+  margin: 0 auto;
+}
+.lt-cb-plan {
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-edge);
+  border-radius: 14px;
+  box-shadow: var(--cb-shadow);
+  padding: 24px;
+}
+.lt-cb-plan-pro {
+  border-color: var(--cb-accent);
+}
+.lt-cb-plan-name {
+  margin: 0;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cb-muted);
+}
+.lt-cb-plan-amount {
+  margin: 8px 0;
+  font-size: 36px;
+  font-weight: 800;
+}
+.lt-cb-plan-per {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cb-muted);
+}
+.lt-cb-plan-amount-word {
+  font-size: 24px;
+  line-height: 1.25;
+}
+.lt-cb-plan-body {
+  margin: 0 0 18px;
+  color: var(--cb-muted);
+  font-size: 15px;
+}
+/* — Each tier's own feature list (feature-lists round) — */
+.lt-cb-plan-list {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.lt-cb-plan-list li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.lt-cb-plan-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 800;
+  color: var(--cb-accent);
+}
+.lt-cb-plan-cta {
+  display: inline-block;
+  padding: 11px 24px;
+  border-radius: 999px;
+  background: var(--cb-plan-cta-bg);
+  border: 1.5px solid var(--cb-plan-cta-border);
+  color: var(--cb-plan-cta-ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+.lt-cb-plan-pro .lt-cb-plan-cta {
+  background: var(--cb-accent);
+  border-color: var(--cb-accent);
+  color: #fff;
+}
+.lt-cb-promise {
+  margin: 18px 0 0;
+  font-size: 14px;
+  text-align: center;
+  color: var(--cb-muted);
+}
+/* — The full feature list under the price boxes: two per
+ *    row, the block centered, a small icon on each — */
+.lt-cb-features-label {
+  margin: 28px 0 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cb-accent);
+}
+.lt-cb-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px 30px;
+  max-width: 840px;
+  margin: 16px auto 0;
+}
+.lt-cb-feature {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+.lt-cb-feature-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  margin-top: 1px;
+}
+.lt-cb-feature-title {
+  margin: 0 0 2px;
+  font-weight: 700;
+  font-size: 14.5px;
+}
+.lt-cb-feature-sub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--cb-muted);
+}
+/* — Account types (feature-lists round): a banner stating
+ *    one account can hold more than one type, then a card
+ *    per type — summary of what it is for, then its own
+ *    feature list — */
+.lt-cb-multitype {
+  max-width: 840px;
+  margin: 20px auto 22px;
+  text-align: center;
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-accent);
+  border-radius: 14px;
+  box-shadow: var(--cb-shadow);
+  padding: 20px 26px;
+}
+.lt-cb-multitype-title {
+  margin: 0 0 6px;
+  font-weight: 800;
+  font-size: 19px;
+}
+.lt-cb-multitype-body {
+  margin: 0 auto;
+  max-width: 640px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--cb-muted);
+}
+.lt-cb-types {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.lt-cb-type {
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-edge);
+  border-radius: 14px;
+  box-shadow: var(--cb-shadow);
+  padding: 22px 24px;
+}
+.lt-cb-type-name {
+  display: inline;
+  margin: 0 0 0 12px;
+  font-size: 19px;
+  font-weight: 800;
+  vertical-align: middle;
+}
+.lt-cb-type .lt-cb-medallion {
+  vertical-align: middle;
+}
+.lt-cb-type-summary {
+  margin: 12px 0 14px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--cb-muted);
+}
+.lt-cb-type-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.lt-cb-type-list li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.lt-cb-type-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 800;
+  color: var(--cb-accent);
+}
+/* — Close — */
+.lt-cb-close {
+  text-align: center;
+  padding: 56px 22px 44px;
+}
+.lt-cb-close-title {
+  margin: 0 0 8px;
+  font-size: 30px;
+}
+.lt-cb-close-body {
+  margin: 0 auto 22px;
+  max-width: 560px;
+  color: var(--cb-muted);
+}
+.lt-cb-trust {
+  list-style: none;
+  margin: 26px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--cb-muted);
+}
+/* — The social row at the bottom of the page (the shared
+ *    SocialLinks component; its own seat styles are the
+ *    site's — this wrapper only seats it in the close) — */
+.lt-cb-social {
+  margin-top: 30px;
+}
+.lt-cb-social .tv-footer-social {
+  padding-bottom: 0;
+}
+@media (max-width: 900px) {
+  .lt-cb-doors {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .lt-cb-tiles {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lt-cb-plans {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+  }
+  .lt-cb-types {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 860px) {
+  .lt-cb-lanes {
+    flex-direction: column;
+    min-height: 0;
+  }
+  .lt-cb-lane {
+    min-height: 230px;
+    /* Promotion repair (2026-11-08): the desktop strip's
+       flex: 1 1 0 splits the strip's height evenly and
+       ignores content — on phones each lane stayed 230px
+       while its body (pitch + bullets shown, per the rules
+       below) needs ~290px, so the CTA clipped and, with
+       the body's desktop absolute anchor, text spilled
+       over the card above. flex: none + the in-flow body
+       below lets each lane grow with its content; the
+       photo stays full-bleed behind the same shaded text.
+       Desktop is untouched. */
+    flex: none;
+  }
+  /* Promotion repair (2026-11-08): in flow, not the
+     desktop strip's absolute bottom anchor — see above. */
+  .lt-cb-lane-body {
+    position: relative;
+    inset: auto;
+  }
+  /* Promotion repair (2026-11-08): the desktop strip's
+     hover/focus grow (flex: 2.1) must not run in the phone
+     column — a tap, or a lane scrolling under a still
+     cursor, shrank the lane back to 230px and clipped its
+     text again. The pitch + bullets are always shown on
+     phones (rules below), so nothing is lost. */
+  .lt-cb-lane:hover,
+  .lt-cb-lane:focus-within {
+    flex: none;
+  }
+  .lt-cb-lane-pitch,
+  .lt-cb-lane-body ul {
+    display: block;
+  }
+}
+@media (max-width: 640px) {
+  .lt-cb-plans {
+    grid-template-columns: 1fr;
+  }
+  .lt-cb-tiles {
+    grid-template-columns: 1fr;
+  }
+  .lt-cb-features {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .lt-cb-doors {
+    grid-template-columns: 1fr;
+  }
+  .lt-cb-h2 {
+    font-size: 23px;
+  }
+}
+
+/* — The legal line in the close (promotion seat): the
+ *    Terms/Privacy links + development disclaimer the old
+ *    landing's own closing strip carried, under the social
+ *    row, in the page's muted voice — */
+.lt-cb-legal {
+  margin: 26px 0 0;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--cb-muted);
+}
+.lt-cb-legal a {
+  color: var(--cb-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lt-cb-legal a:hover {
+  color: var(--cb-accent);
+}
+.lt-cb-disclaimer {
+  margin: 10px auto 0;
+  max-width: 560px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--cb-muted);
+}

@@ -1,0 +1,2441 @@
+
+
+/* ================= Home + Header program (2026-10-24) =================
+ * The persistent top bar on EVERY page: the brand plate (spinning
+ * emblem + wordmark) CENTERED, and — signed in — the owner's
+ * top-right cluster in his exact order: color gear · bell · ? ·
+ * Edit view · search. The bar is sticky; the rail and the panel
+ * stick below it via --topbar-h. All colors ride tokens, so the
+ * light palette (tokens.css [data-mode="light"]) restyles the
+ * whole bar with zero rules here. */
+[data-theme="railsteel"] .tv-shell {
+  --topbar-h: 3.5rem;
+}
+[data-theme="railsteel"] .tv-topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-edge);
+  box-shadow: var(--header-shadow);
+  min-height: var(--topbar-h);
+  display: flex;
+  align-items: stretch;
+}
+/* Phase E (owner 2026-10-24): the brand plate leaves the
+ * center for the bar's FAR LEFT — two columns now: the plate
+ * hard against the content column's left edge, the cluster
+ * column taking the rest with its contents right-aligned as
+ * before. (The old 1fr auto 1fr + spacer span centered it.) */
+[data-theme="railsteel"] .tv-topbar-inner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: 0.35rem var(--spacing);
+}
+[data-theme="railsteel"] .tv-topbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-brandplate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text);
+  text-decoration: none;
+  justify-self: start;
+  padding: 2px 10px;
+  border-radius: var(--radius);
+}
+[data-theme="railsteel"] .tv-brandplate-mark {
+  display: block;
+  width: 38px;
+  height: 38px;
+  /* The seat is a square by declaration too (sweep 10-F10):
+   * no layout pass can hand the emblem a sliver box. */
+  aspect-ratio: 1 / 1;
+  flex: 0 0 auto;
+}
+/* The cluster, in the owner's order. */
+[data-theme="railsteel"] .tv-hcluster {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+[data-theme="railsteel"] .tv-hbtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+[data-theme="railsteel"] .tv-hbtn:hover {
+  color: var(--text);
+  border-color: var(--edge);
+  background: rgb(var(--ink-rgb) / 0.06);
+}
+/* The bell: grey at rest; YELLOWISH with a red count badge when
+ * there is something unread (owner's exact words). */
+[data-theme="railsteel"] .tv-bell-btn[data-active] {
+  color: var(--warning);
+}
+[data-theme="railsteel"] .tv-bell-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--danger);
+  color: var(--text-on-danger);
+  border: 2px solid var(--panel);
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+}
+[data-theme="railsteel"] .tv-hlink {
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+[data-theme="railsteel"] .tv-hlink:hover {
+  color: var(--accent);
+}
+[data-theme="railsteel"] .tv-hsearch {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+[data-theme="railsteel"] .tv-hsearch .tv-input {
+  width: 168px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+[data-theme="railsteel"] .tv-hsearch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  border: 1px solid var(--input-edge);
+  border-left: none;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--btn-secondary-bg);
+  color: var(--text);
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-hsearch-btn:hover {
+  color: var(--accent);
+}
+/* The bell popup: the .tv-menu family surface, wider, with the
+ * inbox rows + the footer door to the full page. */
+[data-theme="railsteel"] .tv-bell-wrap {
+  position: relative;
+  display: inline-flex;
+}
+[data-theme="railsteel"] .tv-bell-pop {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: min(360px, calc(100vw - 24px));
+  background: var(--surface-raised);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised), var(--bevel);
+  padding: var(--space-2);
+  z-index: var(--z-modal);
+}
+[data-theme="railsteel"] .tv-bell-pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 2px 4px 8px;
+  border-bottom: 1px solid rgb(var(--ink-rgb) / 0.1);
+}
+[data-theme="railsteel"] .tv-bell-pop-title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+[data-theme="railsteel"] .tv-bell-pop-action {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  color: var(--accent);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+[data-theme="railsteel"] .tv-bell-pop-action:disabled {
+  color: var(--text-muted);
+  cursor: default;
+  opacity: var(--disabled-opacity);
+}
+[data-theme="railsteel"] .tv-bell-pop-empty {
+  margin: 0;
+  padding: 14px 6px;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+/* Scroll cue (sweep 10-F13): the list scrolls on a VISIBLE
+ * scrollbar in both engines, and while more sits below the
+ * fold the wrapper lays a fade over the list's bottom edge
+ * with a "More below" line under it — an item is never
+ * silently cut mid-sentence at a hard edge again. */
+[data-theme="railsteel"] .tv-bell-listwrap {
+  position: relative;
+}
+[data-theme="railsteel"] .tv-bell-listwrap[data-more]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 10px;
+  /* Seated over the LIST's bottom edge, above the cue line
+   * that rides under the list inside the same wrapper. */
+  bottom: 24px;
+  height: 30px;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--surface-raised) 85%);
+}
+[data-theme="railsteel"] .tv-bell-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 340px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--edge-strong) transparent;
+}
+[data-theme="railsteel"] .tv-bell-list::-webkit-scrollbar {
+  width: 8px;
+}
+[data-theme="railsteel"] .tv-bell-list::-webkit-scrollbar-thumb {
+  background: var(--edge-strong);
+  border-radius: 4px;
+}
+[data-theme="railsteel"] .tv-bell-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-theme="railsteel"] .tv-bell-more {
+  margin: 0;
+  padding: 5px 4px 1px;
+  text-align: center;
+  color: var(--accent);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+[data-theme="railsteel"] .tv-bell-item {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  gap: 8px;
+  align-items: start;
+  padding: 7px 4px;
+  border-radius: var(--radius);
+}
+[data-theme="railsteel"] .tv-bell-item:hover {
+  background: rgb(var(--ink-rgb) / 0.05);
+}
+[data-theme="railsteel"] .tv-bell-dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--glow-dot-bg);
+  box-shadow: var(--glow-dot-shadow);
+}
+[data-theme="railsteel"] .tv-bell-dot[data-tone="success"] {
+  background: var(--success);
+  box-shadow: none;
+}
+[data-theme="railsteel"] .tv-bell-dot[data-tone="warning"] {
+  background: var(--warning);
+  box-shadow: none;
+}
+[data-theme="railsteel"] .tv-bell-dot[data-tone="danger"] {
+  background: var(--danger);
+  box-shadow: none;
+}
+[data-theme="railsteel"] .tv-bell-item[data-read] .tv-bell-dot {
+  background: var(--edge-strong);
+  box-shadow: none;
+}
+[data-theme="railsteel"] .tv-bell-item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+/* Click-through affordance (2026-10-25): the row body is a door
+ * to the notification's source, in the bell popup and on the
+ * notifications page alike. */
+[data-theme="railsteel"] .tv-bell-item-main:hover .tv-bell-item-title {
+  color: var(--accent);
+  text-decoration: underline;
+}
+[data-theme="railsteel"] .tv-bell-item-title {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+}
+[data-theme="railsteel"] .tv-bell-item[data-read] .tv-bell-item-title {
+  font-weight: 600;
+  color: var(--text-soft);
+}
+[data-theme="railsteel"] .tv-bell-item-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-soft);
+  overflow-wrap: anywhere;
+}
+[data-theme="railsteel"] .tv-bell-item-time {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+[data-theme="railsteel"] .tv-bell-item-x {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+[data-theme="railsteel"] .tv-bell-item-x:hover {
+  color: var(--danger);
+}
+[data-theme="railsteel"] .tv-bell-pop-foot {
+  border-top: 1px solid rgb(var(--ink-rgb) / 0.1);
+  padding: 8px 4px 2px;
+  text-align: right;
+}
+/* Global search results (owner spec, 2026-10-25): one group per
+ * kind of record, its heading carrying the group's true total;
+ * each row is a door to the record (the click-through doctrine).
+ * Grouping chrome (2026-11-04): the group is a standard Panel —
+ * its header band (the shared .tv-panel-header / .tv-panel-title
+ * treatment) carries the name + count, so the panel box itself
+ * marks where each category starts and ends. */
+[data-theme="railsteel"] .tv-search-group-count {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+[data-theme="railsteel"] .tv-search-group-note {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+/* Small layout utilities for the program's new pages (the
+ * ratchet forbids new inline styles; these are the class homes). */
+[data-theme="railsteel"] .tv-muted {
+  color: var(--text-muted);
+}
+[data-theme="railsteel"] .tv-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+[data-theme="railsteel"] .tv-page-narrow {
+  max-width: 880px;
+  margin: 0 auto;
+}
+[data-theme="railsteel"] .tv-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+[data-theme="railsteel"] .tv-row-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+/* Support ticket threads (help page + admin desk): plain stacked
+ * messages; the team's carry the accent edge so a user scanning
+ * the thread sees whose turn it is at a glance. */
+[data-theme="railsteel"] .tv-ticket-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+[data-theme="railsteel"] .tv-ticket-msg {
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: rgb(var(--ink-rgb) / 0.03);
+  padding: 10px 12px;
+}
+[data-theme="railsteel"] .tv-ticket-msg[data-kind="operator"] {
+  border-left: 3px solid var(--accent);
+}
+[data-theme="railsteel"] .tv-ticket-msg-head {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+  margin: 0 0 4px;
+  font-size: var(--font-size-sm);
+}
+[data-theme="railsteel"] .tv-ticket-msg-body {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+/* ---- Home blocks + live widgets + customize (Home + Header
+ * program) ---- */
+/* The Home title row (dashboard-flare lane, 2026-11-09): the
+ * HOME title left, customize mode's seat at the far right —
+ * the Edit button at rest, the Add / Cancel / Save tools
+ * while editing, in the same seat either way. */
+[data-theme="railsteel"] .tv-home-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+[data-theme="railsteel"] .tv-home-head h1 {
+  margin: 0;
+}
+[data-theme="railsteel"] .tv-home-tools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+/* Phase F: the Edit-view drag tip — a slim strip IN FLOW
+ * directly under the tools row (never an overlay, so it can
+ * cover neither Add / Cancel / Save layout nor a draggable
+ * block). The strip and its text take no pointer events at
+ * all; only the × button is clickable, so the strip can
+ * never intercept a drag. */
+[data-theme="railsteel"] .tv-home-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: var(--bevel);
+  padding: 0.55rem 0.75rem;
+  color: var(--text-soft);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+}
+[data-theme="railsteel"] .tv-home-tip-text {
+  flex: 1;
+  min-width: 0;
+  pointer-events: none;
+}
+[data-theme="railsteel"] .tv-home-tip-close {
+  flex: 0 0 auto;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-top: -1px;
+  padding: 0;
+  border: 1px solid var(--edge-strong);
+  border-radius: 50%;
+  background: rgb(var(--ink-rgb) / 0.04);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-home-tip-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+[data-theme="railsteel"] .tv-home-blocks {
+  display: grid;
+  gap: var(--spacing);
+  /* Sweep B1 (01-F7): boxes size to their content instead of
+   * stretching to the tallest panel in the row — sparse widgets
+   * no longer float in cavernous panels. */
+  align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Dense flow (widget options Wave 1, owner design
+   * 2026-11-02): a full-width box after a half-width one no
+   * longer strands the empty half — the next half-width box
+   * fills it. Order still rules; the fill only pulls a later
+   * half box up into an open half-row. */
+  grid-auto-flow: dense;
+}
+[data-theme="railsteel"] .tv-home-blocks > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+/* Block slots (widget options Wave 1): every block renders
+ * inside a slot that carries its resolved width to the grid.
+ * The slot is layout-only (a flex column whose child fills it,
+ * mirroring the stretch the boxes had as direct grid items),
+ * so a block's own box renders exactly as it did before the
+ * slot existed. */
+[data-theme="railsteel"] .tv-home-blocks > .tv-block-slot {
+  display: flex;
+  flex-direction: column;
+}
+[data-theme="railsteel"] .tv-home-blocks > .tv-block-slot > * {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-home-blocks > .tv-block-slot[data-size="half"] {
+  grid-column: auto;
+}
+@media (max-width: 900px) {
+  [data-theme="railsteel"] .tv-home-blocks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Customize frames: dashed machined outline, chrome bar on top. */
+[data-theme="railsteel"] .tv-block-frame {
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.75rem;
+  background: var(--surface);
+}
+[data-theme="railsteel"] .tv-block-frame[data-dragging] {
+  opacity: 0.55;
+}
+[data-theme="railsteel"] .tv-block-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+[data-theme="railsteel"] .tv-block-grip {
+  cursor: grab;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 2px;
+}
+[data-theme="railsteel"] .tv-block-spacer {
+  flex: 1;
+}
+/* The list remove disc, shared by block bars, stat slots, and
+ * the Home panel's section bars: the overlay-seat sibling of
+ * the kit's .tv-list-remove-btn (theme/surfaces.css). It wore
+ * a × until the owner's site-wide list +/− rule (2026-11-10)
+ * made remove a red − everywhere; the seat, size, and in-place
+ * behavior are the 2026-10-24 pattern unchanged. (The up/down
+ * move buttons that used to share this block are gone — Phase
+ * C, owner 2026-10-24: drag is the only reorder path.) Since
+ * the owner's rendered-icon correction (2026-11-10) it wears
+ * the SAME full icon treatment as its kit sibling — glossy
+ * radial red, white inset ring, white glyph with a depth
+ * edge, soft drop shadow — defined here in its theme seat;
+ * the two definitions are one treatment and must never drift
+ * apart. */
+[data-theme="railsteel"] .tv-box-x {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background:
+    radial-gradient(ellipse 95% 55% at 50% 0%, rgb(255 255 255 / 0.4), rgb(255 255 255 / 0) 62%),
+    radial-gradient(circle at 35% 30%, #fc6c53, #e02318 48%, #b00d13 100%);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.25);
+  box-shadow:
+    0 3px 7px rgb(0 0 0 / 0.38),
+    0 1px 2px rgb(0 0 0 / 0.3);
+  cursor: pointer;
+  padding: 0;
+}
+[data-theme="railsteel"] .tv-box-x::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1.5px solid rgb(255 255 255 / 0.92);
+  border-radius: 50%;
+  pointer-events: none;
+}
+[data-theme="railsteel"] .tv-box-x:hover {
+  filter: brightness(1.07);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent) 75%, transparent),
+    0 0 14px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 3px 7px rgb(0 0 0 / 0.38),
+    0 1px 2px rgb(0 0 0 / 0.3);
+}
+/* Phase C: the Overview block's Add sits at the TOP of the
+ * block, above the stat grid (the bottom Add is removed). */
+[data-theme="railsteel"] .tv-overview-addrow {
+  display: flex;
+  margin-bottom: var(--space-3);
+}
+[data-theme="railsteel"] .tv-overview-addrow .tv-add-wrap {
+  margin-top: 0;
+}
+/* Phase C: the tools-row Add (beside Cancel / Save layout) —
+ * the shared AddBlockMenu's wrap carries a top margin in its
+ * block seats; in the tools row and the first block's bar it
+ * must sit flush. */
+[data-theme="railsteel"] .tv-home-tools .tv-add-wrap {
+  margin-top: 0;
+}
+/* Phase C: Home panel customization — the Add row at the panel
+ * top, and each section's mini chrome while editing. The plain
+ * (non-editing) section wrapper carries NO styling, so the
+ * panel renders exactly as before outside Edit view. */
+[data-theme="railsteel"] .tv-panel-addrow {
+  margin-bottom: var(--space-3);
+}
+[data-theme="railsteel"] .tv-panel-addrow .tv-add-wrap {
+  margin-top: 0;
+}
+[data-theme="railsteel"] .tv-panel-addrow .tv-add-menu {
+  min-width: 0;
+  width: 180px;
+}
+[data-theme="railsteel"] .tv-panel-section {
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius);
+  padding: 10px;
+  margin-bottom: 12px;
+  background: rgb(var(--ink-rgb) / 0.03);
+}
+[data-theme="railsteel"] .tv-panel-section[data-dragging] {
+  opacity: 0.55;
+}
+[data-theme="railsteel"] .tv-panel-section-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+[data-theme="railsteel"] .tv-panel-section-bar strong {
+  font-size: 0.85rem;
+}
+/* Stat slots in customize mode: the card plus its floating tools. */
+[data-theme="railsteel"] .tv-stat-slot {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-stat-slot > * {
+  flex: 1;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-stat-slot[data-dragging] {
+  opacity: 0.55;
+}
+[data-theme="railsteel"] .tv-box-tools {
+  position: absolute;
+  top: -9px;
+  right: -6px;
+  display: inline-flex;
+  gap: 4px;
+  z-index: 2;
+}
+/* The ADD control + its floating dropdown (blocks and stats). */
+[data-theme="railsteel"] .tv-add-wrap {
+  position: relative;
+  display: inline-block;
+  margin-top: var(--space-3);
+}
+[data-theme="railsteel"] .tv-block-frame .tv-add-wrap,
+[data-theme="railsteel"] .tv-home-blocks > .tv-add-wrap {
+  margin-top: 0;
+}
+/* The Add trigger wears the user's accent plate like every other
+ * action button (owner rule, 2026-11-04: action buttons across
+ * the whole site render in the user's chosen color). Same plate
+ * stack, on-accent ink and hover as .tv-btn--primary; the size
+ * stays the compact edit-chrome size it has always been. */
+[data-theme="railsteel"] .tv-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--control-height-sm);
+  padding: 4px 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgb(0 0 0 / 0.55);
+  background: var(--plate-btn);
+  color: var(--text-on-accent);
+  box-shadow: var(--plate-shadow);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-add-btn:hover {
+  background: var(--btn-primary-hover-bg);
+}
+[data-theme="railsteel"] .tv-add-menu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.4rem);
+  min-width: 220px;
+  max-width: 300px;
+  background: var(--surface-raised);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised), var(--bevel);
+  padding: var(--space-2);
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+[data-theme="railsteel"] .tv-add-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: var(--radius);
+  padding: 7px 9px;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-add-item:hover {
+  background: rgb(var(--ink-rgb) / 0.06);
+}
+/* The block options popover (widget options Wave 1): the Add
+ * menu's family — a small plate floating off the block's own
+ * chrome bar, right-aligned so it never runs off the frame's
+ * right edge. */
+[data-theme="railsteel"] .tv-block-opts {
+  position: relative;
+  display: inline-block;
+}
+[data-theme="railsteel"] .tv-block-opts-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--edge-strong);
+  border-radius: 50%;
+  background: rgb(var(--ink-rgb) / 0.04);
+  color: var(--text);
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-block-opts-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+[data-theme="railsteel"] .tv-block-opts-pop {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.4rem);
+  min-width: 230px;
+  max-width: calc(100vw - 2rem);
+  background: var(--surface-raised);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised), var(--bevel);
+  padding: var(--space-3);
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-align: left;
+}
+[data-theme="railsteel"] .tv-block-opts-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+[data-theme="railsteel"] .tv-block-opts-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* Text hierarchy (owner rule, 2026-11-10): this label heads
+   * each options group — in the wizard's merged page, the
+   * widget options panels, everywhere the options kit renders
+   * — so it wears the heading ink (full --text), not the
+   * muted tone the controls under it are described in. */
+  color: var(--text);
+}
+/* The Half | Full segmented choice: one machined track, the
+ * chosen half wearing the accent plate like the rail's active
+ * row. */
+[data-theme="railsteel"] .tv-opts-size {
+  display: flex;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+[data-theme="railsteel"] .tv-opts-size button {
+  flex: 1;
+  padding: 6px 10px;
+  background: rgb(var(--ink-rgb) / 0.03);
+  border: none;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+[data-theme="railsteel"] .tv-opts-size button + button {
+  border-left: 1px solid var(--edge-strong);
+}
+[data-theme="railsteel"] .tv-opts-size button:hover {
+  color: var(--accent);
+}
+[data-theme="railsteel"] .tv-opts-size button[aria-pressed="true"] {
+  background: var(--plate);
+  color: var(--text-on-accent);
+  box-shadow: var(--plate-shadow);
+}
+[data-theme="railsteel"] .tv-opts-size button[aria-pressed="true"]:hover {
+  color: var(--text-on-accent);
+}
+/* The forum featured-favorite picker (Wave 3): a vertical list
+ * of quiet rows in the options popover — the member's favorites
+ * by title, the board riding small beside it; the pressed row
+ * wears the plate, like the size track's chosen segment. */
+[data-theme="railsteel"] .tv-fav-picks {
+  display: grid;
+  gap: 4px;
+}
+[data-theme="railsteel"] .tv-fav-pick {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgb(var(--ink-rgb) / 0.03);
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-fav-pick:hover {
+  color: var(--accent);
+}
+[data-theme="railsteel"] .tv-fav-pick[aria-pressed="true"] {
+  background: var(--plate);
+  color: var(--text-on-accent);
+  box-shadow: var(--plate-shadow);
+}
+[data-theme="railsteel"] .tv-fav-pick[aria-pressed="true"]:hover {
+  color: var(--text-on-accent);
+}
+[data-theme="railsteel"] .tv-fav-pick-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[data-theme="railsteel"] .tv-fav-pick-board {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  white-space: nowrap;
+}
+[data-theme="railsteel"] .tv-fav-pick[aria-pressed="true"] .tv-fav-pick-board {
+  color: inherit;
+}
+/* Live widget anatomy. */
+[data-theme="railsteel"] .tv-widget-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+[data-theme="railsteel"] .tv-widget-title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-base);
+}
+[data-theme="railsteel"] .tv-widget-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+[data-theme="railsteel"] .tv-widget-headline {
+  margin: 0;
+  font-weight: 700;
+}
+[data-theme="railsteel"] .tv-widget-line {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: var(--font-size-sm);
+  overflow-wrap: anywhere;
+}
+/* Stat + widget icon tones (owner: not all orange). The accent
+ * hero tile's chip keeps the plate's own ink. */
+[data-theme="railsteel"] .tv-stat-icon[data-tone="success"] {
+  color: var(--success);
+}
+[data-theme="railsteel"] .tv-stat-icon[data-tone="warning"] {
+  color: var(--warning);
+}
+[data-theme="railsteel"] .tv-stat-icon[data-tone="danger"] {
+  color: var(--danger);
+}
+[data-theme="railsteel"] .tv-stat-icon[data-tone="info"] {
+  color: var(--tag-blue);
+}
+[data-theme="railsteel"] .tv-stat-icon[data-tone="violet"] {
+  color: var(--tag-purple);
+}
+[data-theme="railsteel"] .tv-stat-icon[data-tone="teal"] {
+  color: color-mix(in srgb, var(--tag-blue) 45%, var(--success));
+}
+[data-theme="railsteel"] .tv-stat-icon[data-tone="slate"] {
+  color: var(--tag-slate);
+}
+@media (max-width: 1100px) {
+  /* Mid widths: the search well gives room back so the centered
+   * plate and the cluster never crowd each other. */
+  [data-theme="railsteel"] .tv-hsearch .tv-input {
+    width: 112px;
+  }
+}
+@media (max-width: 760px) {
+  [data-theme="railsteel"] .tv-shell {
+    --topbar-h: 3.25rem;
+  }
+  [data-theme="railsteel"] .tv-topbar-inner {
+    padding: 0.3rem 0.6rem;
+    gap: var(--space-2);
+  }
+  [data-theme="railsteel"] .tv-brandplate-mark {
+    width: 30px;
+    height: 30px;
+  }
+  [data-theme="railsteel"] .tv-brandplate .tv-wordmark-img {
+    height: 1.25rem;
+  }
+  [data-theme="railsteel"] .tv-hsearch .tv-input {
+    width: 104px;
+  }
+  [data-theme="railsteel"] .tv-hlink {
+    font-size: 0.75rem;
+  }
+}
+
+/* Phone topbar fit (Phase 4 walkthrough catch): at ~400px the
+ * full cluster (gear · bell · ? · Edit view · search) is wider
+ * than its grid column and slid left OVER the centered brand
+ * plate. The plate sheds its wordmark (the emblem mark carries
+ * the brand alone at this size), the search well and the gaps
+ * tighten, and every control stays present and tappable. */
+@media (max-width: 560px) {
+  [data-theme="railsteel"] .tv-brandplate .tv-wordmark-img {
+    display: none;
+  }
+  [data-theme="railsteel"] .tv-brandplate {
+    padding: 2px 4px;
+  }
+  [data-theme="railsteel"] .tv-topbar-inner {
+    gap: var(--space-1);
+  }
+  [data-theme="railsteel"] .tv-hcluster {
+    gap: var(--space-1);
+  }
+  [data-theme="railsteel"] .tv-hsearch .tv-input {
+    width: 62px;
+  }
+  [data-theme="railsteel"] .tv-brandplate-mark {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+/* Signed-out slim strip (Phase 1 bar: functional, on tokens). */
+[data-theme="railsteel"] .tv-header--strip {
+  border-bottom: 1px solid var(--header-edge);
+  box-shadow: var(--header-shadow);
+}
+
+/* Language selector vs the brand plate (owner 2026-10-24:
+ * "the language selector covers up the main center logo on
+ * the top of the page"). Root cause: the signed-out cluster's
+ * locale <select> sizes to its widest OPTION — the "Automatic
+ * (from my country / browser)" line is ~320px — so the cluster
+ * outgrew its grid column and spilled left over the plate
+ * (measured: 98px of overlap at 1440px in Spanish, worse on
+ * phones, where the whole cluster stacked into a jumble over
+ * the plate). The header instance now has a fixed compact
+ * measure (the Settings instance keeps the full form-field
+ * width); the closed control clips its label, the chevron
+ * stays, and every option is still reachable. Phase E moved
+ * the plate itself to the bar's far left; the compact measure
+ * stays — the cluster still must not outgrow its column. */
+[data-theme="railsteel"] .tv-header--strip .tv-locale-select {
+  width: 8.5rem;
+  min-width: 0;
+}
+@media (max-width: 1100px) {
+  /* Mid widths: the strip's plate sheds its wordmark (the
+   * emblem carries the brand), buying the cluster its room. */
+  [data-theme="railsteel"] .tv-header--strip .tv-brandplate .tv-wordmark-img {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  /* Small widths: the strip stacks DELIBERATELY — plate on its
+   * own row, the cluster on one compact row under it — instead
+   * of the cluster crushing into the plate's row and wrapping
+   * over it. Nothing overlaps, ever. The plate sits LEFT in
+   * its row — since Phase E that is simply the base rule at
+   * every width, no phone override needed — with its wordmark
+   * restored: the stacked row has the width for it. */
+  [data-theme="railsteel"] .tv-header--strip .tv-topbar-inner {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    row-gap: 4px;
+    padding-bottom: 0.45rem;
+  }
+  [data-theme="railsteel"] .tv-header--strip .tv-brandplate .tv-wordmark-img {
+    display: block;
+    height: 1.25rem;
+  }
+  [data-theme="railsteel"] .tv-header--strip .tv-topbar-right {
+    justify-self: stretch;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  /* A-08 (Deep Audit Round 2): once the strip has stacked (this
+   * block), the locale select sizes to its longest option like
+   * every other select — the compact 8.5rem measure above exists
+   * only to keep the SINGLE-row strip's cluster out of the
+   * plate's column, and in the stacked layout nothing can
+   * overlap the plate (its own row), while the cluster wraps
+   * instead of clipping the label to "Automatic (". */
+  [data-theme="railsteel"] .tv-header--strip .tv-locale-select {
+    width: auto;
+  }
+  /* The action cluster itself must wrap too: in Spanish the
+     sign-in/sign-up labels are long enough that the unwrapped
+     cluster ran 4px past a 402px viewport (walkthrough catch,
+     2026-10-24). Wrapping drops the extra button to a second
+     right-aligned line instead of running it off-screen. */
+  [data-theme="railsteel"] .tv-header--strip .tv-header-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: var(--space-1);
+  }
+}
+
+/* Phone header + popups (owner 2026-10-24, items 11–12;
+ * Phase E convergence same day).
+ * Item 12's phone-only left plate is now the ONE rule at every
+ * width (Phase E item 8) — the plate's justify-self override
+ * that used to live here is retired as a duplicate of the base
+ * rule. What remains phone-specific is the STACK: one row
+ * cannot hold plate + the full cluster (gear · bell · ? · Edit
+ * view · search) at ~400px, so the bar stacks — plate row on
+ * top (left), cluster row under it (right-aligned, the owner's
+ * order intact).
+ * Item 11's bell popup still re-anchors to the bar here. The
+ * rail's account menu needs no phone rule at all anymore: it
+ * renders portaled + viewport-fixed from its trigger (Phase E),
+ * so it drops down from the strip's top-left user block and
+ * clamps inside the viewport by construction. */
+@media (max-width: 760px) {
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-topbar-inner {
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+    padding-bottom: 0.5rem;
+  }
+  /* A-05 (Deep Audit Round 2): the stacked cluster row gives the
+   * search the row's leftover width — the ≤560px rule's 62px
+   * well (which showed only "Sea") is superseded here, later in
+   * the file at equal specificity. Cluster ORDER is untouched
+   * (gear · bell · ? · Edit view · search); the search is last,
+   * so it absorbs the slack and is genuinely typeable. */
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-hcluster {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-hsearch {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-hsearch .tv-input {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-brandplate .tv-wordmark-img {
+    display: block;
+    height: 1.25rem;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-topbar-right {
+    justify-self: stretch;
+  }
+  /* The bell popup anchors to the BAR (not the bell) on
+   * phones: full safe width, just under the bar, at any
+   * scroll position — the bar is the sticky element. */
+  [data-theme="railsteel"] .tv-bell-wrap {
+    position: static;
+  }
+  [data-theme="railsteel"] .tv-bell-pop {
+    right: 8px;
+    top: calc(100% + 0.5rem);
+  }
+}
+
+/* ================= Phone (≤760px): rail → top strip ================= */
+@media (max-width: 760px) {
+  /* The frame stacks (owner 2026-10-24, same principle as
+   * desktop): the menubar strip comes FIRST, at the very top;
+   * the header bar follows and no longer shoves the menubar
+   * down. Phase C: the panel is now a direct frame child (DOM:
+   * rail → panel → main column), so the main column dissolves
+   * (display:contents) and explicit flex order restores the
+   * visual stack — rail strip, header, panel, content. */
+  [data-theme="railsteel"] .tv-frame {
+    flex-direction: column;
+  }
+  [data-theme="railsteel"] .tv-main-col {
+    display: contents;
+  }
+  [data-theme="railsteel"] .tv-rail {
+    order: 1;
+  }
+  [data-theme="railsteel"] .tv-main-col > .tv-topbar {
+    order: 2;
+  }
+  [data-theme="railsteel"] .tv-panel.tv-shell-panel {
+    order: 3;
+    /* A-01 (Deep Audit Round 2): the panel starts COLLAPSED on
+     * phones — the module page leads with its own content, and
+     * the panel opens in place from the rail strip's panel
+     * toggle (data-phone-open, set by AppShell state). Opening
+     * is a disclosure flip: no navigation, no scroll loss. */
+    display: none;
+  }
+  [data-theme="railsteel"] .tv-panel.tv-shell-panel[data-phone-open] {
+    display: block;
+  }
+  [data-theme="railsteel"] .tv-panel-toggle {
+    display: flex;
+    flex: 0 0 auto;
+  }
+  [data-theme="railsteel"] .tv-main-col > .tv-body--rail {
+    order: 4;
+  }
+  [data-theme="railsteel"] .tv-body--rail {
+    flex-direction: column;
+  }
+  [data-theme="railsteel"] .tv-rail {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 10px;
+    position: relative;
+    border-right: 0;
+    border-bottom: 1px solid var(--header-edge);
+    box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.06), 0 2px 10px rgb(0 0 0 / 0.5);
+    overflow: visible;
+  }
+  [data-theme="railsteel"] .tv-rail:hover,
+  [data-theme="railsteel"] .tv-rail:focus-within {
+    width: 100%;
+  }
+  /* The rail pin is a desktop-side-bar control (widget
+   * options Wave 1, Decision 1; its toggle moved to the
+   * header gear popup 2026-11-05, where the row likewise
+   * hides on phones): on phones the rail is a top strip —
+   * a pinned account's held-open width must not leak into
+   * the strip's geometry: the strip stays full width and
+   * exactly as today. */
+  [data-theme="railsteel"] .tv-rail[data-pinned="true"] {
+    width: 100%;
+  }
+  /* The nav leads the strip — Home is its first item (the
+   * user block that led it under Phase E left the rail on
+   * 2026-11-03; the account menu's door is in the header). */
+  [data-theme="railsteel"] .tv-rail-nav {
+    flex-direction: row;
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    gap: 2px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  [data-theme="railsteel"] .tv-rail-btn {
+    width: auto;
+    padding: 8px;
+    justify-content: center;
+  }
+  [data-theme="railsteel"] .tv-rail-btn .tv-rail-label,
+  [data-theme="railsteel"] .tv-rail-badge {
+    display: none;
+  }
+  /* NEW on the phone strip (release machinery, 2026-11-08;
+   * sweep 10-F15): the strip hides labels and badges by
+   * design, so the first-week marker becomes the compact NEW
+   * pill on the icon's corner — the same legible form the
+   * collapsed desktop rail wears, never the unexplained dot
+   * it began as. */
+  [data-theme="railsteel"] .tv-rail-btn {
+    position: relative;
+  }
+  [data-theme="railsteel"] .tv-rail-badge.tv-rail-badge--new {
+    display: block;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: auto;
+    height: auto;
+    margin-left: 0;
+    padding: 1px 4px;
+    border-radius: var(--radius-pill);
+    font-size: 0.52rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+  }
+  [data-theme="railsteel"] .tv-panel.tv-shell-panel {
+    flex: none;
+    width: 100%;
+    height: auto;
+    position: relative;
+    padding: 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--header-edge);
+  }
+  [data-theme="railsteel"] .tv-main {
+    padding: 18px 14px 40px;
+  }
+}
+
+/* Phase 1 capture fixes: production's longest rail label
+ * ("Repairs & maintenance", 21 chars — the preview's longest was
+ * 9) still clipped at the 204px expanded width at 0.86rem, so nav
+ * labels step down to 0.78rem. (The capture fix that stood the
+ * user menu's name span down in the rail retired with the rail
+ * user block itself, 2026-11-03.) */
+[data-theme="railsteel"] .tv-rail-nav .tv-rail-label,
+[data-theme="railsteel"] .tv-rail-nav .tv-rail-btn.is-active .tv-rail-label {
+  font-size: 0.78rem;
+}
+[data-theme="railsteel"] .tv-rail-btn {
+  gap: 8px;
+}
+/* =====================================================================
+ * NEW HOME SHELL (dashboard redesign, 2026-11-10): every box wears
+ * the chrome strip with its two buttons (⛶ move, ⋯ menu); the ⋯
+ * menu and the options sheet anchor to the box; the move shadow
+ * and the live gap; the tip panel; the Add gallery; the stats
+ * glow. Motion vocabulary (§3.9): ~160ms fade+rise for menus,
+ * ~150ms pickup ease, ~220ms sibling slide (FLIP, driven from
+ * HomeShell), ~180ms settle, ~200ms add/remove — all collapsed
+ * under prefers-reduced-motion at the bottom of this section.
+ * ===================================================================== */
+[data-theme="railsteel"] .tv-home-add-wrap {
+  /* The header's top-right cluster (owner placement,
+   * 2026-11-10): the Add-a-widget button with the stats
+   * Customize text link directly UNDER it, right-aligned —
+   * a small vertical stack. The notification dot anchors to
+   * the wrap's top-right, which is the button's own corner
+   * (the button is the stack's widest, first row). */
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+[data-theme="railsteel"] .tv-home-add-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent),
+    0 0 10px color-mix(in srgb, var(--accent) 65%, transparent);
+  animation: tv-home-dot-pulse 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes tv-home-dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent), 0 0 6px color-mix(in srgb, var(--accent) 50%, transparent); }
+  50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent), 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent); }
+}
+
+/* The tip panel (owner addition, 2026-11-10): the site's calm
+ * panel treatment with an accent rule — an explainer, never an
+ * alert. It sits above the grid until the user dismisses it;
+ * the dismissal is stored server-side (a layout pseudo-entry),
+ * so it never nags on any device again. */
+[data-theme="railsteel"] .tv-dash-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  background: var(--surface);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow), var(--bevel), var(--panel-edge-top);
+  padding: 14px 16px;
+}
+[data-theme="railsteel"] .tv-dash-tip-text {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-dash-tip-text strong {
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+[data-theme="railsteel"] .tv-dash-tip-text p {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+[data-theme="railsteel"] .tv-dash-tip-actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Tier conversion (2026-11-10): the rung Home's convert bar —
+ * the tip panel's calm treatment in a slim single row — plus
+ * the shared flow the bar and the Settings panel both open, and
+ * the Settings panel's own block. Rendered only for the
+ * downloads tier; every other seat never mounts the markup. */
+[data-theme="railsteel"] .tv-convert-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  background: var(--surface);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow), var(--bevel), var(--panel-edge-top);
+  /* The tip panel's exact padding (design-system conformance,
+   * 2026-11-10): the bar's panel treatment is the standard
+   * panel treatment verbatim — it stays slim by carrying one
+   * line, not by wearing tighter chrome. */
+  padding: 14px 16px;
+  margin-bottom: var(--space-4);
+}
+[data-theme="railsteel"] .tv-convert-bar-text {
+  flex: 1 1 280px;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+[data-theme="railsteel"] .tv-convert-flow .tv-convert-intro {
+  margin: 0 0 var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+[data-theme="railsteel"] .tv-convert-label {
+  display: block;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-2);
+}
+[data-theme="railsteel"] .tv-convert-row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+[data-theme="railsteel"] .tv-convert-input {
+  flex: 1 1 180px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+[data-theme="railsteel"] .tv-convert-error {
+  margin: var(--space-2) 0 0;
+  color: var(--danger, #b3261e);
+  font-size: var(--font-size-sm);
+}
+[data-theme="railsteel"] .tv-convert-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+[data-theme="railsteel"] .tv-convert-divider::before,
+[data-theme="railsteel"] .tv-convert-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--edge);
+}
+[data-theme="railsteel"] .tv-convert-state {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+[data-theme="railsteel"] .tv-convert-settings {
+  border-top: 1px solid var(--edge);
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+[data-theme="railsteel"] .tv-convert-settings-title {
+  font-weight: 700;
+  margin: 0 0 var(--space-2);
+}
+[data-theme="railsteel"] .tv-convert-settings-body {
+  margin: 0 0 var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+/* The frame + chrome. The frame is layout-only (the box's own
+ * panel keeps its exact rendering inside it); the two chrome
+ * buttons (⛶ move, ⋯ menu) sit INSIDE the card's outline at its
+ * top-right corner (Ryan, 2026-11-10 17:29 — they used to ride
+ * a strip above the card). The chrome cluster is absolutely
+ * seated on the frame, whose box is the card's box; widget
+ * heads reserve the corner (see the clearance rules below) so
+ * the buttons never cover a title. */
+[data-theme="railsteel"] .tv-home-frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-home-frame > .tv-home-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-home-frame > .tv-home-body > * {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-home-frame:has(.tv-home-menu, .tv-home-opts) {
+  z-index: 50;
+}
+[data-theme="railsteel"] .tv-home-frame--in {
+  animation: tv-home-in 200ms ease-out;
+}
+@keyframes tv-home-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.99); }
+  to { opacity: 1; transform: none; }
+}
+[data-theme="railsteel"] .tv-home-chrome {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* While stepping (the ⋯ menu's Move path) the cluster widens
+ * into the stepper; it wears a solid seat so it reads as a
+ * control bar floating on the card, never text over text. */
+[data-theme="railsteel"] .tv-home-frame[data-stepping] .tv-home-chrome {
+  background: var(--surface-raised);
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  padding: 2px 4px;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.3);
+}
+/* The corner clearance: heads inside a home frame keep their
+ * right end clear of the in-card chrome buttons. The widget
+ * head (every predefined/custom/admin body), a titled Panel's
+ * header (the notifications count pill, the dealer dashboard's
+ * panels — the pill shifts left, inside the card), and the
+ * board widgets' bare title all reserve the same 62px. */
+[data-theme="railsteel"] .tv-home-frame .tv-widget-head,
+[data-theme="railsteel"] .tv-home-frame .tv-panel-header,
+[data-theme="railsteel"] .tv-home-frame .tv-home-widget > .tv-widget-title {
+  /* Sweep B1 (01-F4): the chrome now carries words (Move / Menu),
+   * so the reserved corner grows to fit the labelled buttons. */
+  padding-right: 138px;
+}
+[data-theme="railsteel"] .tv-home-chrome-spacer {
+  flex: 1;
+}
+/* Sweep B1 (01-F4): the Studio's labelled treatment — the Move
+ * and Menu buttons SAY what they do in words and stay visible at
+ * rest (quiet seat, full strength on hover/focus), so a user can
+ * find how to move or remove a widget without being told. */
+[data-theme="railsteel"] .tv-home-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: auto;
+  height: 24px;
+  padding: 0 7px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: rgb(var(--ink-rgb) / 0.04);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.88;
+  transition: opacity 150ms ease, color 150ms ease, border-color 150ms ease,
+    background 150ms ease;
+}
+[data-theme="railsteel"] .tv-home-btn .tv-home-btn-label {
+  font-size: 0.72rem;
+}
+[data-theme="railsteel"] .tv-home-frame:hover .tv-home-btn,
+[data-theme="railsteel"] .tv-home-frame:focus-within .tv-home-btn,
+[data-theme="railsteel"] .tv-home-frame[data-carrying] .tv-home-btn,
+[data-theme="railsteel"] .tv-home-frame[data-stepping] .tv-home-btn {
+  opacity: 1;
+}
+[data-theme="railsteel"] .tv-home-btn:hover {
+  color: var(--accent);
+  border-color: var(--edge-strong);
+  background: rgb(var(--ink-rgb) / 0.04);
+}
+[data-theme="railsteel"] .tv-home-btn--move {
+  cursor: grab;
+  touch-action: none;
+}
+[data-theme="railsteel"] .tv-home-btn--move:active {
+  cursor: grabbing;
+}
+@media (hover: none) {
+  [data-theme="railsteel"] .tv-home-btn {
+    opacity: 1;
+  }
+}
+
+/* Carrying: the box's slot in the grid is the GAP — a dashed
+ * accent outline at the box's exact size, its content resting
+ * invisible (the shadow clone carries the face). Stepping
+ * (the ⋯ menu's Move) keeps the box visible under a solid
+ * accent outline instead. */
+[data-theme="railsteel"] .tv-home-frame[data-carrying]:not([data-stepping]) {
+  outline: 2px dashed color-mix(in srgb, var(--accent) 65%, transparent);
+  outline-offset: -2px;
+  border-radius: var(--radius-lg);
+}
+[data-theme="railsteel"] .tv-home-frame[data-carrying]:not([data-stepping]) > * {
+  visibility: hidden;
+}
+[data-theme="railsteel"] .tv-home-frame[data-stepping] {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-lg);
+}
+[data-theme="railsteel"] .tv-home-shadow {
+  opacity: 0.55;
+}
+[data-theme="railsteel"] .tv-home-shadow .tv-home-frame {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 48px rgb(0 0 0 / 0.45),
+    0 8px 22px color-mix(in srgb, var(--accent) 35%, transparent);
+  background: var(--surface);
+}
+
+/* The stepper controls (the ⋯ menu's Move path): they widen
+ * the in-card chrome cluster while the box is lifted, always
+ * visible. */
+[data-theme="railsteel"] .tv-home-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: auto;
+}
+[data-theme="railsteel"] .tv-home-stepper button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 5px;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: 0.72rem;
+  line-height: 1;
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-home-stepper button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+[data-theme="railsteel"] .tv-home-stepper .tv-home-stepper-done {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  padding: 0 10px;
+  background: var(--plate);
+  color: var(--text-on-accent);
+  border-color: transparent;
+}
+
+/* The ⋯ menu: the Add menu's family — a small plate off the
+ * box's own chrome, right-aligned, fade+rise on open. */
+[data-theme="railsteel"] .tv-home-menu {
+  position: absolute;
+  top: 42px;
+  right: 8px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  padding: 5px;
+  background: var(--surface-raised);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised), var(--bevel);
+  animation: tv-home-menu-in 160ms ease-out;
+}
+@keyframes tv-home-menu-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+[data-theme="railsteel"] .tv-home-menu button {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+}
+[data-theme="railsteel"] .tv-home-menu button:hover {
+  background: rgb(var(--ink-rgb) / 0.05);
+  color: var(--accent);
+}
+[data-theme="railsteel"] .tv-home-menu .tv-home-menu-danger:hover {
+  color: var(--danger);
+}
+
+/* The options sheet (Sweep B1, 01-F5): it now sits IN FLOW above
+ * the widget body inside the frame, so the widget it edits stays
+ * fully visible below it and every toggle's effect can be watched
+ * as it lands — it never covers the widget. On small screens it
+ * becomes a bottom sheet. */
+[data-theme="railsteel"] .tv-home-opts {
+  position: relative;
+  margin: 40px 8px 8px;
+  z-index: 60;
+  width: auto;
+  max-height: min(70vh, 560px);
+  overflow-y: auto;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--surface-raised);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised), var(--bevel);
+  animation: tv-home-menu-in 160ms ease-out;
+  text-align: left;
+}
+[data-theme="railsteel"] .tv-home-opts-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+[data-theme="railsteel"] .tv-home-opts-head strong {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-home-opts-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--edge-strong);
+  border-radius: 50%;
+  background: rgb(var(--ink-rgb) / 0.04);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-home-opts-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+@media (max-width: 640px) {
+  [data-theme="railsteel"] .tv-home-opts {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    top: auto;
+    width: auto;
+    max-height: 72vh;
+  }
+}
+
+/* The stats checklist inside the stats widget's sheet. */
+[data-theme="railsteel"] .tv-home-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+[data-theme="railsteel"] .tv-home-stats-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 3px 4px;
+  border-radius: var(--radius);
+}
+[data-theme="railsteel"] .tv-home-stats-row:hover {
+  background: rgb(var(--ink-rgb) / 0.04);
+}
+[data-theme="railsteel"] .tv-home-stats-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-home-stats-check input {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+/* (The picker's old ▲▼ order steppers retired with the
+ * picker rebuild, 2026-11-10: reordering is hold-drag by the
+ * ☰ handle, keyboard arrows on the same handle — see
+ * .tv-home-hstats-chip below.) */
+
+/* The stats GLOW (§3.8): the chips are doors — each glows
+ * softly in the viewer's accent; a warning/danger stat with
+ * something actually in it glows warmer. The rung stats wear
+ * the same glow (their chips are doors too). */
+[data-theme="railsteel"] .tv-overview-grid--glow .tv-stat-link .tv-stat-card {
+  box-shadow:
+    var(--panel-shadow),
+    0 0 0 1px color-mix(in srgb, var(--accent) 38%, transparent),
+    0 5px 18px -6px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease;
+}
+[data-theme="railsteel"] .tv-overview-grid--glow .tv-stat-link:hover .tv-stat-card,
+[data-theme="railsteel"] .tv-overview-grid--glow .tv-stat-link:focus-visible .tv-stat-card {
+  box-shadow:
+    var(--panel-shadow),
+    0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent),
+    0 8px 24px -6px color-mix(in srgb, var(--accent) 75%, transparent);
+}
+[data-theme="railsteel"] .tv-overview-grid--glow .tv-stat-link[data-alert] .tv-stat-card {
+  box-shadow:
+    var(--panel-shadow),
+    0 0 0 1px color-mix(in srgb, var(--danger) 45%, transparent),
+    0 5px 18px -6px color-mix(in srgb, var(--danger) 60%, transparent);
+}
+
+/* The Home HEADER stats' doors (Lane 3; treatment corrected
+ * by the widget uniformity lane, 2026-11-10, owner order):
+ * the stats wear the header facts treatment — bare label over
+ * value on the panel, NO box at rest (Lane 3's resting accent
+ * ring around every linked stat is retired: "no more boxes
+ * around each stat"). A linked fact gains the standard
+ * highlight on hover/focus only — the accent outline with a
+ * soft glow, no lift, exactly as a clickable row earns it.
+ * An alert stat's signal in the facts seat is its value
+ * burning in the danger tone; its hover highlight burns
+ * warmer to match. */
+[data-theme="railsteel"] .tv-fact-link {
+  transition: box-shadow 180ms ease;
+}
+[data-theme="railsteel"] .tv-fact-link:hover,
+[data-theme="railsteel"] .tv-fact-link:focus-visible {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent),
+    0 8px 24px -6px color-mix(in srgb, var(--accent) 75%, transparent);
+}
+[data-theme="railsteel"] .tv-fact-link[data-alert] .tv-fact-value {
+  color: var(--danger);
+}
+[data-theme="railsteel"] .tv-fact-link[data-alert]:hover,
+[data-theme="railsteel"] .tv-fact-link[data-alert]:focus-visible {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--danger) 70%, transparent),
+    0 8px 24px -6px color-mix(in srgb, var(--danger) 75%, transparent);
+}
+
+/* The header-stats picker (Lane 3; layout rebuilt by the
+ * widget uniformity lane, 2026-11-10, owner order): the
+ * description + rows toggle across the top, the picks as
+ * horizontal Row strips with ☰ drag handles, then the options
+ * list wearing the kit's list add/remove discs
+ * (theme/surfaces.css). The options list reuses
+ * .tv-home-stats-list/-row above. */
+[data-theme="railsteel"] .tv-home-hstats-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+[data-theme="railsteel"] .tv-home-hstats-top {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+[data-theme="railsteel"] .tv-home-hstats-top .tv-muted {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+[data-theme="railsteel"] .tv-home-hstats-picked-label {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+[data-theme="railsteel"] .tv-home-hstats-add-head {
+  margin-top: var(--space-2);
+}
+/* The picker's headings — the row heads and the options'
+ * group heads — are HEADINGS over the entries under them, so
+ * they wear the heading register of the text-hierarchy rule
+ * (owner, 2026-11-10; baseline: the Shared Tools "How it
+ * works" panel, whose section titles are full-ink 600–700
+ * over muted text): full --text ink at 700, never the muted
+ * tone — a muted category over bright entries is the
+ * inverted pair Ryan rejected. (Stat label/value pairs are
+ * the separate, established pattern and are not headings.) */
+[data-theme="railsteel"] .tv-home-hstats-rowhead,
+[data-theme="railsteel"] .tv-home-hstats-group h4 {
+  margin: 0 0 var(--space-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+[data-theme="railsteel"] .tv-home-hstats-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-height: 2.35rem;
+  align-items: center;
+}
+[data-theme="railsteel"] .tv-home-hstats-strip[data-empty] {
+  justify-content: center;
+  border: 1px dashed var(--edge);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+}
+[data-theme="railsteel"] .tv-home-hstats-drop-hint {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+[data-theme="railsteel"] .tv-home-hstats-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2, transparent);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+[data-theme="railsteel"] .tv-home-hstats-chip[data-carrying] {
+  /* Carrying (the widget move engine's treatment, worn by the
+   * stats chips since the owner's 2026-11-10 correction): the
+   * chip's slot is the GAP — a dashed accent outline at the
+   * chip's exact size, its content resting invisible while
+   * the shadow clone carries the face. Identical to
+   * .tv-home-frame[data-carrying] on the widget grid. */
+  outline: 2px dashed color-mix(in srgb, var(--accent) 65%, transparent);
+  outline-offset: -2px;
+  border-color: transparent;
+}
+[data-theme="railsteel"] .tv-home-hstats-chip[data-carrying] > * {
+  visibility: hidden;
+}
+/* The carried chip's shadow: the clone that follows the
+ * pointer 1:1 (the engine's .tv-home-shadow treatment) —
+ * translucent, accent-outlined, lifted on a deep soft
+ * shadow over a solid surface. */
+[data-theme="railsteel"] .tv-home-hstats-shadow {
+  opacity: 0.55;
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  box-shadow: 0 24px 48px rgb(0 0 0 / 0.45),
+    0 8px 22px color-mix(in srgb, var(--accent) 35%, transparent);
+  background: var(--surface);
+}
+[data-theme="railsteel"] .tv-home-hstats-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: grab;
+  touch-action: none;
+}
+[data-theme="railsteel"] .tv-home-hstats-handle:hover,
+[data-theme="railsteel"] .tv-home-hstats-handle:focus-visible {
+  color: var(--accent);
+}
+[data-theme="railsteel"] .tv-home-hstats-handle:active {
+  cursor: grabbing;
+}
+
+/* The Add gallery: grouped cards; a card is a door (Add) or a
+ * calm "already here" state — predefined widgets are once-only. */
+[data-theme="railsteel"] .tv-home-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+[data-theme="railsteel"] .tv-home-gallery-search {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: rgb(var(--ink-rgb) / 0.03);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--font-size-sm);
+}
+[data-theme="railsteel"] .tv-home-gallery-search:focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  outline-offset: 1px;
+}
+[data-theme="railsteel"] .tv-home-gallery-group h3 {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* Text hierarchy (owner rule, 2026-11-10): a category
+   * heading is the STRONGEST text over its group — full ink,
+   * never the muted tone (the muted heading over full-ink
+   * card titles was an inverted pair; baseline: the Shared
+   * Tools 'How it works' headings). */
+  color: var(--text);
+  margin: 0 0 var(--space-2);
+}
+/* Category section break (owner, 2026-11-12): a full break
+ * between one category's last card and the next category's
+ * heading — every group after the first gets an extra
+ * space-3 on top of the gallery's base gap (space-4), for
+ * 28px of air, so where a category ends and the next begins
+ * is unmistakable instead of one endless list whose headings
+ * blend in. The first group keeps the base gap only. */
+[data-theme="railsteel"] .tv-home-gallery-group + .tv-home-gallery-group {
+  margin-top: var(--space-3);
+}
+[data-theme="railsteel"] .tv-home-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+@media (max-width: 640px) {
+  [data-theme="railsteel"] .tv-home-gallery-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+[data-theme="railsteel"] .tv-home-gallery-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-home-gallery-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--edge));
+}
+[data-theme="railsteel"] .tv-home-gallery-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-home-gallery-card-head strong {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.95rem;
+}
+[data-theme="railsteel"] .tv-home-gallery-icon {
+  display: inline-flex;
+  color: var(--accent);
+  flex: none;
+}
+[data-theme="railsteel"] .tv-home-gallery-card p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  flex: 1;
+}
+[data-theme="railsteel"] .tv-home-gallery-new {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+[data-theme="railsteel"] .tv-home-gallery-onhome {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--edge-strong);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+[data-theme="railsteel"] .tv-home-gallery-card .tv-btn {
+  align-self: flex-start;
+}
+/* Sweep B1 (01-F9): the gallery card's live preview — the widget
+ * itself, rendered read-only with the user's real data (the same
+ * pattern the custom-widget wizard previews with), capped with a
+ * fade so the card stays a card. It never takes a click: adding
+ * stays the Add button's job. */
+[data-theme="railsteel"] .tv-home-gallery-card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+[data-theme="railsteel"] .tv-home-gallery-preview {
+  pointer-events: none;
+  max-height: 300px;
+  overflow: hidden;
+  border-top: 1px solid var(--edge);
+  padding-top: var(--space-2);
+  mask-image: linear-gradient(180deg, #000 78%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent);
+}
+/* Sweep B1 (01-F6): the carry narration — one line of words that
+ * lives above the grid for exactly as long as a widget is carried. */
+[data-theme="railsteel"] .tv-home-carry-hint {
+  padding: 10px 14px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-lg);
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+[data-theme="railsteel"] .tv-home-gallery-foot {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+/* The retired cover's face is gone from the widget head: the
+ * title link inherits the title's face, and the real Open link
+ * keeps the CTA's seat exactly. */
+[data-theme="railsteel"] .tv-widget-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+[data-theme="railsteel"] .tv-widget-title-link:hover {
+  color: var(--accent);
+}
+
+/* ---- Lane 2: the Add chooser, the custom-widget wizard, and
+ * custom boxes (design §3.5/§3.6). The chooser doors and the
+ * wizard's module cards are clickable choices, so they wear
+ * the main-highlight hover (§3.9): a small lift, the accent
+ * outline, a soft glow — the gallery card's own language. */
+[data-theme="railsteel"] .tv-chooser-doors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+@media (max-width: 640px) {
+  [data-theme="railsteel"] .tv-chooser-doors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+[data-theme="railsteel"] .tv-chooser-door {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  min-width: 0;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+[data-theme="railsteel"] .tv-chooser-door:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+[data-theme="railsteel"] .tv-chooser-door-name {
+  font-weight: 700;
+  font-size: 1rem;
+}
+[data-theme="railsteel"] .tv-wizard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-wiz-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+[data-theme="railsteel"] .tv-wiz-modules {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+@media (max-width: 640px) {
+  [data-theme="railsteel"] .tv-wiz-modules {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+[data-theme="railsteel"] .tv-wiz-module {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  min-width: 0;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+[data-theme="railsteel"] .tv-wiz-module:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+[data-theme="railsteel"] .tv-wiz-module > span:last-child {
+  min-width: 0;
+  font-weight: 600;
+}
+[data-theme="railsteel"] .tv-wiz-rowhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+[data-theme="railsteel"] .tv-wiz-rowhead p {
+  margin: 0;
+}
+[data-theme="railsteel"] .tv-wiz-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-wiz-preview-box {
+  min-width: 0;
+}
+[data-theme="railsteel"] .tv-wiz-preview-box[data-size="half"] {
+  max-width: 50%;
+}
+@media (max-width: 760px) {
+  [data-theme="railsteel"] .tv-wiz-preview-box[data-size="half"] {
+    max-width: none;
+  }
+}
+[data-theme="railsteel"] .tv-wiz-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+/* Sweep B1 (01-F14): step 2's commit footer sticks to the modal's
+ * bottom edge while the aspects scroll under it. */
+[data-theme="railsteel"] .tv-wiz-foot--commit {
+  position: sticky;
+  bottom: 0;
+  padding: 10px 2px 2px;
+  background: var(--panel);
+  border-top: 1px solid var(--edge);
+}
+[data-theme="railsteel"] .tv-aspect-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+[data-theme="railsteel"] .tv-aspect-desc {
+  margin: 2px 0 0;
+  padding-left: 26px;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+}
+[data-theme="railsteel"] .tv-aspect-allnone {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+[data-theme="railsteel"] .tv-custom-name-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: rgb(var(--ink-rgb) / 0.03);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--font-size-sm);
+}
+/* A custom box's stacked bodies sit in one panel: a hairline
+ * and breathing room between one body's sections and the
+ * next, never a second card edge. */
+[data-theme="railsteel"] .tv-custom-part + .tv-custom-part {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--edge);
+}
+
+/* Reduced motion (§3.9/§4.2.8): the whole vocabulary collapses
+ * — no pulses, no rises, no glows breathing; FLIP durations are
+ * zeroed in HomeShell itself. */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="railsteel"] .tv-home-add-dot,
+  [data-theme="railsteel"] .tv-home-frame--in,
+  [data-theme="railsteel"] .tv-home-menu,
+  [data-theme="railsteel"] .tv-home-opts {
+    animation: none;
+  }
+  [data-theme="railsteel"] .tv-home-btn,
+  [data-theme="railsteel"] .tv-chooser-door,
+  [data-theme="railsteel"] .tv-wiz-module,
+  [data-theme="railsteel"] a.tv-home-hstat,
+  [data-theme="railsteel"] .tv-overview-grid--glow .tv-stat-link .tv-stat-card {
+    transition: none;
+  }
+}
+
+/* ================= Phone frame slimming (Sweep A5, 2026-11-11) =====
+ * Finding 10-F9: at 390px the chrome stack (app bar + construction
+ * banner + rail row + TWO header rows ≈ 340px) ate the first screen
+ * before any content. This block — phone widths only, every rule
+ * inside max-width:760px, so wider screens are untouched — folds
+ * the signed-in header back into ONE row and slims the rail strip:
+ *
+ * - Header: the ≤760 stack above seated the brand plate on its own
+ *   row over the cluster row. Here plate and cluster share one row
+ *   again (the pre-stack phone arrangement): the plate sheds its
+ *   wordmark — the emblem mark carries the brand alone at this
+ *   size, the same shed the ≤560px rule already made — and every
+ *   cluster control stays present, in the owner's order, and
+ *   labelled: gear · HOW TO (still a word link, tightened, never
+ *   icon-ified) · bell · help · person · search. The search keeps
+ *   the row's leftover width (the A-05 flex rule above still
+ *   applies — it now flexes within the single row).
+ * - Rail strip: vertical padding steps down (strip 8px→4px, item
+ *   8px→6px); icons keep their full 24px artwork and the strip
+ *   still scrolls sideways exactly as before.
+ * - Signed-out strip: it keeps its deliberate two-row stack (the
+ *   ≤900px block above) with tighter padding and the smaller mark.
+ * The construction banner is NOT touched here — its copy/routes
+ * belong to a sibling lane; its remaining phone height is measured
+ * and recorded in the lane INDEX. */
+@media (max-width: 760px) {
+  [data-theme="railsteel"] .tv-shell {
+    --topbar-h: 2.75rem;
+  }
+  /* Signed-in header: one row again. */
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-topbar-inner {
+    grid-template-columns: auto 1fr;
+    row-gap: 0;
+    gap: 6px;
+    padding: 0.25rem 0.5rem;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-brandplate {
+    padding: 2px;
+    gap: 6px;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-brandplate-mark {
+    width: 28px;
+    height: 28px;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-brandplate .tv-wordmark-img {
+    display: none;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-topbar-right {
+    /* Stretch, NOT end: an end-anchored grid item sizes to its
+     * max-content and the cluster (468px of controls) spilled
+     * left over the plate and off-screen (rig catch, A5). The
+     * stretch keeps the item at its column's width; the cluster
+     * right-aligns inside it via justify-content, and the search
+     * absorbs the squeeze via the A-05 min-width:0 chain. */
+    justify-self: stretch;
+    min-width: 0;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-hcluster {
+    gap: 4px;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-hbtn {
+    width: 2rem;
+    height: 2rem;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-hlink {
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-gear-chooser-btn {
+    padding: 0.15rem;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-gear-chooser-btn img {
+    width: 20px;
+    height: 20px;
+  }
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-hsearch-btn {
+    width: 1.875rem;
+  }
+  /* The search is the row's only flexible element (A-05): the
+   * fixed controls never shrink — an un-shrunk help button keeps
+   * its full 32px seat instead of being squeezed to icon width
+   * (rig catch, A5). */
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-hbtn,
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-hlink,
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-gear-chooser,
+  [data-theme="railsteel"] .tv-topbar:not(.tv-header--strip) .tv-bell-wrap {
+    flex-shrink: 0;
+  }
+  /* Rail strip: same row, less air. */
+  [data-theme="railsteel"] .tv-rail {
+    padding: 4px 8px;
+  }
+  [data-theme="railsteel"] .tv-rail-btn {
+    padding: 6px;
+  }
+  /* Signed-out strip: same stack, tighter. */
+  [data-theme="railsteel"] .tv-header--strip .tv-topbar-inner {
+    row-gap: 2px;
+    padding: 0.3rem 0.5rem 0.4rem;
+  }
+  [data-theme="railsteel"] .tv-header--strip .tv-brandplate-mark {
+    width: 28px;
+    height: 28px;
+  }
+}

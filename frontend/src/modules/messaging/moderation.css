@@ -1,0 +1,39 @@
+/* Community blocks panel on the moderation queue (admin
+   lane, 2026-11-07): the queue's one class-styled section —
+   active per-feature blocks with their lift buttons, and the
+   block-by-account-number form (god + moderator_admin seats
+   only; moderators read the list). */
+
+.tv-blocks-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.tv-blocks-row {
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  padding: 0.7rem 0.9rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.tv-blocks-meta {
+  color: var(--text-muted);
+}
+
+.tv-blocks-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tv-blocks-form {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.tv-blocks-empty {
+  margin: 0;
+  color: var(--text-muted);
+}

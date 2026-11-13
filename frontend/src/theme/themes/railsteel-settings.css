@@ -1,0 +1,229 @@
+
+
+/* ============ Phase 3: Settings finish + Admin conversion ============ */
+
+/* Token sweep (Phase 3 addendum, owner steer 2026-10-24): every
+ * palette-bearing literal in this file now resolves through
+ * tokens.css — hairlines/washes via rgb(var(--ink-rgb) / α),
+ * soft/bright/nav inks, the chrome material (--chrome-gradient /
+ * --chrome-edge), the tag ground, the rail ground, row hover
+ * (--table-row-hover), seams (--header-edge). The ONLY literals
+ * left in this file are the black/white lighting poles:
+ * rgb(0 0 0 / α) shadow stacks, rgb(255 255 255 / α) bevel
+ * highlights, and the #fff/#000 color-mix anchors — lighting is
+ * mode-neutral, so a future light palette (tokens.css,
+ * [data-mode="light"]) overrides color tokens only and touches
+ * zero rules here. */
+
+/* -- A. The settings tree in the panel, in the preview's panel
+ * language. Semantics are untouched (App.tsx SettingsSidebarTree:
+ * Back and the group headers are in-place disclosure buttons, only
+ * leaves navigate, NavLink marks the active leaf aria-current) —
+ * this block only skins the tree's existing classes. The preview's
+ * stacked label+hint leaf is not used: the settings registry
+ * carries labels only, no hint text exists to stack. -- */
+[data-theme="railsteel"] .tv-shell-panel .tv-nav-item.tv-settings-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-shell-panel .tv-nav-item.tv-settings-back:hover {
+  background: linear-gradient(180deg, rgb(var(--ink-rgb) / 0.06), rgb(var(--ink-rgb) / 0.02));
+  color: var(--text-bright);
+}
+[data-theme="railsteel"] .tv-shell-panel .tv-nav-group {
+  margin-top: 10px;
+}
+[data-theme="railsteel"] .tv-shell-panel .tv-nav-item.tv-settings-group-btn {
+  width: 100%;
+  padding: 8px 2px 6px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+[data-theme="railsteel"] .tv-shell-panel .tv-nav-item.tv-settings-group-btn:hover {
+  background: transparent;
+  color: var(--text);
+}
+/* The accordion wrap keeps surfaces.css's 0fr/1fr animation; the
+ * panel language drops its indent rail so leaves align with the
+ * other panels' items. */
+[data-theme="railsteel"] .tv-shell-panel .tv-nav-sub {
+  margin-left: 0;
+  padding: 2px 0;
+  border-left: none;
+  gap: 2px;
+}
+[data-theme="railsteel"] .tv-shell-panel .tv-nav-item.tv-settings-leaf {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+[data-theme="railsteel"] .tv-shell-panel .tv-nav-item.tv-settings-leaf:hover {
+  background: linear-gradient(180deg, rgb(var(--ink-rgb) / 0.06), rgb(var(--ink-rgb) / 0.02));
+  color: var(--text-bright);
+}
+[data-theme="railsteel"] .tv-shell-panel .tv-nav-item.tv-settings-leaf.is-active {
+  background: var(--plate);
+  border-color: rgb(0 0 0 / 0.5);
+  box-shadow: var(--plate-shadow);
+  color: var(--text-on-accent);
+  font-weight: 700;
+}
+
+/* -- B. Settings content: form cards in the preview's language.
+ * Panels are framed metal cards (grain + bevel + drop shadow);
+ * FORM sections get the preview's ~640px form measure (the
+ * sections listed below). Data-wide sections are deliberately
+ * NOT squeezed: History & restore (timeline + restore rows),
+ * Sharing (long item lists), My crew (roster table), My shop,
+ * Custom fields and Import matching (long lists) keep full
+ * width. Insurer profile caps only its form panel — the
+ * Policyholders panel below it keeps full width. -- */
+[data-theme="railsteel"] .tv-settings-content .tv-panel,
+[data-theme="railsteel"] .tv-admin-content .tv-panel {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-image: none;
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+}
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="profile"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="security"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="billing"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="redeem"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="insurance"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="cloud-backup"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="data"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="appearance"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="customize"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="public-profile"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="notifications"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="dealer-profile"] .tv-panel,
+[data-theme="railsteel"] .tv-settings-content[data-settings-section="insurer-profile"] section.tv-panel:first-of-type {
+  max-width: 640px;
+}
+/* (The Appearance rule also reaches its nested live-preview
+ * sample panel; at the card's inner width the cap never binds
+ * there — the outer card is the one that takes the measure.) */
+
+/* Settings block labels (Appearance's Theme / Mode rows; the
+ * class form of the bold block label the sections use, so the
+ * Phase 3 mode row adds no inline style). */
+.tv-settings-block-label {
+  font-weight: 700;
+  margin: 0 0 var(--space-2);
+}
+
+/* Setting rows: hairline rows (the toggles themselves are the
+ * machined switches Phase 1 already ships). */
+[data-theme="railsteel"] .tv-setting-row {
+  padding-top: 13px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgb(var(--ink-rgb) / 0.07);
+}
+
+/* Plan box (Billing): the current-plan header as the preview's
+ * screwed raised box. */
+[data-theme="railsteel"] .tv-plan-box {
+  background:
+    url("../assets/screw.svg") left 10px top 10px / 11px 11px no-repeat,
+    url("../assets/screw.svg") right 10px top 10px / 11px 11px no-repeat,
+    linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(0 0 0 / 0.2)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface-raised);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+  padding: 18px 20px;
+}
+
+/* Share box (Sharing → People): each grant row as the preview's
+ * framed share row. */
+[data-theme="railsteel"] .tv-share-box {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(0 0 0 / 0.16)),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--bevel);
+  padding: 13px 15px;
+}
+
+/* Danger zone (Export & delete): the delete-account block keeps
+ * its danger semantics, framed in danger ink. */
+[data-theme="railsteel"] .tv-danger-zone {
+  border: 1px solid color-mix(in srgb, var(--danger) 45%, var(--edge));
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--danger) 8%, transparent), transparent 60%),
+    var(--surface);
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 16px;
+}
+
+/* -- C. Appearance accent row: the preview's accent-dot geometry
+ * (28px, bevel, active ring + glow) on production's gear swatches.
+ * The gear ARTWORK stays (the owner's gear directive — the gears
+ * are the picker's identity across the site); what changes is the
+ * size, bevel and the active treatment, which now match the
+ * preview dot's ring + glow instead of the old 1px outline. -- */
+[data-theme="railsteel"] .tv-accent-swatch {
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), 0 2px 6px rgb(0 0 0 / 0.5);
+  font-family: var(--font-display);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+[data-theme="railsteel"] .tv-accent-swatch-dot {
+  width: 28px;
+  height: 28px;
+}
+[data-theme="railsteel"] .tv-accent-swatch.is-active {
+  border-color: var(--accent);
+  box-shadow:
+    var(--bevel),
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--accent),
+    0 0 12px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* -- E. The panel LATEST note clamps to ONE line (presentation
+ * only — the full text lives on the Home notifications block). -- */
+.tv-sp-note--latest > p:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

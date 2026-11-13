@@ -1,0 +1,69 @@
+/* Base element styles — theme layer. Everything visual resolves to tokens. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+/* Links take the theme's link color (the --link token) instead
+ * of the browser default blue. Class-styled anchors (nav,
+ * buttons, breadcrumbs) override this with their own rules.
+ * Without it, plain <Link>s — feedback / forum / marketplace
+ * titles, seller names — rendered UA blue in every theme even
+ * though the token existed (wave-review round, 2026-10-20). */
+a {
+  color: var(--link);
+}
+
+:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+input,
+button,
+select,
+textarea {
+  font: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

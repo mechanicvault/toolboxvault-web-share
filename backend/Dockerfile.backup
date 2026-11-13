@@ -1,0 +1,36 @@
+# Disaster Vault backup service (owner spec 2026-10-18).
+#
+# Same code and pinned requirements as the API image, plus the
+# three external tools the bundle job shells out to:
+#   pg_dump  — postgresql-client-16 from the PGDG repo (Debian's
+#              stock client is v15 and refuses a v16 server dump)
+#   age      — bundle encryption (recipient/public key only; the
+#              private key never exists on the server)
+#   zstd     — the single-archive packer (fast, strong, resumable-
+#              friendly single-file bundles per the anti-bloat law)
+FROM python:3.12-slim-bookworm
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      age zstd gnupg ca-certificates curl \
+ && install -d /usr/share/postgresql-common/pgdg \
+ && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" \
+      > /etc/apt/sources.list.d/pgdg.list \
+ && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+      -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends postgresql-client-16 \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app ./app
+COPY alembic ./alembic
+COPY alembic.ini ./alembic.ini
+
+# The scheduler owns the loop; one-shot jobs run the same image
+# with `python -m app.backup.job` (see docker-compose backup service).
+CMD ["python", "-m", "app.backup.scheduler"]

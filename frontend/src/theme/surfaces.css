@@ -1,0 +1,3343 @@
+/* Surface + layout styles — theme layer: panels, tables, dialogs, toasts,
+ * upload, and the app shell. Every value resolves to a design token. */
+
+/* ============================== Panel / card ============================== */
+
+.tv-panel {
+  position: relative;
+  background: var(--panel);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge);
+  border-image: var(--frame);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow), var(--bevel), var(--panel-edge-top);
+  padding: var(--spacing);
+}
+/* Accent bloom along the top edge (Steel hook; none elsewhere). */
+.tv-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--panel-glow);
+  pointer-events: none;
+}
+.tv-panel--raised {
+  background: var(--surface-raised);
+}
+.tv-panel--accent-edge {
+  border-left: 4px solid var(--accent);
+  /* The accent stripe IS this variant's frame — a theme frame would
+   * paint over it, so it opts out explicitly. */
+  border-image: none;
+}
+/* Riveted nameplate panel: corner screws painted by the theme layer. */
+.tv-panel--plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--rivets);
+  pointer-events: none;
+  z-index: 1;
+}
+.tv-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: calc(var(--spacing) * -1) calc(var(--spacing) * -1) var(--spacing);
+  padding: 0.6rem var(--spacing);
+  border-bottom: 1px solid var(--panel-header-edge);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--panel-header-bg);
+  color: var(--panel-header-text);
+}
+.tv-panel-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: inherit;
+}
+.tv-panel--plate .tv-panel-title {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: var(--font-size-base);
+  text-shadow: var(--panel-header-text-shadow);
+}
+
+/* ================= Section header + overview stats ================= */
+/* Stencil-caps label + hairline rule in the accent (dashboard pattern).
+ * Token-driven in every theme: the accent is the user's, the caps and
+ * spacing are the shared structure. */
+.tv-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.tv-section-title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.tv-section-rule {
+  flex: 1;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--accent),
+    color-mix(in srgb, var(--accent) 30%, transparent) 55%,
+    transparent
+  );
+}
+
+/* Stat plates: auto-fit tracks keep the row full at every width —
+ * wide screens fit all registered cards across (six when six exist),
+ * then the row steps down 3 / 2 / 1 as the tracks wrap. The floor
+ * dropped 190px -> 168px in the supervisory polish (2026-10-23):
+ * at 190 the 11-stat grid orphaned one card on its own row at
+ * desktop widths, and on a 402px phone every card stacked in a
+ * single ~950px-tall column; 168 yields 6+5 on desktop and a
+ * two-column grid on phones. */
+.tv-overview-grid {
+  display: grid;
+  gap: var(--spacing);
+  grid-template-columns: repeat(auto-fit, minmax(min(168px, 100%), 1fr));
+}
+/* Tile shape (owner 2026-11-03): the head row (icon chip at
+ * the left, label beside it) sits on top, the value below it.
+ * The column gap is the label's old margin-top, moved here —
+ * every element keeps its own styling; only the arrangement
+ * changed. */
+.tv-stat-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 3rem;
+}
+.tv-stat-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+/* F5-01: linked stat cards — whole card is the link. */
+.tv-stat-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius);
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+.tv-stat-link:hover { transform: translateY(-1px); }
+.tv-stat-link:focus-visible { outline: var(--focus-outline); outline-offset: var(--focus-outline-offset); }
+/* Corner screw dots on the card face. Deep audit F1-25 ROOT
+ * CAUSE: this ::before painted 1.6px radial-gradient "screws" at
+ * the four corners of EVERY stat card in EVERY theme — in
+ * Light/Dark (no VaultPanel frame to seat them) they read as
+ * stray dirt dots. The dots now paint only inside the Steel
+ * family, whose panel art seats them (see steel.css override is
+ * unnecessary: the base rule is scoped below). */
+/* Narrow stat cards step their label down a size (supervisory
+ * polish 2026-10-23): at the 168px grid floor the longest stock
+ * label, "MAINTENANCE DUE", needs ~99px of text column but a
+ * two-column phone card offers ~90px beside the icon chip, so the
+ * word split mid-word even with break-word. A container query on
+ * the card itself (both panel roots are already position:relative,
+ * so the frame anchors do not move) shrinks the label only where
+ * the card is actually narrow. */
+.tv-stat-card {
+  container-type: inline-size;
+}
+@container (max-width: 180px) {
+  /* The two-class selector is deliberate: the bundler orders the
+   * @container block before the base .tv-stat-label rule, and at
+   * equal specificity the later rule would win — the step-down
+   * silently never applied until this was strengthened
+   * (supervisory polish round 3, measured live). */
+  .tv-stat-card .tv-stat-label {
+    font-size: 0.66rem;
+    letter-spacing: 0.02em;
+  }
+}
+/* Stat VALUES step down as their card narrows (deep audit F1-10):
+ * the value rule below is nowrap + ellipsis, and in Steel's wide
+ * stencil numerals "$19,004" ellipsised to "$19,…" at ordinary
+ * desktop card widths — a stat that truncates into uselessness is
+ * worse than a smaller stat. The steps track the card's own width
+ * (the card is the container), so every theme gets the same
+ * behaviour: full size on wide cards, then xl / lg / base as the
+ * text column beside the icon chip shrinks. At the smallest step
+ * a seven-figure whole-unit value ("$9,999,999") still fits the
+ * narrowest grid-floor card. Same two-class specificity lesson
+ * as the label step-down above. */
+@container (max-width: 280px) {
+  .tv-stat-card .tv-stat-value {
+    font-size: var(--font-size-xl);
+  }
+}
+@container (max-width: 215px) {
+  .tv-stat-card .tv-stat-value {
+    font-size: var(--font-size-lg);
+  }
+}
+@container (max-width: 172px) {
+  .tv-stat-card .tv-stat-value {
+    font-size: var(--font-size-base);
+  }
+}
+.tv-stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* The value centers in its tile (owner 2026-11-03: "The value
+   * of each box should be centered under the header text of that
+   * box"). The value block spans the body's full width and the
+   * panel pads symmetrically, so centering the text centers it
+   * on the tile. The head row (icon + label) is untouched. */
+  text-align: center;
+}
+.tv-stat-label {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  /* Labels are data-driven (module-registered stats) and must be
+   * read in full: the old nowrap + ellipsis cut "Replacement cost"
+   * and "Maintenance due" to "REPLACEMENT C…" in the Steel fonts
+   * at desktop widths (visual sweep 2026-10-19). Wrap instead —
+   * the grid stretches the row's cards to the tallest body.
+   * break-word, not anywhere (supervisory polish 2026-10-23): the
+   * narrower 168px grid floor made Steel's wider stencil caps split
+   * mid-word ("REPLACEMEN/T COST"); break-word wraps at word
+   * boundaries first and only splits a word that cannot fit alone. */
+  line-height: 1.25;
+  overflow-wrap: break-word;
+}
+/* Icon chip: small framed square at the left of the label, glyph in the accent. */
+.tv-stat-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge-strong);
+  background: var(--surface);
+  box-shadow: var(--bevel);
+  color: var(--accent);
+}
+
+/* ============================== Framed image ============================== */
+
+.tv-framed {
+  margin: 0;
+}
+.tv-framed-frame {
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge-strong);
+  border-image: var(--frame);
+  box-shadow: var(--panel-shadow), var(--bevel), var(--panel-edge-top);
+  background: var(--surface);
+}
+.tv-framed-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Contain treatment (F1-05): the whole photo, letterboxed over a
+ * blurred fill of itself — the backdrop is the same (rendition)
+ * URL, so it costs no extra download. */
+.tv-framed-frame--contain {
+  position: relative;
+}
+.tv-framed-backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(14px);
+  transform: scale(1.15);
+  opacity: 0.5;
+}
+.tv-framed-frame--contain img {
+  position: relative;
+  object-fit: contain;
+}
+.tv-framed figcaption {
+  margin-top: 0.4rem;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+/* ============================== Empty state ============================== */
+
+.tv-empty {
+  text-align: center;
+  padding: 2.25rem 1.25rem;
+  color: var(--text-muted);
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  background-image: var(--texture-panel);
+}
+.tv-empty-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-3);
+  color: var(--text-muted);
+}
+.tv-empty h3 {
+  margin: 0 0 0.5rem;
+  color: var(--text);
+}
+.tv-empty p {
+  margin: 0 0 1rem;
+}
+.tv-empty-action {
+  display: flex;
+  justify-content: center;
+}
+
+/* ============================== Data table ============================== */
+
+/* Crew member tools (claims-ownership lane, 2026-11-07): the
+ * shop's read-only window into a member's shared list — a grid
+ * stack, a flush paragraph, and muted in-cell annotations. */
+.tv-crew-tools {
+  display: grid;
+  gap: var(--space-3);
+}
+.tv-crew-tools > * {
+  /* Grid children give up their automatic minimum size (the
+   * .tv-stack rule's shape): the member table scrolls inside
+   * its .tv-table-wrap instead of widening the page at phone
+   * widths. */
+  min-width: 0;
+}
+.tv-crew-tools p {
+  margin: 0;
+}
+.tv-crew-tools .tv-crew-note {
+  color: var(--text-muted);
+}
+.tv-crew-batt {
+  color: var(--text-muted);
+}
+
+.tv-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--table-edge);
+  border-image: var(--frame);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow), var(--bevel), var(--panel-edge-top);
+  background: var(--panel);
+  background-image: var(--texture-panel);
+}
+.tv-table {
+  width: 100%;
+  border-collapse: collapse;
+  /* Data reads at the small size (density pass 2026-10-22): tables
+   * are the densest surface in the app and set the "zoomed" feel
+   * more than any other when they ride the base size. */
+  font-size: var(--font-size-sm);
+}
+.tv-table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  background: var(--table-header-bg);
+  color: var(--table-header-text);
+  border-bottom: 2px solid var(--edge-strong);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.tv-table td {
+  padding: 0.5rem 0.75rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--table-edge);
+  vertical-align: middle;
+}
+.tv-table tbody tr:nth-child(even) {
+  background: var(--table-row-alt);
+}
+.tv-table tbody tr:hover {
+  background: var(--table-row-hover);
+}
+.tv-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.tv-table tr.is-clickable {
+  cursor: pointer;
+}
+.tv-th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+.tv-th-sort:hover {
+  color: var(--accent);
+}
+.tv-th-arrow {
+  font-size: 0.65rem;
+  color: var(--accent);
+  min-width: 0.7rem;
+}
+.tv-table-empty {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* List-standard helpers (Wave 3, 2026-11-02): a wrapped DataTable
+ * keeps a minimum width and scrolls sideways inside its wrap on
+ * phones — the page itself never widens. Long single facts (a
+ * street address, a website) ellipsize in their cell; the full
+ * text lives on the record / edit form and in the title tooltip. */
+.tv-table-min .tv-table {
+  min-width: 620px;
+}
+.tv-table-min-lg .tv-table {
+  min-width: 900px;
+}
+/* Containment (wave-3 proof, 2026-11-02): a minimum-width table
+ * is a wide min-content child — as a grid item it would size its
+ * track to that content and widen the whole page (measured:
+ * 670px and 1587px documents at a 390px viewport). The wrappers
+ * and every stack child therefore give up their automatic
+ * minimum size: the column of the page stays the viewport's
+ * width and the table scrolls inside .tv-table-wrap instead.
+ * Stack children never force the page wider than the stack. */
+.tv-table-min,
+.tv-table-min-lg {
+  min-width: 0;
+  max-width: 100%;
+}
+.tv-stack > * {
+  min-width: 0;
+}
+/* One fact on one line: a phone number (label + number + copy)
+ * never breaks mid-number or mid-label inside its cell. */
+.tv-cell-nowrap {
+  white-space: nowrap;
+}
+.tv-cell-ellipsis {
+  display: block;
+  max-width: 15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tv-cell-stack {
+  display: grid;
+  gap: 0.2rem;
+}
+.tv-cell-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ============ Section page header (main tab layout kit) ============ */
+/* The ONE header for section pages in the main tab layout
+ * (program Lane 0, 2026-11-09): the framed thumbnail plate at
+ * the left, title + subtitle + standing facts in the middle,
+ * the page's Actions dropdown at the top-right — the anatomy
+ * Settings, Reports, Repairs, How-to Videos and Flyers each
+ * hand-rolled per module before the kit existed. The values
+ * are that shared anatomy verbatim (the Settings / How-to
+ * Videos fact treatment: stacked uppercase label over a bold
+ * value). Pages render components/SectionPageHeader instead
+ * of re-drawing this; the Steel Tabs strip follows it. (The
+ * prefix is .tv-secpage-*, NOT .tv-sp-*: that family belongs
+ * to the rail side panel in railsteel-core.css.) */
+.tv-secpage-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.tv-secpage-thumb {
+  flex: 0 0 auto;
+  width: 10.5rem;
+  max-width: 42vw;
+  aspect-ratio: 3 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--bevel);
+}
+
+.tv-secpage-main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.tv-secpage-title {
+  margin: 0;
+}
+
+.tv-secpage-subtitle {
+  margin: 0.4rem 0 0;
+  color: var(--text-muted);
+}
+
+.tv-secpage-facts {
+  display: flex;
+  gap: 0.6rem 1.75rem;
+  flex-wrap: wrap;
+  margin: 0.65rem 0 0;
+}
+
+/* The facts registers — THE stat treatment for header seats
+ * (widget uniformity lane, 2026-11-10): a small muted caps
+ * label over a bold value, sitting directly on the header
+ * panel. The label/value classes carry the register so a
+ * plain fact (dt/dd) and a fact with a door (a Link wearing
+ * spans, SectionPageFactItem) are the same treatment spelled
+ * two ways — one definition, never two. Section headers
+ * (Inventory is the reference), the Home header stats and
+ * every future header stat wear exactly this. */
+.tv-secpage-fact dt,
+.tv-fact-label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tv-secpage-fact dd,
+.tv-fact-value {
+  display: block;
+  margin: 0.15rem 0 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+/* A fact with a door: the link wraps the label/value pair and
+ * fills the fact's seat. Bare at rest — no border, no
+ * background, no ring; the highlight lives in the theme seat
+ * (railsteel-home.css) and appears on hover/focus only. */
+.tv-fact-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius);
+  /* Breathing room for the hover highlight, bought with a
+   * negative margin so the label/value stay exactly where a
+   * plain fact's sit — at rest there is nothing to see: no
+   * border, no background, no ring. */
+  margin: -0.3rem -0.55rem;
+  padding: 0.3rem 0.55rem;
+}
+
+.tv-secpage-actions {
+  margin-left: auto;
+}
+
+/* Sweep B1 (01-F11): at phone widths the header's thumbnail plate
+ * shrinks to a small thumb beside the title, so the page's first
+ * content peeks into the first screen instead of the plate eating
+ * it. Desktop keeps the full plate. */
+@media (max-width: 640px) {
+  .tv-secpage-thumb {
+    width: 5.25rem;
+  }
+  .tv-secpage-head {
+    gap: 0.75rem;
+  }
+}
+
+/* The header's in-panel toolbar row (the `toolbar` slot):
+ * a full-width row inside the header panel under the
+ * title/facts/Actions row, set off by the in-panel hairline
+ * so the bar reads as two deliberate zones of ONE header —
+ * never a second panel. Wrapping/stacking inside the row is
+ * the row's own business (its flex rules), so the slot only
+ * seats it. */
+.tv-secpage-toolbar {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--edge);
+}
+
+/* The header's body row (2026-11-10): the seat for content
+ * that belongs to the header bar itself — a toolbar, an
+ * at-a-glance strip — rendered INSIDE the header panel under
+ * the title/facts row (SectionPageHeader's `body`), set off
+ * by a hairline so the panel still reads as ONE composed
+ * bar. The seated content roots its own element in this
+ * class; content that renders null leaves no trace. */
+.tv-secpage-body {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--edge);
+}
+
+/* Home header stats (dashboard Lane 3, 2026-11-10; seat and
+ * treatment corrected by the widget uniformity lane the same
+ * day, owner order): the stats that used to be the stats
+ * widget sit at the TOP of the Home header, in the facts seat
+ * (SectionPageHeader's `factsExtra`, inside the main block
+ * under the title), wearing the facts treatment itself — the
+ * stats render through SectionPageFactItem into a
+ * .tv-secpage-facts row, so there is no Home-private stat
+ * register and NO box around any stat: no border, no
+ * background, no resting ring (the Lane 3 seat put them in
+ * the header's lower body zone as padded, ringed cells; Ryan:
+ * "no more boxes around each stat"). The rows are facts
+ * rows: the picks wrap in the user's order, capped at
+ * 6-across × 2 rows by the picker's cap. What remains here
+ * is only what is genuinely Home's: the stats' values are
+ * tabular, their labels may wrap, an alert stat's value
+ * burns in the danger tone. The Customize control does NOT
+ * ride this row: it sits in the header's top-right cluster,
+ * directly under the Add-a-widget button (owner, 2026-11-10),
+ * so the facts row is facts only. */
+.tv-home-hstats .tv-fact-label {
+  line-height: 1.25;
+  overflow-wrap: break-word;
+}
+
+.tv-home-hstats .tv-fact-value {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A pending header-stat value (sweep 10-F4): a shimmer bar in
+ * the value's own seat — same line height as the number it
+ * precedes, narrower than a value, riding the skeleton pulse —
+ * so the labelled fact reads as "this stat, loading" and the
+ * row's shape never changes when the number lands. */
+.tv-fact-pending {
+  display: inline-block;
+  width: 2.6rem;
+  height: 0.85em;
+  vertical-align: baseline;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  animation: tv-skel-pulse 1.6s ease-in-out infinite;
+}
+
+/* List add/remove controls (owner rule, 2026-11-10; rendered-
+ * icon treatment, owner correction the same night): on LISTS
+ * everywhere, add is a green + and remove is a red − — an icon
+ * button, never a text button. ONE definition here, consumed
+ * by every list surface (the header-stats picker is the first
+ * consumer). The big primary Add buttons (Add Tool, Add a
+ * widget, the dealer/agent adds, page Actions adds) are not
+ * lists and never wear these.
+ *
+ * The discs are FULL RENDERED ICONS in the owner's reference
+ * treatment (his glossy red minus disc): a rich radial gloss
+ * with a top sheen, a thin white inset ring, a white glyph
+ * carrying a subtle depth edge, and a soft drop shadow. A
+ * flat tinted disc with a bare colored glyph is cheap
+ * clipart and is banned site-wide (owner, 2026-11-10). The
+ * palette is the icon's own — like the brand/social icons, it
+ * does not re-tint per theme; the same rendered icon sits in
+ * both themes. The glyphs stay text (the accessible name is
+ * the button's aria-label; the glyph is its face). Hover and
+ * focus wear the main highlight effect: the accent outline
+ * with a soft glow, the icon's own shadow kept under it. */
+.tv-list-add-btn,
+.tv-list-remove-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: none;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.25);
+  box-shadow:
+    0 3px 7px rgb(0 0 0 / 0.38),
+    0 1px 2px rgb(0 0 0 / 0.3);
+  cursor: pointer;
+}
+
+/* The white inset ring of the reference icon. */
+.tv-list-add-btn::before,
+.tv-list-remove-btn::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1.5px solid rgb(255 255 255 / 0.92);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.tv-list-add-btn {
+  background:
+    radial-gradient(ellipse 95% 55% at 50% 0%, rgb(255 255 255 / 0.4), rgb(255 255 255 / 0) 62%),
+    radial-gradient(circle at 35% 30%, #6fdd85, #23b14e 48%, #0c7a32 100%);
+}
+
+.tv-list-remove-btn {
+  background:
+    radial-gradient(ellipse 95% 55% at 50% 0%, rgb(255 255 255 / 0.4), rgb(255 255 255 / 0) 62%),
+    radial-gradient(circle at 35% 30%, #fc6c53, #e02318 48%, #b00d13 100%);
+}
+
+.tv-list-add-btn:hover:not(:disabled),
+.tv-list-remove-btn:hover:not(:disabled),
+.tv-list-add-btn:focus-visible,
+.tv-list-remove-btn:focus-visible {
+  filter: brightness(1.07);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent) 75%, transparent),
+    0 0 14px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 3px 7px rgb(0 0 0 / 0.38),
+    0 1px 2px rgb(0 0 0 / 0.3);
+}
+
+.tv-list-add-btn:disabled,
+.tv-list-remove-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* The stats Customize link: a plain text link — since the
+ * owner's 2026-11-10 placement order it lives in the Home
+ * header's top-right cluster, directly under the Add-a-widget
+ * button (HomeShell seats it in .tv-home-add-wrap); its face
+ * is unchanged from its facts-row days. */
+.tv-home-hstats-customize {
+  padding: 2px 6px;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tv-home-hstats-customize:hover {
+  color: var(--accent);
+}
+
+/* ============================== Tabs ============================== */
+/* Real tabs (owner, 2026-11-02): the strip is a SHELF and the panel
+ * below is a TRAY wearing the panel surface. The ACTIVE tab is
+ * raised — a touch taller than its neighbours — and wears the
+ * panel's own surface; its base reaches 1px over the shelf line,
+ * painting it panel-coloured, so tab and tray read as ONE piece.
+ * Inactive tabs sit recessed behind the line: darker than the
+ * panel, shorter, muted labels. The live accent rides the active
+ * tab — lit top edge, label, a soft glow above it — never baked
+ * in. The tray takes the panel stack (surface + texture + edge +
+ * shadow) minus its top edge: the shelf line IS the tray's top
+ * edge, and the active tab covers its own segment of it. */
+
+.tv-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-1);
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--edge);
+  overflow-x: auto;
+  /* Owner fix 2026-11-06: the strip scrolls SIDEWAYS ONLY.
+   * With only overflow-x set, overflow-y computed to auto and
+   * the strip was vertically scrollable by a few px (the raised
+   * active tab is the tallest thing in the row), so on a phone
+   * a sideways swipe also drifted the tabs up and down.
+   * overflow-y: hidden removes the vertical play entirely, and
+   * touch-action: pan-x locks touch panning on the strip to the
+   * horizontal axis — a vertical swipe that starts on the strip
+   * still scrolls the PAGE (its handler is untouched), it just
+   * never moves the strip itself. */
+  overflow-y: hidden;
+  touch-action: pan-x;
+  /* Owner ruling 2026-11-03: no scroll arrows beside the tabs.
+   * The strip carries no arrow buttons of its own — the arrows
+   * a user could see were the OS/browser NATIVE scrollbar
+   * buttons on this scrollable strip (classic Windows
+   * scrollbars draw end buttons). Hiding the strip's scrollbar
+   * removes them in every browser while the strip keeps its
+   * overflow-x scrolling (swipe / shift-wheel / drag-scroll
+   * all still work; every tab stays reachable). */
+  scrollbar-width: none;
+}
+.tv-tabs::-webkit-scrollbar {
+  display: none;
+}
+/* The plain tab row is a one-column minmax(0, 1fr) grid rather
+ * than a plain block. The pages' content wrapper is an
+ * auto-track grid, and a block row hands the strip's full
+ * max-content width up as its own — on a phone the whole page
+ * grew to the strip's full width (measured 874px at a 390px
+ * viewport) and the strip's own overflow-x never engaged.
+ * Capping the track keeps the row at the column's width so the
+ * strip scrolls inside itself. The --extra row (Inventory's
+ * category shelf) is a flex row with its own min-width rules
+ * and keeps them. */
+.tv-tabs-row:not(.tv-tabs-row--extra) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.tv-tab {
+  position: relative;
+  background-color: color-mix(in srgb, var(--panel) 52%, var(--bg));
+  border: 1px solid var(--edge);
+  border-bottom: none;
+  margin-bottom: -1px;
+  padding: 0.42rem 0.85rem 0.5rem;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: var(--radius) var(--radius) 0 0;
+  transition:
+    color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+.tv-tab:hover {
+  color: var(--text);
+  background-color: color-mix(in srgb, var(--panel) 78%, var(--bg));
+}
+.tv-tab[aria-selected="true"],
+.tv-tab.is-active {
+  background: var(--panel);
+  background-image: var(--texture-panel);
+  color: var(--accent);
+  padding-top: 0.6rem;
+  /* Exactly ONE accent line (owner correction, 2026-11-02): the
+   * crisp inset line on the tab's top edge. An earlier draft also
+   * carried an outer accent glow above the tab, which read as a
+   * SECOND orange line stacked over the first — removed. */
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+/* Tab strip row (Tabs `stripExtra`, owner spec 2026-10-24:
+   starred-category links ride the view row). Without extra
+   content the row wrapper is inert — the strip keeps its own
+   border and scroll, exactly as before. With extra, the rule
+   moves to the row so strip + links read as one line.
+   One line, ALWAYS (owner spec 2026-10-25): this row never
+   scrolls, never shows scroll arrows, and never wraps — the
+   star cap is 5, the fixed tabs hold their natural size, and
+   the extra region absorbs any squeeze by compressing its
+   links (an extreme name ellipsizes). The base strip's own
+   scroll (other Tabs usages) is untouched. */
+.tv-tabs-row--extra {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 2px solid var(--edge);
+  min-width: 0;
+}
+.tv-tabs-row--extra .tv-tabs {
+  border-bottom: none;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+/* The row's shelf line is 2px, so the two tab containers reach
+   2px over it (the plain strip's tabs reach 1px over its 1px
+   line) — tab bases paint their own segment of the line, which
+   is what joins the active tab to the tray below. */
+.tv-tabs-row--extra .tv-tabs,
+.tv-tabs-row--extra .tv-tabs-extra {
+  margin-bottom: -2px;
+}
+.tv-tabs-extra {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.tv-tabs-extra .tv-tab {
+  white-space: nowrap;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* A-02 (Deep Audit Round 2): phone density for the category row.
+ * The row never scrolls and never wraps (owner rule), so at
+ * phone widths the tabs win space back with tighter padding, a
+ * smaller cap size and zero tracking. Measured at 402px (round-3
+ * probe): the starred group gets 344px; All + the four long
+ * built-ins (Batteries / Hand Tools / Power Tools / Pneumatic
+ * Tools) read in FULL at this density. A fifth starred long name
+ * on top of the four built-ins genuinely exceeds the row at any
+ * readable size — rather than shrinking every tab until all of
+ * them clip, the tabs hold their size (flex 0 0 auto) inside an
+ * overflow-hidden extra region, so the built-ins always read in
+ * full and only the last starred tab can clip. The row still
+ * never scrolls and never wraps. Desktop is untouched. */
+@media (max-width: 760px) {
+  .tv-tabs-row--extra .tv-tab {
+    padding: 0.45rem 0.3rem;
+    font-size: 0.62rem;
+    letter-spacing: 0;
+    flex: 0 0 auto;
+  }
+  .tv-tabs-row--extra .tv-tabs,
+  .tv-tabs-extra {
+    gap: 2px;
+  }
+  .tv-tabs-extra {
+    overflow: hidden;
+    min-width: 0;
+  }
+}
+.tv-tab:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+/* The tray: the panel surface the active tab wears, edged on the
+ * sides and bottom (the shelf line caps the top), so a tab switch
+ * reads as one joined unit being re-filled, not a page swap. */
+.tv-tabpanel {
+  background: var(--panel);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge);
+  border-image: var(--frame);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--panel-shadow), var(--bevel);
+  padding: var(--spacing);
+}
+
+/* ============================== Modal ============================== */
+
+.tv-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: var(--overlay);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4vh var(--space-3) var(--space-3);
+  overflow-y: auto;
+  animation: tv-fade 140ms ease;
+}
+.tv-modal {
+  width: 100%;
+  background: var(--panel);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge-strong);
+  border-image: var(--frame);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised), var(--bevel);
+  animation: tv-pop var(--motion-base) var(--ease-standard);
+  outline: none;
+}
+.tv-modal--sm {
+  max-width: 420px;
+}
+.tv-modal--md {
+  max-width: 600px;
+}
+.tv-modal--lg {
+  max-width: 880px;
+}
+.tv-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 0.75rem var(--spacing);
+  border-bottom: 1px solid var(--edge);
+}
+.tv-modal-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+.tv-modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+.tv-modal-close:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+.tv-modal-body {
+  padding: var(--spacing);
+}
+.tv-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: 0.75rem var(--spacing);
+  border-top: 1px solid var(--edge);
+  flex-wrap: wrap;
+}
+@keyframes tv-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes tv-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+}
+
+/* ============================== Toasts ============================== */
+
+.tv-toast-viewport {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: var(--z-toast);
+  display: grid;
+  gap: var(--space-2);
+  max-width: min(92vw, 380px);
+}
+.tv-toast {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge-strong);
+  border-left: 4px solid var(--accent);
+  background: var(--surface-raised);
+  background-image: var(--texture-panel);
+  box-shadow: var(--shadow-raised), var(--bevel);
+  color: var(--text);
+  font-size: var(--font-size-sm);
+  animation: tv-toast-in 180ms ease;
+}
+.tv-toast--success {
+  border-left-color: var(--success);
+}
+.tv-toast--warning {
+  border-left-color: var(--warning);
+}
+.tv-toast--danger {
+  border-left-color: var(--danger);
+}
+.tv-toast-body {
+  flex: 1;
+  min-width: 0;
+}
+.tv-toast-title {
+  font-weight: 700;
+}
+.tv-toast-action {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+}
+@keyframes tv-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+/* ================= Loading skeletons (F1-01) =================
+ * Geometry-matching placeholder blocks painted the moment a
+ * navigation starts, so no route ever opens on a bare void. The
+ * pulse is opacity-only and slow — felt as "loading", never as
+ * flicker — and base.css's reduced-motion rules flatten it like
+ * every other animation. Colours come from the theme tokens
+ * only: surface fill, edge border, panel radius. */
+.tv-skel {
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  animation: tv-skel-pulse 1.6s ease-in-out infinite;
+}
+.tv-skel-panel {
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  padding: var(--space-4, 1rem);
+  display: grid;
+  gap: 0.7rem;
+  align-content: start;
+  animation: tv-skel-pulse 1.6s ease-in-out infinite;
+}
+.tv-skel-stack {
+  display: grid;
+  gap: var(--spacing);
+}
+.tv-skel-stat {
+  min-height: 5.25rem;
+}
+@keyframes tv-skel-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ================= Route content entrance =================
+ * Every route change remounts this wrapper (App.tsx keys it by
+ * pathname) and the new page settles in with a short fade
+ * (motion pass 2026-10-22). OPACITY ONLY, deliberately: a
+ * transform here would make this box the containing block for
+ * every position:fixed descendant (modals, the attachment
+ * viewer) for the animation's duration. 150ms ease-out is the
+ * premium register — felt, not watched. base.css flattens it
+ * under prefers-reduced-motion. */
+.tv-page-enter {
+  animation: tv-page-in var(--motion-page) ease-out;
+}
+@keyframes tv-page-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ============================== Breadcrumbs ============================== */
+
+.tv-crumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tv-crumbs li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.tv-crumbs li + li::before {
+  content: "›";
+  color: var(--text-muted);
+  margin-right: var(--space-1);
+}
+.tv-crumbs a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.tv-crumbs a:hover {
+  text-decoration: underline;
+}
+.tv-crumbs [aria-current="page"] {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ============ Page navigation bar (back/forward + link tree) ============ */
+
+/* One slim strip in the header zone of every signed-in page
+ * (owner directive 2026-11-02): the ‹ › arrows at the left,
+ * the page's link tree beside them. Quiet by design — small
+ * surface buttons in the site's tokens, the accent only on
+ * hover/focus, and a disabled arrow that reads as inert. */
+.tv-pagenav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 1.75rem;
+  margin: 0 0 var(--space-2);
+}
+.tv-pagenav-arrows {
+  display: inline-flex;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+}
+.tv-pagenav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-soft);
+  cursor: pointer;
+}
+.tv-pagenav-btn:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--edge-strong);
+}
+.tv-pagenav-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.tv-pagenav-btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+.tv-pagenav .tv-crumbs {
+  min-width: 0;
+}
+
+/* ============================== File upload ============================== */
+
+.tv-upload {
+  border: 1.5px dashed var(--edge-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  background-image: var(--texture-panel);
+  /* Vertical padding slimmed in the supervisory polish (2026-10-23):
+   * three stacked dropzones on the item form read as heavy blobs. */
+  padding: var(--space-4) var(--space-5);
+  text-align: center;
+  color: var(--text-muted);
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+.tv-upload.is-dragover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+.tv-upload.is-disabled {
+  opacity: var(--disabled-opacity);
+}
+.tv-upload-files {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+  text-align: left;
+}
+.tv-upload-file {
+  display: grid;
+  gap: var(--space-2);
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge);
+  background: var(--panel);
+  font-size: var(--font-size-sm);
+}
+.tv-upload-file-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.tv-upload-file-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+.tv-upload-file-status {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.tv-upload-file-status--done {
+  color: var(--success);
+  font-weight: 700;
+}
+.tv-upload-file-status--error {
+  color: var(--danger);
+}
+
+/* ============================== App shell ============================== */
+
+/* Site-wide construction banner (owner ruling 2026-10-18): a
+ * permanent strip above the header on every page, layout, and
+ * theme — the site is in development, not open to the public,
+ * and data may be reset. Rendered by ConstructionBanner as the
+ * shell's first child, in normal flow: content shifts down,
+ * nothing overlaps, and the header's sticky slot is untouched.
+ * No dismiss control by design — it comes down at launch, as a
+ * code change. Colors come from the --banner-* hooks
+ * (tokens.css): the theme's warning amber with ink chosen to
+ * read on it; the steel family re-skins the strip as a worn
+ * plate in themes/steel.css. */
+.tv-construction-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--spacing);
+  background: var(--banner-bg);
+  border-bottom: 2px solid var(--banner-edge);
+  color: var(--banner-text);
+  text-align: center;
+}
+.tv-construction-banner-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.tv-construction-banner-icon svg {
+  width: 18px;
+  height: 18px;
+}
+.tv-construction-banner-text {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.tv-construction-banner-text strong {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+@media (max-width: 560px) {
+  .tv-construction-banner {
+    padding: var(--space-2) var(--space-3);
+  }
+  .tv-construction-banner-text {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* "View as visitor" preview banner (Sweep D5, 2026-11-12):
+ * the construction strip's furniture in the accent tint —
+ * a slim in-flow strip at the top of a page being previewed
+ * as a visitor, so the mode is unmistakable at a glance in
+ * both themes, with the Exit door riding its right end.
+ * Rendered by VisitorPreviewBanner inside the page itself
+ * (the mode is per-page, never the shell's). */
+.tv-preview-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--spacing);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--text);
+}
+.tv-preview-banner-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.tv-preview-banner-icon svg {
+  width: 18px;
+  height: 18px;
+}
+.tv-preview-banner-text {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.tv-preview-banner-text strong {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+@media (max-width: 560px) {
+  .tv-preview-banner {
+    padding: var(--space-2) var(--space-3);
+    flex-wrap: wrap;
+  }
+  .tv-preview-banner-text {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* The phone app bar (owner 2026-10-24, item 10): a slim strip
+ * at the very top of the page, phone widths only (the component
+ * renders nothing on wider screens), pointing phone visitors
+ * at the free app. Token colors so both modes read cleanly.
+ * Unlike the construction banner it IS closable (the close is
+ * remembered on the device) — the two bars stay separate. */
+.tv-appbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--edge-strong);
+  color: var(--text);
+}
+.tv-appbar-note {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-xs);
+  line-height: 1.35;
+}
+.tv-appbar-links {
+  display: inline-flex;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+.tv-appbar-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-pill);
+  color: var(--accent);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.tv-appbar-link:hover {
+  background: var(--accent-soft);
+}
+.tv-appbar-close {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.tv-appbar-close:hover {
+  color: var(--text);
+  background: rgb(var(--ink-rgb) / 0.08);
+}
+/* Phone frame slimming (Sweep A5, 2026-11-11): the app bar only
+ * ever renders at phone widths (the component gates on the same
+ * 760px query), so condensing it here cannot move wider screens.
+ * Every word stays on screen — the full note still wraps beside
+ * both full store names — the bar just carries tighter padding,
+ * pills, and close target so the same information takes less
+ * vertical room. */
+@media (max-width: 760px) {
+  .tv-appbar {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  .tv-appbar-note {
+    line-height: 1.3;
+  }
+  .tv-appbar-links {
+    gap: 4px;
+  }
+  .tv-appbar-link {
+    padding: 0.22rem 0.45rem;
+  }
+  .tv-appbar-close {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.tv-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  background-image: var(--texture);
+  color: var(--text);
+}
+.tv-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-edge);
+  box-shadow: var(--header-shadow);
+}
+
+/* ---- The spinning brand emblem (owner review round 1;
+ * octagon reshaped on owner ruling 2026-10-20) ------------------
+ * An OCTAGONAL plate turning on its vertical axis like a coin:
+ * ~9s per revolution, both faces the official logo verbatim.
+ * The back face is pre-rotated 180° so it never reads mirrored.
+ *
+ * Why octagon: the badge drawn in the logo artwork is itself an
+ * octagonal plate — clipped corners, rivets, orange border. A
+ * square silhouette fights it: the artwork's black corners sit
+ * inside the frame and the badge reads inset.
+ *
+ * The trim now lives in the ASSET, not in CSS (owner ruling
+ * 2026-10-20 19:40 — "anywhere the logo is used, it should be
+ * trimmed to the octagon"): logo-official.webp is the badge
+ * cropped to its silhouette with an alpha matte cut to the
+ * badge's own chamfers, measured off the 1254px master by
+ * flood-fill + edge fits (corner cuts ≈171/172/185/186px —
+ * top pair ≈13.7%, bottom pair ≈14.8%, mean ≈14.2% of the
+ * width; the painted octagon is a hair asymmetric, so the
+ * matte is fitted per corner). Every consumer — these faces,
+ * the landing hero, the favicons, og:image — shows the same
+ * trimmed badge and cannot drift. The faces therefore carry
+ * NO clip-path and NO scale compensation: the image simply
+ * fills the face and its transparent corners show the plate
+ * interior, exactly where the old clip used to cut. (One
+ * casualty, deliberately: the face's old inset box-shadow
+ * traced the SQUARE border box — with the clip gone it would
+ * ghost a square outline through the transparent corners.
+ * The artwork carries its own border shading; the shadow is
+ * removed, not reshaped.)
+ *
+ * The rim is EIGHT facets. Straight facets span the
+ * octagon's straight sides (100 − 2×14.1 = 71.8%); diagonal
+ * facets are chamfer-length strips (14.1×√2 ≈ 19.94%) centered
+ * on each chamfer's midpoint and folded back with
+ * rotateZ(φ) rotateX(90°) — the width axis lands on the
+ * chamfer direction, the thickness becomes the Z span — so
+ * the silhouette stays octagonal through the whole turn.
+ * Facet metal is token color-mix, so every theme machines
+ * its own.
+ *
+ * THICKNESS + REEDING (owner, 2026-10-26 evening: "the coin
+ * should be thicker" + "on the sides of the coin, make it
+ * look like an actual coin with ridges" — this un-parks audit
+ * F1-09, the edge-on hairline). The depth is no longer a fixed
+ * 6px (faces at ±3px; itself thickened from 4px on owner
+ * review 2026-10-19): --tv-coin-t is now 10% of the coin's own
+ * diameter, measured in container units against the emblem's
+ * box, floored at the old 6px so the small header coin keeps
+ * exactly the depth it already had. At the teaser's 128px hero
+ * scale the band is 12.8px — a real coin's stance, solid
+ * through the turn. Where container units are unsupported the
+ * coin keeps the exact pre-change 6px geometry.
+ * Each facet is also REEDED like a struck coin's edge: a
+ * repeating groove shading (dark cut, bright crest) machined
+ * over the facet metal, grooves running parallel to the coin's
+ * axis, spaced along the rim at --tv-coin-reed (2.6% of the
+ * diameter — a quarter carries ~119 reeds; at hero scale that
+ * is a ~3.3px pitch). The shading is hue-neutral alpha, so
+ * every theme's own facet metal shows through its reeding. */
+.tv-emblem3d {
+  display: block;
+  width: 100%;
+  height: 100%;
+  perspective: 32rem;
+  /* The rotor measures the coin's own box through this
+   * container so its depth can be proportional (see the
+   * thickness note above). Inline-size only: the box is sized
+   * by its seat, never by the rotor inside it. */
+  container-type: inline-size;
+}
+.tv-emblem3d-rotor {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: tv-emblem-spin 9s linear infinite;
+  /* Cold-cache hold (sweep 10-F10): the rotor waits at the full
+   * face until the component marks the face artwork loaded
+   * (data-loaded), so a first paint can never catch the coin
+   * mid-turn with blank faces — the sliver. */
+  animation-play-state: paused;
+  /* Coin depth + reed pitch. The fallbacks are the pre-2026-10-26
+   * geometry (6px total); where container units resolve, depth
+   * is a tenth of the diameter, floored at those same 6px. */
+  --tv-coin-t: 6px;
+  --tv-coin-reed: 3.3px;
+}
+@supports (width: 1cqw) {
+  .tv-emblem3d-rotor {
+    --tv-coin-t: max(6px, 10cqw);
+    --tv-coin-reed: 2.6cqw;
+  }
+}
+.tv-emblem3d-rotor[data-loaded] {
+  animation-play-state: running;
+}
+@keyframes tv-emblem-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+.tv-emblem3d-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  /* No clip, no radius, no overflow trickery: the asset's own
+   * alpha matte IS the octagon (see the note above). */
+}
+.tv-emblem3d-face img {
+  /* The trimmed badge fills the face edge to edge, 1:1 — the
+   * canvas IS the badge bbox now, so no mapping compensation. */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: fill;
+  display: block;
+  user-select: none;
+  /* Cold-cache first paint (sweep 10-F10): the face's square
+   * is asserted in CSS too — together with the img's
+   * width/height attributes, the aspect can never collapse
+   * while the asset is in flight. */
+  aspect-ratio: 1 / 1;
+}
+.tv-emblem3d-face--front {
+  transform: translateZ(calc(var(--tv-coin-t) / 2));
+}
+.tv-emblem3d-face--back {
+  transform: rotateY(180deg) translateZ(calc(var(--tv-coin-t) / 2));
+}
+.tv-emblem3d-edge {
+  position: absolute;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--edge-strong) 88%, var(--surface-raised)),
+    color-mix(in srgb, var(--surface) 70%, #000000)
+  );
+}
+/* REEDING, machined over the facet metal (see the thickness
+ * note above): two extra layers per facet — the groove repeat
+ * and a front-to-back sheen — over the base metal gradient.
+ * The groove axis follows the facet's own frame: grooves
+ * always run parallel to the coin's axis and repeat along the
+ * rim, so on the straight left/right facets (whose long axis
+ * is the rim direction) the repeat runs down local Y, and on
+ * the top/bottom facets and the four chamfers (rim direction
+ * = local X) it runs along local X. The sheen axis is the
+ * thickness direction in the same frame: light at the front
+ * rim, shade toward the back. */
+.tv-emblem3d-edge--r,
+.tv-emblem3d-edge--l {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgb(0 0 0 / 0.5) 0,
+      rgb(0 0 0 / 0.5) calc(var(--tv-coin-reed) * 0.45),
+      rgb(255 255 255 / 0.16) calc(var(--tv-coin-reed) * 0.62),
+      rgb(0 0 0 / 0.08) var(--tv-coin-reed)
+    ),
+    linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.2),
+      rgb(0 0 0 / 0.12) 55%,
+      rgb(0 0 0 / 0.34)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--edge-strong) 88%, var(--surface-raised)),
+      color-mix(in srgb, var(--surface) 70%, #000000)
+    );
+}
+.tv-emblem3d-edge--t,
+.tv-emblem3d-edge--b,
+.tv-emblem3d-edge--dtr,
+.tv-emblem3d-edge--dbr,
+.tv-emblem3d-edge--dbl,
+.tv-emblem3d-edge--dtl {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgb(0 0 0 / 0.5) 0,
+      rgb(0 0 0 / 0.5) calc(var(--tv-coin-reed) * 0.45),
+      rgb(255 255 255 / 0.16) calc(var(--tv-coin-reed) * 0.62),
+      rgb(0 0 0 / 0.08) var(--tv-coin-reed)
+    ),
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / 0.2),
+      rgb(0 0 0 / 0.12) 55%,
+      rgb(0 0 0 / 0.34)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--edge-strong) 88%, var(--surface-raised)),
+      color-mix(in srgb, var(--surface) 70%, #000000)
+    );
+}
+/* Straight facets: only the octagon's straight runs (71.8%).
+ * Every facet spans the coin's full depth, --tv-coin-t, seated
+ * half in / half out of the face plane. */
+.tv-emblem3d-edge--r {
+  top: 14.1%;
+  bottom: 14.1%;
+  right: calc(var(--tv-coin-t) / -2);
+  width: var(--tv-coin-t);
+  transform: rotateY(90deg);
+}
+.tv-emblem3d-edge--l {
+  top: 14.1%;
+  bottom: 14.1%;
+  left: calc(var(--tv-coin-t) / -2);
+  width: var(--tv-coin-t);
+  transform: rotateY(90deg);
+}
+.tv-emblem3d-edge--t {
+  left: 14.1%;
+  right: 14.1%;
+  top: calc(var(--tv-coin-t) / -2);
+  height: var(--tv-coin-t);
+  transform: rotateX(90deg);
+}
+.tv-emblem3d-edge--b {
+  left: 14.1%;
+  right: 14.1%;
+  bottom: calc(var(--tv-coin-t) / -2);
+  height: var(--tv-coin-t);
+  transform: rotateX(90deg);
+}
+/* Diagonal facets: chamfer-length strips centered on each
+ * chamfer midpoint (7.05% / 92.95%), folded into the chamfer
+ * plane — see the construction note above. */
+.tv-emblem3d-edge--dtr {
+  left: 92.95%;
+  top: 7.05%;
+  width: 19.94%;
+  height: var(--tv-coin-t);
+  transform: translate(-50%, -50%) rotateZ(45deg) rotateX(90deg);
+}
+.tv-emblem3d-edge--dbr {
+  left: 92.95%;
+  top: 92.95%;
+  width: 19.94%;
+  height: var(--tv-coin-t);
+  transform: translate(-50%, -50%) rotateZ(135deg) rotateX(90deg);
+}
+.tv-emblem3d-edge--dbl {
+  left: 7.05%;
+  top: 92.95%;
+  width: 19.94%;
+  height: var(--tv-coin-t);
+  transform: translate(-50%, -50%) rotateZ(225deg) rotateX(90deg);
+}
+.tv-emblem3d-edge--dtl {
+  left: 7.05%;
+  top: 7.05%;
+  width: 19.94%;
+  height: var(--tv-coin-t);
+  transform: translate(-50%, -50%) rotateZ(-45deg) rotateX(90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tv-emblem3d-rotor {
+    animation: none;
+  }
+}
+/* Header wordmark — the owner's sliced brand image (transparent
+ * background), rendered verbatim beside the logo plate in EVERY
+ * theme (owner ruling 2026-10-17: image, not CSS text). */
+.tv-wordmark-img {
+  display: block;
+  height: 1.8rem;
+  width: auto;
+}
+/* Auth pages carry NO in-page logo (owner ruling 2026-10-17: it
+ * ate screen space) — the panel heading is the top element. The
+ * old .tv-auth-logo / wordmark / tagline rules went with it; the
+ * brand lives in the app header and the favicon. */
+/* Auth shell widths: the standard 440px column (login, OAuth
+ * callback, signup success), and a WIDE variant for the pages that
+ * carry the group picker — signup and the choose-group gate —
+ * where the account form and the picker sit side by side on
+ * desktop (owner, 2026-10-17: the create-account screen "can
+ * definitely be wider for website usage"). The top margin grew
+ * when the logo stack came out, so the card keeps its breathing
+ * room instead of hugging the header. */
+.tv-auth-shell {
+  max-width: 440px;
+  margin: 3rem auto 2rem;
+}
+.tv-auth-shell--wide {
+  max-width: 880px;
+}
+/* Header center slot (notifications ticker). Only rendered when the
+ * app supplies content — no content, no reserved space. */
+/* Notifications ticker: one item at a time with a VERTICAL roll
+ * (the track slides up through a one-line viewport). Pauses on hover
+ * (component-side); under prefers-reduced-motion the track swaps
+ * instantly (base.css also flattens transitions globally). */
+.tv-ticker {
+  --ticker-h: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: min(34rem, 100%);
+  min-width: 0;
+  color: var(--text);
+  font-size: var(--font-size-sm);
+}
+.tv-ticker-dot {
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--glow-dot-bg);
+  box-shadow: var(--glow-dot-shadow);
+}
+.tv-ticker-dot[data-tone="success"] {
+  background: var(--success);
+  box-shadow: none;
+}
+.tv-ticker-dot[data-tone="warning"] {
+  background: var(--warning);
+  box-shadow: none;
+}
+.tv-ticker-dot[data-tone="danger"] {
+  background: var(--danger);
+  box-shadow: none;
+}
+.tv-ticker-viewport {
+  height: var(--ticker-h);
+  overflow: hidden;
+  min-width: 0;
+}
+.tv-ticker-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 480ms var(--ease-out);
+}
+.tv-ticker-item {
+  height: var(--ticker-h);
+  line-height: var(--ticker-h);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tv-ticker-track {
+    transition: none;
+  }
+}
+/* Accent chooser (owner, 2026-10-19 20:45 — the hidden
+ * chooser): the always-visible header gear row is RETIRED. The
+ * gear next to the user's name wears the chosen color's gear
+ * (the OWNER'S ARTWORK — glossy metallic gears, one WebP per
+ * accent in public/brand/, rendered as <img> by
+ * AccentGearChooser in AccentDots.tsx); clicking it drops the
+ * seven gears down in a menu panel framed like the account menu
+ * (.tv-menu). CSS here only frames the artwork and the panel —
+ * there is no dot paint in CSS on purpose: exactly one swatch
+ * implementation exists. The labeled chips in Settings →
+ * Appearance (.tv-accent-swatches, below) are the picker's
+ * second home and share the same artwork + setAccent path. */
+.tv-usermenu-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+.tv-gear-chooser {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.tv-gear-chooser-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--text);
+}
+.tv-gear-chooser-btn img {
+  display: block;
+  user-select: none;
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+.tv-gear-chooser-btn:hover img {
+  transform: scale(1.12);
+}
+.tv-gear-chooser-btn:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 1px;
+}
+/* The dropdown: .tv-menu supplies the panel frame, positioning
+ * (absolute, right-aligned to the gear, below it) and the steel
+ * framing; this narrows it to a color list. At phone widths the
+ * gear sits at the header's right edge, so the right-anchored
+ * panel extends LEFT into the viewport — measured contained at
+ * 402px (evidence, gear-chooser round). */
+.tv-menu.tv-gear-menu {
+  min-width: 11.5rem;
+  /* Site settings tree (owner, 2026-11-01): with the tree
+   * expanded the popup can outgrow a short viewport — cap it
+   * below the header and scroll inside, the way the portaled
+   * user menu does. The resting popup (appearance only) is far
+   * shorter than the cap, so its look is unchanged. */
+  max-height: calc(100dvh - 5rem);
+  overflow-y: auto;
+}
+@media (max-width: 760px) {
+  /* Phone (owner 2026-10-24): "the color chooser popup runs
+   * off the screen and can't be read." The menu right-anchors
+   * to the gear button — correct when the gear sat at the
+   * header's right edge (the old layout the comment above
+   * measured), but in the current header the gear LEADS the
+   * right cluster, and at phone widths the cluster compresses
+   * toward the left, so a right-anchored ~13rem menu extended
+   * past the screen's left edge. At phone widths the menu
+   * anchors to the gear's LEFT edge instead and is capped
+   * inside the viewport: every swatch and the mode rows stay
+   * reachable and readable. */
+  .tv-topbar .tv-menu.tv-gear-menu {
+    left: 0;
+    right: auto;
+    max-width: calc(100vw - 1rem);
+  }
+}
+.tv-gear-menu-title {
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tv-gear-item img {
+  display: block;
+  user-select: none;
+  flex-shrink: 0;
+}
+/* The Site settings disclosure row + its leaves (owner,
+ * 2026-11-01): the row is a plain .tv-menu-item; the caret sits
+ * at its right edge, and the leaves indent one step under it so
+ * the tree reads as a tree. */
+.tv-gear-tree-caret {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+}
+.tv-gear-tree-leaf {
+  padding-left: calc(var(--space-3) + 0.9rem);
+  font-weight: 500;
+}
+.tv-gear-item.is-current {
+  background: var(--accent-soft);
+}
+.tv-gear-current {
+  margin-left: auto;
+  color: var(--accent);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+/* The rail pin row (owner, 2026-11-05): the pin toggle moved
+ * out of the rail into this popup, directly above the Site
+ * settings row. The icon seat matches the gear art's 22px
+ * footprint so the popup's rows align; the pinned state fills
+ * the glyph with the accent — the retired rail button's own
+ * at-a-glance trick, carried over. On phone widths the row
+ * hides: the rail is a top strip there and pinning does
+ * nothing (the same honesty the floating pin followed). */
+.tv-gear-pin-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.tv-gear-pinrow[aria-checked="true"] .tv-gear-pin-ico {
+  color: var(--accent);
+}
+.tv-gear-pinrow[aria-checked="true"] .tv-gear-pin-ico svg {
+  fill: var(--accent);
+}
+@media (max-width: 760px) {
+  /* Compound selector on purpose: .tv-menu-item's display:flex
+   * sits later in this file at equal specificity and would
+   * otherwise win the tie. */
+  .tv-menu-item.tv-gear-pinrow {
+    display: none;
+  }
+}
+/* Settings → Appearance swatches: the dots' labeled big siblings. */
+.tv-accent-swatches {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.tv-accent-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.45rem 0.8rem 0.45rem 0.55rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--edge-strong);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+.tv-accent-swatch:hover {
+  border-color: var(--text-muted);
+}
+.tv-accent-swatch.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.tv-accent-swatch-dot {
+  display: block;
+  /* F1-28: 1.05rem rendered the gear's teeth as a splat; 1.5rem
+   * (24px) is the smallest size the artwork reads as a GEAR. */
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  user-select: none;
+}
+/* The accent gear avatar (owner artwork via AccentGearAvatar in
+ * theme/AccentDots): a drop shadow that follows the gear
+ * silhouette is all the CSS dressing it needs. */
+.tv-accent-gear {
+  display: block;
+  filter: drop-shadow(0 1px 1.5px rgb(0 0 0 / 0.4));
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.tv-body {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+.tv-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  /* 0.6rem/16px-type → 0.4rem at the 15px base (density pass
+   * 2026-10-22): the row lands at ~36px, the premium-nav band,
+   * instead of ~45px. Hover/active swaps now ease instead of
+   * snapping — the snap read as flash, not feedback. */
+  padding: 0.4rem 0.625rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  background: var(--nav-item-bg);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+.tv-nav-item:hover {
+  background: var(--nav-item-hover-bg);
+}
+.tv-nav-item.is-active {
+  background: var(--nav-active-bg);
+  color: var(--nav-active-text);
+  border-color: var(--edge);
+  box-shadow: var(--nav-active-shadow);
+}
+.tv-main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--spacing);
+  width: 100%;
+}
+.tv-main-inner {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+}
+.tv-footer {
+  border-top: 1px solid var(--edge);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.tv-footer-inner {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: var(--space-3) var(--spacing);
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+/* The footer's social row (owner, 2026-11-07): its own row
+ * under the footer's text line, centered at every width — five
+ * uniform seats, one per live brand account
+ * (components/SocialLinks.tsx). The hover treatment (lift +
+ * accent outline + glow) is the site-wide hover system's, in
+ * themes/railsteel-panels.css with the rest of that system. */
+.tv-footer-social {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing) var(--space-3);
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.tv-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.tv-social-link svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+/* Signed-out header actions ("Log in" + "Sign up"). A class (not
+ * inline styles) so the phone compression below can tighten the
+ * gap and the Sign up button's padding — in the steel family the
+ * row's intrinsic width is 441px at a 402px viewport and the
+ * button is pushed off-screen (measured, 2026-10-18). */
+.tv-header-actions {
+  display: inline-flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+/* The signed-out cluster's locale select sizes to its content like
+ * a header control, never stretches like a form field — it measured
+ * ~330px wide in the header and squeezed "Log in" into a mid-word
+ * wrap (supervisory polish 2026-10-23). */
+.tv-header-actions select.tv-input {
+  width: auto;
+}
+/* The locale switcher's standing measure (was an inline style on
+ * the component; a class lets the phone compression below restate
+ * it — supervisory polish 2026-10-23). */
+.tv-locale-select {
+  min-width: 9.5rem;
+}
+.tv-header-actions > a {
+  white-space: nowrap;
+}
+
+/* User menu (header) */
+.tv-usermenu {
+  position: relative;
+}
+.tv-usermenu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 600;
+  padding: 0.25rem;
+  border-radius: var(--radius);
+}
+.tv-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 208px;
+  max-width: 300px;
+  background: var(--surface-raised);
+  background-image: var(--texture-panel);
+  border: 1px solid var(--edge-strong);
+  border-image: var(--frame);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised), var(--bevel);
+  padding: var(--space-2);
+  z-index: var(--z-drawer);
+  /* Menus get their own entrance (motion pass 2026-10-22): a
+   * 3px settle with the weighted ease the ticker already uses,
+   * distinct from the modal's pop so dropdowns feel lighter
+   * than dialogs. Falls flat under prefers-reduced-motion via
+   * base.css, like every animation here. */
+  animation: tv-menu-in 130ms var(--ease-out);
+  transform-origin: top right;
+}
+@keyframes tv-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px) scale(0.99);
+  }
+}
+/* Portaled menu (Phase E): rendered at the document root and
+ * positioned with position: fixed from the trigger's live rect
+ * (top/right/max-height arrive as a style object from UserMenu).
+ * It exists because an in-flow absolute menu inside the rail was
+ * clipped by the rail's overflow: hidden — at the root nothing
+ * can clip it and the modal layer keeps it above every panel.
+ * Overflow scrolls when the caller's max-height cap bites. */
+.tv-menu.tv-menu--portal {
+  position: fixed;
+  right: auto;
+  bottom: auto;
+  z-index: var(--z-modal);
+  overflow-y: auto;
+  /* The menu hangs right-aligned under its header trigger
+   * (2026-11-03), so it settles from its top-right corner. */
+  transform-origin: top right;
+}
+/* Left-anchored menu (the inventory commands hamburger, owner
+ * spec 2026-10-24): the shared frame opens from the trigger's
+ * LEFT edge instead of its right. */
+.tv-menu.tv-menu--left {
+  left: 0;
+  right: auto;
+  transform-origin: top left;
+}
+/* The inventory header's Actions cell contents (main tab
+ * layout, 2026-11-10): the visible Add tool button and the
+ * Actions dropdown ride side by side at the header's top-right,
+ * wrapping under each other on narrow screens. */
+.tv-inv-head-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+/* The shared menu separator: a hairline between menu groups —
+ * in the section pages' Actions menu it sets the Settings
+ * entry apart from the tab jumps above it (Actions → Settings,
+ * 2026-11-09). Same values as the item/dealer menus' per-module
+ * separators, homed here for the shared menu family. */
+.tv-menu-sep {
+  border-top: 1px solid var(--border);
+  margin: 0.3rem 0;
+}
+/* The caption over a grouped run of menu items (the section
+ * pages' Actions menu Settings group, 2026-11-10): small,
+ * muted, uppercase — a label, never an item; keyboard walking
+ * skips it because it carries no menuitem role. Horizontal
+ * padding matches .tv-menu-item so the group's items align. */
+.tv-menu-group-label {
+  padding: 0.3rem var(--space-3) 0.1rem;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tv-menu-header {
+  margin-bottom: var(--space-2);
+}
+/* Account identity lines never wrap mid-word (the smoke account's
+ * email broke as "smoke-" / "test@…" — supervisory polish
+ * 2026-10-23); long addresses ellipsize against the menu cap. */
+.tv-menu-header .tv-menu-user-name,
+.tv-menu-header .tv-menu-user-email {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* The menu's account plate (owner, 2026-11-01): the identity
+ * block at the top of the user menu — name, email, account
+ * number, group, location — rides in the DARK OUTLINED BOX the
+ * retired side panel's account box wore ("in a dark box as an
+ * outline just like before. I liked that"). The treatment mirrors
+ * .tv-sp-acct (railsteel-core.css) declaration for declaration:
+ * the top-lit gradient over --surface, the 1px --edge outline,
+ * the machined --bevel, the plate radius and padding. */
+.tv-menu-acctbox {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(0 0 0 / 0.16)),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--bevel);
+  padding: 14px;
+}
+/* In light mode the plate KEEPS its dark finish (the owner's
+ * point: the box is a dark box) — the same values the dark
+ * palette gives .tv-sp-acct, pinned here for the plate and its
+ * text family so all five facts stay legible on the dark fill
+ * (#181511 = dark --surface, #423a31 = dark --edge, #e6e1d8 /
+ * #9a927f = dark --text / --text-muted, bevel = dark --bevel). */
+:root[data-mode="light"] .tv-menu-acctbox {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(0 0 0 / 0.16)),
+    #181511;
+  border-color: #423a31;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.17),
+    inset 0 -1px 0 rgb(0 0 0 / 0.65),
+    inset 1px 0 0 rgb(255 255 255 / 0.05),
+    inset -1px 0 0 rgb(0 0 0 / 0.45);
+  --text: #e6e1d8;
+  --text-muted: #9a927f;
+  --ink-rgb: 230 225 216;
+  color: var(--text);
+}
+/* Account facts relocated from the retired side panel's account
+ * box (owner, 2026-11-01): group + location as quiet label/value
+ * rows under the menu header's identity lines — same arrangement
+ * the panel's definition list used, read-only. */
+.tv-menu-acct {
+  margin: var(--space-2) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tv-menu-acct div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.tv-menu-acct dt {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+.tv-menu-acct dd {
+  margin: 0;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--text);
+  text-align: right;
+}
+.tv-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0.45rem var(--space-3);
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+.tv-menu-item:hover {
+  background: var(--surface);
+}
+
+@media (max-width: 560px) {
+  /* Signed-out header compression: tighten the actions cluster so
+   * brand + accent dots + Log in/Sign up fit a phone. The steel
+   * family's primary plate button carries 1.9rem of horizontal
+   * padding (a 126px Sign up button); at phone widths the header
+   * instance sheds it. Desktop is untouched. (The Appearance
+   * popover this block used to compress around was retired with
+   * the accent dots, owner review round 1.) */
+  .tv-header-actions {
+    gap: var(--space-2);
+  }
+  /* Supervisory polish 2026-10-23: the locale select joined this
+   * cluster after the compression above was written (A17), taking
+   * the cluster to ~450px — on a 402px phone it overflowed off the
+   * left edge of the head and buried the docked brand plate. The
+   * select now keeps a compact measure on phones (its label clips,
+   * the chevron stays) and the cluster may wrap to a second
+   * right-aligned row inside the head instead of overflowing it.
+   * Nothing is hidden; every control stays reachable. */
+  .tv-header-actions .tv-btn {
+    padding-inline: 0.7rem;
+    /* The Sign up plate must never wrap to two lines ("SIGN /
+     * UP" — the landing review nit, 2026-10-20). components.css
+     * deliberately lets .tv-btn labels wrap at phone widths so a
+     * long form button can't force its panel wider than the
+     * screen; the header's two short labels don't carry that
+     * risk, and this selector out-specifies the wrap rule, so
+     * the exception stays scoped to the header cluster. */
+    white-space: nowrap;
+  }
+  /* :first-of-type, not :first-child — the accent chooser gear
+   * button now leads the signed-out cluster (hidden chooser,
+   * 2026-10-19); this rule keeps the "Log in" link on one line. */
+  .tv-header-actions > a:first-of-type {
+    white-space: nowrap;
+  }
+  /* Header buttons get a 40px-tall target on phones. */
+  .tv-header .tv-btn--sm {
+    min-height: 2.5rem;
+  }
+  /* Steel family: the nameplate end-cap inset slims further at
+   * phone widths. steel.css sets the caps' padding at the same
+   * specificity; this file loads later and wins. (steel.css's own
+   * ≤560 step takes the caps to ×0.45; the signed-out row needs
+   * ×0.30 to fit — measured 441px of content at 402px.) */
+  /* The signed-in cluster no longer carries a dot row to
+   * tighten (hidden chooser, 2026-10-19): it is the chooser
+   * gear + the account name button, slimmer than the row it
+   * replaced, and fits beside the centered brand plate as-is. */
+}
+
+/* Mobile drawer scrim */
+
+@media (max-width: 480px) {
+  .tv-main {
+    padding: var(--space-3);
+  }
+  .tv-wordmark-img {
+    height: 1.55rem;
+  }
+  .tv-toast-viewport {
+    right: var(--space-3);
+    left: var(--space-3);
+    max-width: none;
+  }
+}
+/* ====================== Layout variants ======================
+ * The layout preference (`data-layout` on <html>, set by the
+ * LayoutContext) rearranges the shell chrome ONLY — pages,
+ * components and theme tokens are untouched, and every theme
+ * dresses every layout through the same variables. "sidebar"
+ * needs no rules here: it is the shell defined above, unchanged.
+ * ============================================================ */
+
+/* ---------- Top bar: nav strip under the header, wide content ---------- */
+/* The active tab's lit edge runs along its bottom in every theme
+ * (in the steel family this re-geometries the sidebar's glow bar,
+ * whose glow shadow it keeps). */
+
+/* ---------- Rail: 68px icon rail; bottom bar under 1024px ---------- */
+.tv-rail {
+  width: 68px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  background-image: var(--texture-panel);
+  border-right: 1px solid var(--edge);
+  /* Inline padding is 2px, not --space-2: the items need the
+   * width for their labels (see .tv-nav-item--rail). */
+  padding: var(--space-3) 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+  position: sticky;
+  top: var(--header-h, 3.75rem);
+  align-self: flex-start;
+  height: calc(100vh - var(--header-h, 3.75rem));
+  height: calc(100dvh - var(--header-h, 3.75rem));
+  overflow-y: auto;
+}
+/* .tv-rail-brand retired 2026-10-18: the header carries the logo
+ * mark in every layout again (owner ruling), the rail is nav-only. */
+.tv-rail-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+.tv-rail-label {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+/* The active item's accent edge: a lit bar along the item's
+ * bottom — the strip's geometry rotated into the rail. A left
+ * bar was tried first and collided with the centered label (the
+ * longest module name spans the rail's full inner width), so the
+ * edge lives where it can never touch the text. In the steel
+ * family this re-geometries the sidebar's glow bar, whose glow
+ * shadow it keeps. */
+
+@media (max-width: 1023px) {
+  /* The rail becomes a fixed bottom bar; the content column gains
+   * bottom padding so nothing can hide behind it. */
+  /* …and the accent edge moves to the item's top. */
+}
+
+/* Phone-width header compression (every layout, every theme): the
+ * header row — hamburger, brand, Appearance, user menu — is wider
+ * than a phone viewport with everything showing, and the user
+ * menu used to end up half off-screen (pre-existing, measured on
+ * the build before layouts existed: scrollW 549 at 390px in
+ * Steel). The widest text piece the header used to shed under
+ * 560px was the account NAME beside the avatar — that span left
+ * the trigger entirely on 2026-11-03, when the trigger became
+ * the person icon in the header cluster, so the shed rule is
+ * retired with it. Under 430px the logo plate beside the
+ * wordmark goes too — the wordmark image is itself the brand.
+ * The Appearance label already hides under 560px by the rule
+ * above. */
+@media (max-width: 430px) {
+  /* Smallest phones: the header row's gaps tighten one step so
+   * the steel family's signed-out row fits down to ~364px of
+   * intrinsic width (measured, 2026-10-18). */
+  /* …and the steel nameplate caps slim to their last step. */
+}
+
+/* ================= Settings content (review round 1) =================
+ * The section content column. There is deliberately NO settings
+ * nav column here (owner directive 2026-10-22: never two menu
+ * columns on the left) — on /settings/* routes the app sidebar
+ * itself becomes the settings tree (back arrow + Account/Site
+ * groups), and this content renders full width. */
+.tv-settings-content {
+  min-width: 0;
+  display: grid;
+  gap: var(--spacing);
+  align-content: start;
+}
+/* Settings fields never stretch the full panel width (supervisory
+ * polish 2026-10-23): single controls measured 1142px wide — a
+ * phone-number field spanning the whole panel reads as a blob.
+ * Grid-laid fields stay governed by their grid cells (the cap only
+ * bites in block layout), and textareas get a wider measure. */
+.tv-settings-content .tv-input {
+  max-width: 560px;
+}
+.tv-settings-content textarea.tv-input {
+  max-width: 720px;
+}
+/* The Sharing settings panel renders in TWO seats — Settings →
+ * Sharing (inside .tv-settings-content, capped above) and the
+ * Shared Tools page's Sharing settings tab (outside it, so the
+ * caps never reached it and its fields stretched the full panel
+ * width — sweep B4, F12). The panel carries its own class so the
+ * settled settings measure holds in both seats. */
+.tv-sharing-panel .tv-input {
+  max-width: 560px;
+}
+.tv-sharing-panel textarea.tv-input {
+  max-width: 720px;
+}
+
+/* Setting rows (base layout; railsteel.css adds the hairline skin):
+ * a name/description block on the left, the control on the right.
+ * Notifications' claim-readiness row is the first consumer; the
+ * Modules section's switch rows ride the same classes. */
+.tv-setting-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.tv-setting-row-main {
+  min-width: 0;
+}
+.tv-setting-row-name {
+  font-weight: 700;
+  margin: 0;
+}
+.tv-setting-row-desc {
+  color: var(--text-muted);
+  margin: 0.2rem 0 0;
+}
+.tv-setting-row-state {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.tv-setting-row-state-word {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  min-width: 2.2em;
+  text-align: right;
+}
+.tv-setting-row-caption {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin: 0.2rem 0 0;
+}
+/* A setting row whose whole area drives its one switch (the
+ * row's click forwards to the switch, so disabled/saving
+ * states behave identically): pointer + a hover wash mark the
+ * row as one control, the same read as the rail's user block. */
+.tv-setting-row.is-clickable {
+  cursor: pointer;
+}
+.tv-setting-row.is-clickable:hover {
+  background: rgb(var(--ink-rgb) / 0.04);
+}
+/* A settings panel's vertical stack + its intro paragraph (the
+ * Modules section's shape; siblings keep their own grids). */
+.tv-settings-stack {
+  display: grid;
+  gap: var(--space-3);
+}
+.tv-settings-intro {
+  color: var(--text-muted);
+  margin: 0;
+}
+/* The turned-off module panel's action row (MyModules'
+ * TurnedOffPanel): the two doors side by side, centered under the
+ * empty state's copy. */
+.tv-module-off-actions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Nav group (accordion) treatment: the settings tree's Account /
+ * Site groups in the sidebar expand in place; sub-items indent
+ * under the group button. */
+.tv-nav-group-btn {
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+/* Menu switch buttons (menu-behavior rule, owner 2026-10-23): a
+ * parent that owns a submenu flips the menu in place and never
+ * navigates, so it renders as a <button> wearing the nav-item
+ * treatment (the main menu's Settings entry; the settings tree's
+ * Back control). The button needs only the resets an anchor gets
+ * for free; full width comes from the sidebar context. */
+.tv-nav-switch-btn {
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.tv-nav-group-caret {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  transition: transform var(--motion-base) var(--ease-standard);
+}
+.tv-nav-group-btn.is-open .tv-nav-group-caret {
+  transform: rotate(180deg);
+}
+/* The accordion's height animation (motion pass 2026-10-22):
+ * the wrap is a 0fr/1fr grid whose row track eases open and
+ * shut — no jump cut when a settings group expands. Visibility
+ * rides the same transition, so a closed group's links leave
+ * the tab order exactly when it finishes closing and return
+ * the moment it starts opening. */
+.tv-nav-sub-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 190ms var(--ease-out),
+    visibility 190ms;
+}
+.tv-nav-sub-wrap.is-open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+.tv-nav-sub {
+  display: grid;
+  gap: var(--space-1);
+  /* Vertical breathing rides in padding, not margin: the wrap's
+   * 0fr track clips the item's border box, padding included,
+   * while margins would leak through and hold the group open
+   * by 8px when "closed". */
+  margin-left: var(--space-3);
+  padding: var(--space-1) 0 var(--space-1) var(--space-2);
+  border-left: 1px solid var(--edge);
+  overflow: hidden;
+  min-height: 0;
+}
+.tv-nav-item--sub {
+  font-size: var(--font-size-sm);
+  padding: 0.35rem 0.6rem;
+}
+
+/* Home Modules tiles: the button must never escape its tile
+ * (owner review round 1 — at narrow widths the old nowrap label
+ * stretched past the panel edge). The grid floor uses
+ * min(240px, 100%) so a tile can never be wider than the panel,
+ * and tile buttons wrap inside the tile at every width. */
+.tv-module-tiles {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+}
+.tv-module-tile {
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  min-width: 0;
+}
+.tv-module-tile p {
+  overflow-wrap: anywhere;
+}
+.tv-module-tile .tv-btn {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ================= Inventory: photo placeholder, list, toolbar (Round B) == */
+
+/* F1-04: a photo-less item gets a COMPACT placeholder — a slim band
+ * with a brand monogram disc — not a full 16:9 empty slab. Photo
+ * tiles keep their frame; photo-less tiles stay short, so the
+ * first screen reads as a vault, not an empty warehouse. */
+
+/* ============ No-photo placeholder plate (owner, 2026-11-02) ============
+ * The shared ItemThumb component renders ONE central asset
+ * (/brand/no-photo-placeholder.svg — two gears meshed on the
+ * gunmetal plate) into any thumbnail slot whose item has no photo.
+ * The plate colour below is the SVG's own ground, so the square
+ * artwork letterboxes invisibly inside wider frames. Display-only:
+ * the item stays photo-less to all logic (see ItemThumb.tsx). */
+.tv-thumb {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge);
+  /* Sweep B2-F7: the placeholder's ground is theme-aware steel
+   * (panel stepped toward the field), not a fixed black slab —
+   * in light mode the plate is pale silver, in dark it stays
+   * gunmetal. The artwork itself (the red toolbox) is the same
+   * in both themes. */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--panel) 72%, var(--bg)),
+    color-mix(in srgb, var(--panel) 38%, var(--bg))
+  );
+  box-sizing: border-box;
+}
+.tv-thumb > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.tv-thumb--16x9 {
+  aspect-ratio: 16 / 9;
+}
+.tv-thumb--4x3 {
+  aspect-ratio: 4 / 3;
+}
+.tv-thumb--1x1 {
+  aspect-ratio: 1 / 1;
+}
+/* Fill slots: one size class sizes the real-photo img AND the
+ * placeholder span alike, so a row's height never changes when a
+ * photo appears. */
+.tv-thumb-img {
+  display: block;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge);
+  box-sizing: border-box;
+}
+/* Slots whose real photos have always shown whole (marketplace
+ * cards) keep contain; the class rides the same sizeClass prop. */
+.tv-thumb-img--contain {
+  object-fit: contain;
+}
+.tv-thumb--s40 {
+  width: 40px;
+  height: 40px;
+  flex: none;
+}
+.tv-thumb--s56 {
+  width: 56px;
+  height: 56px;
+  flex: none;
+}
+.tv-thumb--s64 {
+  width: 64px;
+  height: 64px;
+  flex: none;
+}
+.tv-thumb--s76 {
+  width: 76px;
+  height: 76px;
+  flex: none;
+}
+.tv-thumb--mkt {
+  width: 100%;
+  height: 150px;
+}
+/* Framed-thumb cells for list rows: the 64px inventory-row width,
+ * and the compact 44px scale the search / dealer rows use. */
+.tv-thumb-cell {
+  flex: 0 0 64px;
+  width: 64px;
+  min-width: 0;
+}
+.tv-thumb-cell--sm {
+  flex: 0 0 44px;
+  width: 44px;
+  min-width: 0;
+}
+
+/* F1-12: List is a LIST — one shared surface, hairline separators,
+ * dense rows — not 48 shadowed cards.
+ * List standard (2026-11-02): a TRUE list — a header row plus one
+ * record per row, each fact in its own COLUMN on a shared grid
+ * template (the dealer directory's DirectoryTable pattern). The
+ * wide table scrolls sideways inside its own box on narrow
+ * screens; overflow-x:auto also zeroes the box's automatic
+ * minimum size, so the page itself never widens.
+ * GEOMETRY RULE (owner defect, 2026-11-02): no track in these
+ * shared head/row templates may be content-sized (auto) — an
+ * auto track resolves to the header cell's width in the header
+ * (0 for the blank actions cell) and to each row's own content,
+ * so the fr tracks redistribute differently per element and
+ * every header label drifts off its column. The actions track
+ * is a FIXED width, sized to its widest content. The same rule
+ * was applied to every list grid in the program (dealers,
+ * notifications, borrowing, maintenance, truck, expansion). */
+
+/* -- Uniform tile skeleton (owner uniformity rule, 2026-11-05):
+ * every repeated tile (inventory ToolCard / BatteryCard, shared-
+ * tools PeerToolCard) is a flex column of RESERVED rows — photo,
+ * name (two lines), brand·model (one line), a chips row, then
+ * the status/price foot pinned to the bottom by margin-top:auto
+ * and the actions footer under it. Content differences (a long
+ * wrapping model line, a missing category/tag pill, an
+ * "each × N" price) absorb INSIDE their reserved row and never
+ * push the price or the actions out of line; tiles in a grid
+ * row are equal height and every shared element lands at the
+ * same coordinates on every tile. Theme-neutral layout only —
+ * the themes paint these boxes, this block arranges them. */
+.tv-peer-tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+/* Shared Tools page, tabbed (Main Tab Layout program lane 1,
+ * 2026-11-09): the tab contents' layout homes — the ratchet
+ * forbids new inline styles, so the treatments the stacked
+ * page used to inline live here, in the page's own family. */
+.tv-peer-tabgrid {
+  display: grid;
+  gap: var(--spacing);
+}
+/* E1 audience panels (2026-11-12): the tight inner stack a
+ * panel's state line + gate copy + door button ride in. */
+.tv-peer-stack {
+  display: grid;
+  gap: 0.5rem;
+}
+.tv-peer-how {
+  display: grid;
+  gap: var(--space-3);
+}
+.tv-peer-how-title {
+  font-weight: 600;
+  margin: 0 0 var(--space-1);
+}
+.tv-peer-doors {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.tv-peer-list {
+  display: grid;
+  gap: 0.6rem;
+}
+.tv-peer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.tv-peer-rowtext {
+  margin: 0;
+}
+.tv-peer-note {
+  color: var(--text-muted);
+  margin: 0;
+}
+.tv-peer-muted {
+  color: var(--text-muted);
+}
+.tv-peer-loading {
+  color: var(--text-muted);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin: 0;
+}
+.tv-tile-open {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.tv-tile-name {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  /* Reserve exactly two lines; a longer name clamps inside
+   * them instead of growing the tile. */
+  min-height: 2.73rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.tv-tile-sub {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.35;
+  /* ONE reserved line: a long brand·model (a pasted URL, a
+   * full retail model string) ellipsizes in place. */
+  min-height: 1.215rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tv-tile-chips {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  align-items: center;
+  margin-top: 0.45rem;
+  /* Reserve exactly one chip row even when the item carries
+   * no chips — the missing-pill tile keeps the same stack. */
+  min-height: 1.55rem;
+}
+.tv-tile-ownerline {
+  margin: auto 0 0;
+  padding-top: 0.6rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Marketplace board cards: no actions to pin, but the card
+ * fills its grid row so a row of listings is one height. */
+.tv-mkt-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.tv-mkt-card > div {
+  flex: 1 1 auto;
+}
+.tv-inv-list {
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
+}
+.tv-inv-thead,
+.tv-inv-row {
+  display: grid;
+  /* No Category column (owner, 2026-11-03), and no Model # or
+   * Location columns (owner, 2026-11-05): the freed track width
+   * flows to the remaining fr columns. All three facts still
+   * filter (shelf tabs + Filters panel, Location toolbar) and
+   * still show on the item page — they just aren't list
+   * columns anymore. */
+  grid-template-columns:
+    minmax(220px, 1.6fr) minmax(88px, 0.7fr) minmax(112px, 0.9fr)
+    3rem minmax(84px, 0.6fr) 11rem;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 832px;
+  padding: 0.45rem 0.75rem;
+}
+/* A selection mode (labels / poster / bulk) arms the rows with
+ * checkboxes: header and rows grow the same leading column. */
+.tv-inv-table--selecting .tv-inv-thead,
+.tv-inv-table--selecting .tv-inv-row {
+  grid-template-columns:
+    2.75rem minmax(220px, 1.6fr) minmax(88px, 0.7fr) minmax(112px, 0.9fr)
+    3rem minmax(84px, 0.6fr) 11rem;
+  min-width: 892px;
+}
+.tv-inv-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--table-edge);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+.tv-inv-row {
+  border-bottom: 1px solid var(--table-edge);
+}
+.tv-inv-table > .tv-inv-row:last-child {
+  border-bottom: none;
+}
+.tv-inv-row:hover {
+  background: var(--table-row-hover);
+}
+.tv-inv-cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tv-inv-cell--item,
+.tv-inv-cell--status {
+  overflow: visible;
+  white-space: normal;
+}
+.tv-inv-cell--select,
+.tv-inv-cell--actions {
+  cursor: default;
+  overflow: visible;
+  white-space: normal;
+}
+/* The select column is box-only: the checkbox keeps its
+ * accessible label (the mode itself is announced by the
+ * selection bar above the list), clipped out of the layout. */
+.tv-inv-cell--select .tv-check {
+  position: relative;
+}
+.tv-inv-cell--select .tv-check span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.tv-inv-open {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.tv-inv-name-stack {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+}
+/* The name rides ONE line, ellipsized — a long retail name
+ * ("20V MAX* XR® 1/2-in Mid-Range Impact Wrench With Hog Ring
+ * Anvil (Tool Only)") wrapped to four lines would balloon the
+ * row past the stacked row it replaced. The full name is in
+ * the cell's tooltip and on the item page. */
+.tv-inv-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tv-inv-sub {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tv-inv-cell--status {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+/* Sweep B2-F6: a status pill in the list never ellipsizes its
+ * words away — the checked-out pill's borrower name is the whole
+ * point of the pill, and the base badge label clipped it
+ * mid-name ("CHECKED OUT TO SAM BORRO…"). Inside the status cell
+ * the pill wraps to a second line instead; the full standing
+ * text also rides as the pill's hover title. (The phone block
+ * below carries the same rule from FIX4; this makes it the
+ * cell's rule at every width.) */
+.tv-inv-cell--status .tv-badge {
+  white-space: normal;
+}
+.tv-inv-cell--status .tv-badge-label {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+/* The lending pill's hover-title wrapper (sweep B2-F6). */
+.tv-inv-status-pillwrap {
+  display: inline-flex;
+  min-width: 0;
+}
+.tv-inv-cell--actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+.tv-inv-cell--num,
+.tv-inv-th--num {
+  text-align: right;
+}
+/* Inactive (over plan limit): the record's facts grey out, the
+ * way the old row-wide button dimmed — the checkbox and the
+ * actions stay full-strength, as they did outside that button. */
+.tv-inv-row.is-inactive .tv-inv-fact {
+  opacity: 0.55;
+  filter: grayscale(0.7);
+}
+
+/* F1-22: one coherent toolbar bar. (The F1-30 phone collapse of
+ * the old secondary-actions row retired 2026-10-24: every page
+ * command moved behind the toolbar's hamburger menu, present at
+ * every width, so there is no second actions row left to
+ * collapse — and no control may exceed the viewport.) */
+.tv-inv-toolbar-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  min-width: 0;
+}
+.tv-inv-sort {
+  /* A-03 (Deep Audit Round 2): the sort select sizes to its
+   * longest option ("Date added (newest first)") instead of
+   * clipping it at a fixed 200px measure — the select-class
+   * rule: a select's container never caps it below the width of
+   * its own longest option. */
+  flex: 0 0 auto;
+  min-width: 0;
+}
+@media (max-width: 640px) {
+  .tv-inv-sort {
+    flex: 0 0 auto;
+  }
+  .tv-inv-search {
+    flex: 1 1 100%;
+  }
+}
+
+/* The list panel's "Showing X of Y items" row (owner rebuild,
+ * 2026-11-03): the count stands at the left; the sort direction
+ * arrow, the sort dropdown, Tiles and List ride the right —
+ * counted from the right edge: List, Tiles, dropdown, arrow.
+ * The row wraps as one cluster on narrow screens (the controls
+ * keep their order on the wrapped line), never overflowing.
+ * Breathing room below the row (owner, 2026-11-04): with no
+ * separation the row's bottom edge sat exactly on the list
+ * panel's top border (measured 0px) and the controls read as
+ * nested into the list; a --space-3 gap now stands the row
+ * apart from the list/tiles/empty state that follows it —
+ * just under the site's 1rem section rhythm, since the row
+ * belongs to the list it heads. */
+.tv-inv-showing-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  flex-wrap: wrap;
+  min-width: 0;
+  margin-bottom: var(--space-3);
+}
+.tv-inv-showing-count {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.tv-inv-showing-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.tv-inv-dirbtn {
+  min-width: 2rem;
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
+}
+/* Phone: the showing row's control cluster stays on ONE line
+ * in its shipped order — the sort select gives up its
+ * longest-option width and clips its closed label (the opened
+ * list still shows every option in full), the F1-30
+ * phone-shrink precedent. Desktop keeps the A-03 rule. These
+ * rules sit AFTER the base .tv-inv-showing-* rules above on
+ * purpose: equal specificity means the later rule wins, so a
+ * media block placed earlier in the file would lose to the
+ * base flex-wrap. */
+@media (max-width: 640px) {
+  .tv-inv-showing-controls {
+    flex-wrap: nowrap;
+  }
+  .tv-inv-showing-row .tv-inv-sort {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .tv-inv-showing-row .tv-inv-sort select {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* FIX4 phone tables (2026-11-11): the Inventory list at phone
+ * width. The desktop grid keeps a 832px minimum and scrolls
+ * sideways with no cue, so Status / Qty / Price and each row's
+ * Actions sat off the right edge (sweep 02-F11). At phone
+ * width the row RESTACKS instead of scrolling — the pattern
+ * the lane notes recommend first: line one is the item (thumb
+ * + name) with the row Actions beside it; line two spreads
+ * the remaining facts (Brand · Status · Qty · Price) across
+ * the full width. Every fact and every action stays on
+ * screen; nothing scrolls sideways. The header row hides at
+ * this width — the facts on line two sit in the header's
+ * order and the status pill / price carry themselves — while
+ * the desktop true list (header row, one grid) is untouched
+ * above 640px. */
+@media (max-width: 640px) {
+  .tv-inv-list {
+    overflow-x: visible;
+  }
+  .tv-inv-thead {
+    display: none;
+  }
+  /* Grid with FIXED line-two tracks (Brand · Status · Qty
+   * · Price at measured widths, Status taking the 1fr
+   * remainder). Two measured dead ends shaped this: (a)
+   * auto tracks let the wide Actions cell, spanning the
+   * Qty/Price tracks on line one, inflate them and starve
+   * Status to 73px; (b) flex lines never break when every
+   * basis is 0, so all six cells collapsed onto one line.
+   * Here line one is Item (tracks 1–3) + Actions (track 4,
+   * right-aligned): the Actions BUTTON is wider than its
+   * track and overflows it to the left, over the item
+   * cell's empty right end — the name ellipsizes before it
+   * can ever reach the button, so nothing collides. */
+  .tv-inv-row {
+    display: grid;
+    grid-template-columns: 3.4rem minmax(0, 1fr) 2.2rem 4.6rem;
+    align-items: center;
+    min-width: 0;
+    row-gap: 0.35rem;
+  }
+  .tv-inv-table--selecting .tv-inv-row {
+    grid-template-columns: auto 3.4rem minmax(0, 1fr) 2.2rem 4.6rem;
+  }
+  .tv-inv-cell {
+    white-space: normal;
+  }
+  .tv-inv-cell--select {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .tv-inv-cell--item {
+    grid-column: 1 / 4;
+    grid-row: 1;
+    /* Reserve the strip the overflowing Actions button
+     * paints over (button 145px vs its 4.6rem track), plus
+     * a breathing gap: without it the name's last letters
+     * hide UNDER the button with no ellipsis — measured on
+     * the rig ("Main ratchet" lost its "et" beneath the
+     * button). With the reserve, long names ellipsize
+     * cleanly inside their own box, before the button. */
+    padding-right: 3.9rem;
+  }
+  /* The row thumbnail shrinks at phone (64px → 40px): the
+   * pixels go to the name, which is the row's identity. */
+  .tv-inv-cell--item .tv-thumb-cell {
+    flex-basis: 40px;
+    width: 40px;
+  }
+  .tv-inv-table--selecting .tv-inv-cell--item {
+    grid-column: 2 / 5;
+  }
+  .tv-inv-cell--actions {
+    grid-column: 4;
+    grid-row: 1;
+    justify-self: end;
+    overflow: visible;
+  }
+  .tv-inv-table--selecting .tv-inv-cell--actions {
+    grid-column: 5;
+  }
+  /* Line two: the remaining facts, in header order. */
+  .tv-inv-cell--item + .tv-inv-fact {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .tv-inv-table--selecting .tv-inv-cell--item + .tv-inv-fact {
+    grid-column: 2;
+  }
+  .tv-inv-cell--status {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .tv-inv-table--selecting .tv-inv-cell--status {
+    grid-column: 3;
+  }
+  .tv-inv-cell--num {
+    grid-column: 3;
+    grid-row: 2;
+    text-align: right;
+  }
+  .tv-inv-table--selecting .tv-inv-cell--num {
+    grid-column: 4;
+  }
+  .tv-inv-cell--num ~ .tv-inv-cell--num {
+    grid-column: 4;
+  }
+  .tv-inv-table--selecting .tv-inv-cell--num ~ .tv-inv-cell--num {
+    grid-column: 5;
+  }
+  /* A status pill never truncates its word at phone width
+   * (the list sibling of sweep 02-F12): it may wrap inside
+   * its cell instead of ellipsizing the borrower name away. */
+  .tv-inv-cell--status .tv-badge {
+    white-space: normal;
+  }
+  .tv-inv-cell--status .tv-badge-label {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}

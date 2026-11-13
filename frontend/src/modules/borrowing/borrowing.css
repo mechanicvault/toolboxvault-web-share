@@ -1,0 +1,484 @@
+/* Borrowing list tables (list-standard wave 6, 2026-11-02): the
+   ledger lists are TRUE lists — one checkout per row, a header
+   row, each fact in its own column (the dealer DirectoryTable
+   pattern). Tables scroll sideways inside their panel on narrow
+   screens rather than crushing columns; the panel (a grid item)
+   is allowed to shrink below the table's min width. Notes never
+   ride these faces (owner, 2026-11-12) — they are read inside
+   the record: loan notes on the item page's Borrowing tab, a
+   contact's notes inside their expanded book entry. */
+
+.tv-bw-panel {
+  min-width: 0;
+}
+
+/* Tab content stack (Main Tab Layout program, lane 3): the
+   panels a tab carries keep the page's standing gap — the
+   shape of Lane 1's .tv-peer-tabgrid for this module. */
+.tv-bw-tabgrid {
+  display: grid;
+  gap: var(--spacing);
+}
+
+.tv-bw-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+/* Column sets carry NO Notes track (owner, 2026-11-12): notes
+ * never ride a list face in this module — loan notes are read
+ * on the item page's Borrowing tab, a contact's notes inside
+ * their expanded book entry. */
+.tv-bw-thead,
+.tv-bw-row {
+  display: grid;
+  grid-template-columns:
+    minmax(170px, 1.2fr) minmax(140px, 0.9fr) minmax(105px, 0.65fr)
+    minmax(105px, 0.65fr) minmax(125px, 0.8fr) 13.5rem;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 950px;
+  padding: 0.55rem 0.25rem;
+}
+
+.tv-bw-table--contacts .tv-bw-thead,
+.tv-bw-table--contacts .tv-bw-row {
+  grid-template-columns:
+    minmax(150px, 1fr) minmax(150px, 1fr) minmax(90px, 0.55fr)
+    minmax(90px, 0.55fr) 11.5rem;
+  min-width: 740px;
+}
+
+/* Borrower rollup current table (sweep B4): the address book's
+ * expanded borrower surface — what is out with them right now,
+ * a TRUE list in the ledger's geometry with the return door on
+ * the row. (Their finished history below it is a Main list
+ * layout list — .tv-bw-mlist--rollup.) */
+.tv-bw-table--rollup .tv-bw-thead,
+.tv-bw-table--rollup .tv-bw-row {
+  grid-template-columns:
+    minmax(150px, 1.2fr) minmax(105px, 0.65fr) minmax(105px, 0.65fr)
+    minmax(125px, 0.8fr) 8.5rem;
+  min-width: 740px;
+}
+
+.tv-bw-detail-label {
+  font-weight: 700;
+  margin: 0.35rem 0 0;
+}
+
+/* A date cell's column word (sweep B4, F7): invisible on
+ * desktop — the header row already names the column — and
+ * seated before the value in the phone restack, where the
+ * header row hides and bare dates would sit side by side
+ * with nothing saying which is which. */
+.tv-bw-cell-label {
+  display: none;
+}
+
+/* Contact cards (contact cards lane, 2026-11-07): the address
+   book's card toolbar and the import preview — the preview is a
+   TRUE list like every other borrowing list (one contact per
+   row under a header row), four columns: pick · name · contact
+   · notes. */
+.tv-bw-cards-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tv-bw-table--import .tv-bw-thead,
+.tv-bw-table--import .tv-bw-row {
+  grid-template-columns:
+    2.75rem minmax(140px, 1fr) minmax(140px, 1fr) minmax(140px, 1fr);
+  min-width: 620px;
+}
+
+.tv-bw-import {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.tv-bw-import-intro {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.tv-bw-import-error {
+  margin: 0;
+  color: var(--danger, #c0392b);
+  font-weight: 600;
+}
+
+.tv-bw-import-errors {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text-muted);
+  display: grid;
+  gap: 0.25rem;
+}
+
+.tv-bw-import-file {
+  display: none;
+}
+
+.tv-bw-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-bw-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-bw-row--flash {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: var(--radius-md);
+}
+
+.tv-bw-cell-item {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.tv-bw-cell-sub {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.tv-bw-notes {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tv-bw-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.tv-bw-detail {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+  padding: 0.5rem 0.25rem 0.7rem;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+}
+
+/* Check-out borrower picker (2026-11-04): the address-book list
+   inside the check-out modal — one selectable row per contact,
+   NAME ONLY (owner polish, 2026-11-04: no contact detail, no
+   "out now" line — those stay on the Borrowing page itself),
+   alphabetical by first name, exactly five rows visible with
+   the rest behind a scroll. Imported by CheckoutModal itself
+   so the rows are styled on every surface that mounts the
+   modal (item pages, inventory list), not just the Borrowing
+   page. */
+
+.tv-bw-book-list {
+  display: grid;
+  gap: 0.4rem;
+  /* Exactly five rows: the row height is pinned on
+     .tv-bw-book-row, so the window is exact regardless of
+     font metrics. With five or fewer contacts the grid just
+     sizes to its rows — no scrollbar, no empty space. */
+  max-height: calc(5 * 2.75rem + 4 * 0.4rem);
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.tv-bw-book-row {
+  display: flex;
+  align-items: center;
+  height: 2.75rem;
+  text-align: left;
+  padding: 0 0.7rem;
+  border: 1px solid var(--border, rgba(127, 127, 127, 0.25));
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  min-width: 0;
+}
+
+.tv-bw-book-row:hover {
+  border-color: var(--accent);
+}
+
+.tv-bw-book-row--picked {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.tv-bw-muted {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.tv-bw-help {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-bw-book-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-bw-book-sub {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+/* FIX4 phone tables (2026-11-11, sweep 04-F3): at phone width
+ * the ledger tables kept their 1100px desktop minimum inside
+ * a sideways scroll with no cue, so Due, Status and the
+ * Nudge / Mark returned buttons — the page's whole point —
+ * sat off the right edge. The rows now RESTACK at phone
+ * width instead of scrolling: line one is the item with its
+ * actions beside it (always on screen), and the remaining
+ * facts (the other person · the dates · Status · Notes)
+ * spread across the lines below in header order. The header
+ * row hides at this width; the desktop true list is
+ * untouched above 700px. Applies to every borrowing table
+ * variant (lent / requests / borrowed / history / contacts /
+ * import) since they share the row geometry. */
+@media (max-width: 700px) {
+  .tv-bw-table {
+    overflow-x: visible;
+  }
+  .tv-bw-thead {
+    display: none;
+  }
+  .tv-bw-row,
+  .tv-bw-table--contacts .tv-bw-row,
+  .tv-bw-table--import .tv-bw-row,
+  .tv-bw-table--rollup .tv-bw-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    min-width: 0;
+    gap: 0.35rem 0.9rem;
+  }
+  .tv-bw-cell-label {
+    display: inline;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+  .tv-bw-row > * {
+    order: 3;
+    min-width: 0;
+  }
+  .tv-bw-cell-item {
+    order: 1;
+    flex: 1 1 52%;
+  }
+  .tv-bw-actions {
+    order: 2;
+    flex: 0 0 auto;
+    margin-left: auto;
+    justify-content: flex-end;
+  }
+  /* The address book's three-button action set gets its own
+   * line rather than squeezing beside the name. */
+  .tv-bw-table--contacts .tv-bw-actions {
+    order: 4;
+    flex: 1 1 100%;
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+  .tv-bw-notes {
+    white-space: normal;
+  }
+}
+
+/* Two-way-click ledger rows (owner, 2026-11-12): the row is the
+ * door to the item's Borrowing tab, the item's name the door to
+ * the item page. The main highlight (inset accent outline +
+ * glow, no lift) already rides .tv-bw-row from the theme sheet's
+ * ROWS family; this is only the pointer that says the row
+ * itself clicks. */
+.tv-bw-row--link {
+  cursor: pointer;
+}
+
+/* The item page's Borrowing tab, separated (owner, 2026-11-12):
+ * STATUS: / NOTES: stand as their own labelled sections, the
+ * label BRIGHTER than the words under it (the text-hierarchy
+ * rule), then the lending history in its own box below. */
+.tv-bw-lend-label {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* -- Main list layout (owner's term, 2026-11-12) ---------------
+ * The lending history in the Inventory tool list's presentation
+ * (.tv-inv-* in surfaces.css): the bordered panel on the panel
+ * surface, the quiet uppercase header row, one record per row,
+ * facts in columns, hairline dividers (--table-edge), the row
+ * hover tint. Column sets are the owner's: Checked out ·
+ * Returned · Borrower, plus the item on page-level histories. */
+.tv-bw-mlist {
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
+}
+
+.tv-bw-mlist-head,
+.tv-bw-mlist-row {
+  display: grid;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  padding: 0.45rem 0.75rem;
+}
+
+.tv-bw-mlist--item .tv-bw-mlist-head,
+.tv-bw-mlist--item .tv-bw-mlist-row {
+  grid-template-columns:
+    minmax(105px, 0.65fr) minmax(115px, 0.75fr) minmax(150px, 1fr);
+  min-width: 470px;
+}
+
+.tv-bw-mlist--page .tv-bw-mlist-head,
+.tv-bw-mlist--page .tv-bw-mlist-row {
+  grid-template-columns:
+    minmax(170px, 1.2fr) minmax(105px, 0.65fr) minmax(115px, 0.75fr)
+    minmax(140px, 0.9fr);
+  min-width: 640px;
+}
+
+.tv-bw-mlist--rollup .tv-bw-mlist-head,
+.tv-bw-mlist--rollup .tv-bw-mlist-row {
+  grid-template-columns:
+    minmax(150px, 1.2fr) minmax(105px, 0.65fr) minmax(115px, 0.75fr);
+  min-width: 470px;
+}
+
+.tv-bw-mlist-head {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--table-edge);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+.tv-bw-mlist-row {
+  border-bottom: 1px solid var(--table-edge);
+}
+
+.tv-bw-mlist > .tv-bw-mlist-row:last-child {
+  border-bottom: none;
+}
+
+.tv-bw-mlist-row:hover {
+  background: var(--table-row-hover);
+}
+
+.tv-bw-mlist-row--link {
+  cursor: pointer;
+}
+
+.tv-bw-mlist-cell {
+  min-width: 0;
+}
+
+.tv-bw-mlist-cell--item {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.tv-bw-mlist-borrower {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tv-bw-mlist-empty {
+  margin: 0;
+  padding: 0.7rem 0.75rem;
+  color: var(--text-muted);
+}
+
+/* A fact cell's column word: invisible on desktop (the header
+ * row names the column) and seated before the value in the
+ * phone fold, where the header hides — the .tv-bw-cell-label
+ * pattern from the ledger tables. */
+.tv-bw-mlist-label {
+  display: none;
+}
+
+/* Phone fold, the Main list layout's own (FIX4's .tv-inv fold):
+ * the header row hides and each row restacks — the item leads,
+ * the dated facts follow with their column words in front of
+ * them. Nothing scrolls sideways, no fact leaves the screen. */
+@media (max-width: 640px) {
+  .tv-bw-mlist {
+    overflow-x: visible;
+  }
+  .tv-bw-mlist-head {
+    display: none;
+  }
+  /* Single stacked column: the desktop variants pin rows to
+   * min-width 470/640px, which blew the box past a 390px
+   * screen and clipped the Returned cell (rig proof) — the
+   * fold clears the pin and stacks every fact full-width.
+   * The variant selectors are repeated here because the
+   * desktop variant rules outrank a bare .tv-bw-mlist-row. */
+  .tv-bw-mlist--item .tv-bw-mlist-row,
+  .tv-bw-mlist--page .tv-bw-mlist-row,
+  .tv-bw-mlist--rollup .tv-bw-mlist-row {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+    row-gap: 0.3rem;
+  }
+  .tv-bw-mlist-label {
+    display: inline;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+}

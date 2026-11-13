@@ -1,0 +1,186 @@
+# Toolbox Vault Website
+# Local dev:  cp .env.example .env && docker compose up --build
+# Production: same file; values come from the deployment environment.
+
+services:
+  postgres:
+    # Pinned (deep audit F4-09): exact tag + digest, verified
+    # 2026-10-23 as the image production already runs (PostgreSQL
+    # 16.15). Bump deliberately — never float on a minor again.
+    image: postgres:16.15@sha256:ca0bd484cb98bf4b24eb1010e73fb3fcbd6714d240fbc1a10eea5b7dbecb641d
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  storage:
+    # S3-compatible object storage (SeaweedFS). Photos/documents live
+    # here, never in the DB. Replaced MinIO in Oct 2026: MinIO withdrew
+    # every public distribution channel (Docker Hub repos return 404,
+    # quay.io demands auth, dl.min.io returns 410), leaving no
+    # supportable way to run it. The API speaks plain S3, so the swap
+    # touched only provisioning, this file, and the nginx upstream.
+    # Pinned (deep audit F4-09): was `:latest` — a routine rebuild
+    # could silently swap the object store holding every user file.
+    # Tag + digest verified 2026-10-23 as the running image
+    # (`weed version` reports 4.48 in-container). Bump deliberately.
+    image: chrislusf/seaweedfs:4.48@sha256:4e61d15fd35994cb1e43e1e553dff106794841fd9a99ade2fc8c8bfce4d7872d
+    command: server -dir=/data -s3 -s3.port=8333 -s3.config=/config/s3.json -master.volumeSizeLimitMB=1024
+    volumes:
+      - storage-data:/data
+      - storage-config:/config:ro
+    depends_on:
+      storage-config:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  storage-config:
+    # One-shot: renders the S3 identity config (storage admin + the
+    # least-privilege app user) from the environment. This job and
+    # storage-init are the ONLY components that see the root
+    # credentials; the API connects with the app credentials only.
+    build: ./backend
+    command: python -m app.scripts.storage_provision write-config
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_APP_USER: ${MINIO_APP_USER:-toolbox-app}
+      MINIO_APP_PASSWORD: ${MINIO_APP_PASSWORD}
+    volumes:
+      - storage-config:/config
+
+  storage-init:
+    # One-shot: creates the app bucket with the storage admin identity,
+    # retrying internally until the storage service answers.
+    build: ./backend
+    command: python -m app.scripts.storage_provision create-bucket
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET:-toolbox-vault}
+      MINIO_ENDPOINT: http://storage:8333
+    depends_on:
+      - storage
+
+  api:
+    build: ./backend
+    env_file: .env
+    environment:
+      # Wins over env_file: existing server .env files still carry the
+      # retired MinIO endpoint (http://minio:9000).
+      MINIO_ENDPOINT: http://storage:8333
+      # Uvicorn workers (scale fix, 2026-10-26): the CX23 has 2
+      # vCPU — 2 workers, one per core, each with its own DB pool
+      # (2 x (20+10) = 60 of Postgres' 100 connections; the rest
+      # is headroom for jobs/backup/operator sessions).
+      API_WORKERS: ${API_WORKERS:-2}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      storage-init:
+        condition: service_completed_successfully
+    healthcheck:
+      # python one-liner so the image needs no extra tools (no curl).
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').status==200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  web:
+    build: ./frontend
+    ports:
+      - "80:80"
+      # Origin TLS (security audit 2026-10-28): the origin also serves
+      # 443 with a publicly-trusted Let's Encrypt cert so Cloudflare
+      # can be flipped from Flexible to Full (Strict). Port 80 stays —
+      # until that dashboard flip, Cloudflare still fetches over 80.
+      - "443:443"
+    volumes:
+      # Host-side cert store (outside the repo tree on purpose: the
+      # deploy rsync --delete must never wipe live certificates).
+      # Mounted read-only; nginx references the live/ symlink paths.
+      - /opt/toolbox-vault/letsencrypt:/certs:ro
+      # ACME webroot: certbot (run from a throwaway container on the
+      # host) drops challenge files under .well-known/ here; the nginx
+      # template serves them via a dedicated /acme-rooted location.
+      - /opt/toolbox-vault/acme-webroot:/acme:ro
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:-localhost}
+      FILES_DOMAIN: ${FILES_DOMAIN:-localhost}
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  jobs:
+    # Background jobs (step-4 fix round, 2026-10-20): runs the five
+    # periodic chores that previously had NO scheduler — entitlement
+    # lapse transitions + AI refills (hourly), maintenance overdue
+    # notifications (hourly), claims deadline notifications (every
+    # 4h), the marketplace 14-day rating sweep (daily) and the audit
+    # daily markers + tombstone purge (daily). The loop + cadence
+    # table live in app/scripts/scheduler.py; every run is ledgered
+    # in job_runs and visible in Admin → Settings. Depends on the
+    # API being healthy so migrations (which create job_runs) have
+    # landed before the first wake.
+    build: ./backend
+    command: python -m app.scripts.scheduler
+    env_file: .env
+    environment:
+      # Same override as the API: production .env files may still
+      # carry the retired MinIO endpoint.
+      MINIO_ENDPOINT: http://storage:8333
+    depends_on:
+      postgres:
+        condition: service_healthy
+      storage-init:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  backup:
+    # Disaster Vault (owner spec 2026-10-18): the nightly bundle
+    # job + weekly digest (app/backup/). Shares the API's .env —
+    # DATABASE_URL, storage credentials, and the email seam's
+    # EMAIL_PROVIDER / RESEND_API_KEY / EMAIL_FROM all come from
+    # there; the BACKUP_* values are upserted into the same .env
+    # by the deploy workflow when their GitHub secrets exist.
+    # Fail-safe: with no BACKUP_AGE_PUBLIC_KEY the bundles it
+    # builds are unencrypted, local-only, and NEVER uploaded (see
+    # app/backup/job.py) — a missing key degrades to "safe and
+    # visibly labeled", never to "leaked".
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backup
+    env_file: .env
+    environment:
+      # Same override as the API: production .env files may still
+      # carry the retired MinIO endpoint.
+      MINIO_ENDPOINT: http://storage:8333
+    volumes:
+      # The deployed tree, read-only: bundles copy it (including
+      # .env) from here. Bundles land on their own volume.
+      - .:/source:ro
+      - backups:/backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+      storage:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  storage-data:
+  storage-config:
+  backups:

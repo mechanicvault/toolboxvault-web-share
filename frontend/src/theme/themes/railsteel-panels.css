@@ -1,0 +1,652 @@
+
+
+/* ============ Phase 2a: dedicated-panel + module surfaces ============ */
+
+/* Panel hint line (overflow notes under a capped panel list). */
+.tv-sp-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 6px 2px 0;
+}
+
+/* Inventory list view: hairline rows (surfaces.css). The row
+ * hover itself is owned by the site-wide hover system at the
+ * bottom of this file. */
+/* The inventory toolbar rode its own panel here until
+ * 2026-11-10; it now sits INSIDE the header panel (the kit's
+ * toolbar slot, owner order 2026-11-10), so the header panel's
+ * own machined edge is the plate's edge and no per-toolbar
+ * border rule remains. Its search field is still the recess
+ * well and its primary action the plate via Phase 1 tokens. */
+
+/* -- Claims: list rows + detail in the preview claim-card
+ * language. The claim number is the accent kicker with glow; the
+ * facts line sits in a recess well; detail's header bar rides a
+ * beveled surface; the to-do checklist is the next-step box
+ * (accent tint, plate hierarchy already on its buttons) AND the
+ * timeline — done steps ring success, the first open step is the
+ * glowing current dot on the edge rail. -- */
+[data-theme="railsteel"] .tv-panel.tv-claim-nextstep {
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--edge));
+  border-image: none;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 13%, transparent), transparent 60%),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+}
+
+/* -- My Parts + Community Parts rows: framed metal rows, the
+ * location path as a machined bin chip. (Production's parts list
+ * is a card list, not the preview's table — see INDEX Phase 2a
+ * deviations; there is no quantity stepper in production, the
+ * quantity rides the stamped badge Phase 1 already restyled.) -- */
+[data-theme="railsteel"] .tv-part-row {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-image: none;
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+/* (Its hover is the shared one — site-wide hover system,
+ * bottom of this file.) */
+[data-theme="railsteel"] .tv-bin-chip {
+  display: inline-block;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.07), rgb(0 0 0 / 0.22)),
+    var(--surface-raised);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--bevel);
+  padding: 3px 9px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* -- Marketplace board cards → framed metal tiles. The photo
+ * renders WHOLE (contain over the dark tray; the tsx fit changed
+ * cover→contain with this phase) and photo-less cards keep the
+ * audit's compact strip, just seated in a recess. -- */
+[data-theme="railsteel"] .tv-mkt-card {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-image: none;
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+[data-theme="railsteel"] .tv-mkt-photo {
+  background: var(--input-bg);
+  box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.5);
+}
+[data-theme="railsteel"] .tv-mkt-price {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+}
+[data-theme="railsteel"] .tv-mkt-nophoto {
+  box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.45);
+}
+
+/* ============ Phase 2c: remaining panels + Home + surfaces ============ */
+
+/* Panel rows that are TEXT, not links (Reports kinds / saved
+ * names): the item rhythm without the link affordance. */
+.tv-sp-item--text {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  cursor: default;
+}
+
+/* -- Home: the overview stat row as metal tiles + ONE accent
+ * hero. Tiles are StatCard Panels; the hero is the registered
+ * accent stat (maintenance due — the preview hero's counterpart),
+ * skinned with the worn accent plate and end bolts. Which stats
+ * show, and their order, are untouched — skin only.
+ * The Add wizard's fork rows (.tv-fork-row) wear this same tile
+ * skin (owner, 2026-10-25: the fork boxes should look like the
+ * Overview boxes so everything matches) — they are Panels too;
+ * joining this selector is the whole change. -- */
+[data-theme="railsteel"] .tv-stat-card,
+[data-theme="railsteel"] .tv-fork-row {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+}
+[data-theme="railsteel"] .tv-stat-card--accent {
+  background: var(--plate-btn);
+  border-color: rgb(0 0 0 / 0.55);
+  box-shadow: var(--plate-shadow);
+  color: var(--text-on-accent);
+  padding-left: 28px;
+  padding-right: 28px;
+  position: relative;
+}
+[data-theme="railsteel"] .tv-stat-card--accent::before {
+  content: "";
+  position: absolute;
+  inset: 0 7px;
+  pointer-events: none;
+  background:
+    url("../assets/screw.svg") left center / 11px 11px no-repeat,
+    url("../assets/screw.svg") right center / 11px 11px no-repeat;
+  opacity: 0.9;
+}
+[data-theme="railsteel"] .tv-stat-card--accent .tv-stat-value {
+  color: var(--text-on-accent);
+}
+[data-theme="railsteel"] .tv-stat-card--accent .tv-stat-label {
+  color: color-mix(in srgb, var(--text-on-accent) 78%, transparent);
+  font-weight: 600;
+}
+/* The preview's hero carries NO icon chip — the chip stands down
+ * on the accent tile, which also gives the label the full width
+ * (with the chip, "MAINTENANCE" alone could not fit the text
+ * column and break-word split it mid-word — capture fix). */
+[data-theme="railsteel"] .tv-stat-card--accent .tv-stat-icon {
+  display: none;
+}
+
+/* Home notifications block (production's attention + activity
+ * block): card head carries the muted count (Panel actions slot);
+ * the overdue line is an attention row with a glowing warning
+ * dot; notification rows are hairline rows. */
+.tv-panel-count {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+[data-theme="railsteel"] .tv-home-attn {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+[data-theme="railsteel"] .tv-home-attn::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex: 0 0 auto;
+  background: var(--warning);
+  box-shadow: 0 0 6px var(--warning);
+}
+[data-theme="railsteel"] .tv-home-activity-item {
+  padding: 9px 0;
+  border-bottom: 1px solid rgb(var(--ink-rgb) / 0.07);
+}
+[data-theme="railsteel"] .tv-home-activity-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 2px;
+}
+
+/* Home modules block tiles → framed metal tiles. */
+[data-theme="railsteel"] .tv-module-tile {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+}
+
+/* -- Maintenance: out-of-service + schedule rows. The rows carry
+ * an inline top hairline; the treatment adds the preview's hover
+ * row tint and seats the row on the panel with side padding.
+ * The header row takes the SAME seat (2026-11-02): padding
+ * changes a grid's box, so a seat applied to rows only leaves
+ * the header on a different column geometry — its labels sat
+ * ~4px off the columns under them.
+ * The seat used to bleed with -0.55rem side margins (written
+ * when the rows sat directly in the panel's padded box). Since
+ * the list-standard wave the rows live inside .tv-maint-table —
+ * a padding-less overflow-x box — where the bleed made every
+ * row ~18px wider than its scroll container and manufactured a
+ * sideways scroll at EVERY width (repairs-list-width fix,
+ * 2026-11-10). The margins are gone; the padding stays, so the
+ * tint reads inset, exactly as the claims rows sit. -- */
+[data-theme="railsteel"] .tv-maint-row,
+[data-theme="railsteel"] .tv-maint-thead {
+  border-radius: var(--radius);
+  padding-left: 0.55rem;
+  padding-right: 0.55rem;
+  padding-bottom: 0.6rem;
+  transition: background 0.15s ease;
+}
+/* (The row hover is owned by the site-wide hover system,
+ * bottom of this file; the seat above is layout, not hover.) */
+
+/* -- Dealers: agent rows as framed rows. The logo tile's fixed
+ * grounds (--tile-logo-*) are NOT touched — brand artwork
+ * legibility. -- */
+[data-theme="railsteel"] .tv-dealer-agent {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-image: none;
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+}
+
+/* -- Reports: builder + saved + kind panels get the framed grain
+ * treatment; their tables/buttons already ride Phase 1. -- */
+[data-theme="railsteel"] .tv-reports-builder,
+[data-theme="railsteel"] .tv-reports-saved,
+[data-theme="railsteel"] .tv-report-kind {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border-image: none;
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+}
+
+/* -- Messages: thread rows as framed metal rows (unread = accent
+ * ring; the row's inline border/background still win where set),
+ * thread-view bubbles as metal panels. Mine keeps its raised
+ * inline ground + gains the plate glow; held reads as a warning
+ * ring; request-stage (quarantine) bubbles are dashed + dimmed —
+ * links inside stay inert per the page's own rendering. -- */
+[data-theme="railsteel"] .tv-msg-row {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+/* (Its hover is the shared one — site-wide hover system,
+ * bottom of this file; the unread ring below is resting
+ * state and stays.) */
+[data-theme="railsteel"] .tv-msg-row.is-unread {
+  box-shadow:
+    var(--bevel),
+    0 3px 10px rgb(0 0 0 / 0.55),
+    0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 12px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+[data-theme="railsteel"] .tv-msg-bubble {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  box-shadow: var(--bevel), 0 2px 8px rgb(0 0 0 / 0.5);
+}
+[data-theme="railsteel"] .tv-msg-bubble--mine {
+  box-shadow:
+    var(--bevel),
+    0 2px 8px rgb(0 0 0 / 0.5),
+    0 0 10px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+[data-theme="railsteel"] .tv-msg-bubble--held {
+  box-shadow:
+    var(--bevel),
+    0 2px 8px rgb(0 0 0 / 0.5),
+    0 0 0 1px color-mix(in srgb, var(--warning) 60%, transparent);
+}
+[data-theme="railsteel"] .tv-msg-bubble--quarantine {
+  outline: 1px dashed color-mix(in srgb, var(--warning) 55%, transparent);
+  outline-offset: 2px;
+  opacity: 0.88;
+}
+
+/* -- Forum: category + thread rows as framed metal rows with the
+ * tile hover lift; post cards get the grain frame (no lift —
+ * reading surface). -- */
+[data-theme="railsteel"] .tv-forum-cat,
+[data-theme="railsteel"] .tv-forum-thread {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-image: none;
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+[data-theme="railsteel"] .tv-forum-post {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border-image: none;
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+}
+/* ============ Site-wide hover system (owner, 2026-11-05) ============
+ * ONE hover treatment for every clickable box / tile / card /
+ * choice and every clickable list row on the site — the effect
+ * the owner picked out on the Add-tool fork boxes and the
+ * inventory tiles: the box animates, a highlighted outline in
+ * the USER'S OWN accent appears, and a soft accent glow blooms
+ * under it. The reference values are the inventory tile's:
+ *   lift     translateY(-2px)
+ *   outline  border-color: color-mix(accent 60%, var(--edge))
+ *   shadow   var(--bevel), 0 12px 26px rgb(0 0 0 / 0.65),
+ *            0 6px 18px -6px color-mix(accent 45%, transparent)
+ *   timing   0.15s ease (transform / box-shadow / border-color)
+ * Two families share those values:
+ *   CARDS lift — boxes, tiles, cards, choice boxes.
+ *   ROWS do NOT lift: a row is locked in its list grid, so the
+ *   same outline + glow ride INSET (box-shadow inset) over the
+ *   row's hover tint — the same "highlighted outline appears"
+ *   read with zero geometry change and no scroll jitter.
+ *   (Coordinator's call — flagged for the owner.)
+ * Keyboard parity: each surface also fires on :focus-visible
+ * (the surface IS the focusable) or :focus-within (it wraps
+ * the focusable — the .tv-group-card precedent), alongside
+ * the global :focus-visible ring in base.css.
+ * NOT treated, deliberately: anything not clickable (a false
+ * affordance is a defect), Home boxes in Edit view (no cover
+ * anchor = no navigation there — gated with :has below),
+ * disabled controls, and surfaces with their own bespoke
+ * systems (rail nav, buttons, menus, the bell, chips). The
+ * account-group picker (.tv-group-card) was the one holdout
+ * under the owner's 2026-10-17 no-glow steer for that picker;
+ * the owner REVERSED that steer on 2026-11-05 ("make these
+ * match everything we just did") — the picker is IN the
+ * system now, in the cards block below.
+ * Tabs are the owner's amendment (2026-11-05 17:09): inactive
+ * main-layout tabs get outline + glow but NO lift — see the
+ * tabs block at the end of this section.
+ * Hover is intentionally NOT gated on @media (hover: hover):
+ * the reference tile rule never was; the system matches it.
+ * Under prefers-reduced-motion the lift stands down (the
+ * outline/glow remain) — the block at the end of this section.
+ * All values ride tokens (var(--accent) above all), so the
+ * treatment renders in dark mode and Steel Light alike and
+ * in every user's own accent colour. */
+
+/* -- CARDS · base transitions where the surface's skin (above
+ * or in its module sheet) did not already carry them. The
+ * tile-skinned surfaces (.tv-mkt-card,
+ * .tv-part-row, .tv-forum-*) already declare the same triple
+ * in their skins above. -- */
+[data-theme="railsteel"] .tv-fork-row,
+[data-theme="railsteel"] .tv-broken-choice,
+[data-theme="railsteel"] .tv-group-card,
+[data-theme="railsteel"] .tv-hoverable,
+[data-theme="railsteel"] .tv-home-widget,
+[data-theme="railsteel"] .tv-stat-link .tv-stat-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* -- CARDS · the metal-skinned family (resting shadow is the
+ * bevel + plate drop the skins above declare). -- */
+[data-theme="railsteel"] :is(
+  .tv-mkt-card, .tv-part-row,
+  .tv-forum-cat, .tv-forum-thread
+):hover,
+[data-theme="railsteel"] :is(
+  .tv-mkt-card, .tv-part-row,
+  .tv-forum-cat, .tv-forum-thread
+):focus-within,
+[data-theme="railsteel"] .tv-fork-row:hover,
+[data-theme="railsteel"] .tv-fork-row:focus-visible,
+[data-theme="railsteel"] .tv-broken-choice:hover,
+[data-theme="railsteel"] .tv-broken-choice:focus-within,
+[data-theme="railsteel"] .tv-stat-link:hover .tv-stat-card,
+[data-theme="railsteel"] .tv-stat-link:focus-visible .tv-stat-card {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--edge));
+  box-shadow:
+    var(--bevel),
+    0 12px 26px rgb(0 0 0 / 0.65),
+    0 6px 18px -6px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+/* The Overview stat link used to lift 1px itself (surfaces.css);
+ * the lift now lives on the card at the system's 2px, so the
+ * link stands still and the two never stack. */
+[data-theme="railsteel"] .tv-stat-link:hover,
+[data-theme="railsteel"] .tv-stat-link:focus-visible {
+  transform: none;
+}
+
+/* -- CARDS · the Panel-framed family (resting shadow is the
+ * .tv-panel stack, so the hover shadow extends THAT stack
+ * with the same deep drop + accent glow). .tv-hoverable is
+ * the shared utility for a Panel that is wholly one click
+ * target (shared-tools cards wear it). -- */
+[data-theme="railsteel"] .tv-hoverable:hover,
+[data-theme="railsteel"] .tv-hoverable:focus-within,
+[data-theme="railsteel"] .tv-home-widget:has(.tv-widget-title-link):hover,
+[data-theme="railsteel"] .tv-home-widget:has(.tv-widget-title-link):focus-within {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--edge));
+  box-shadow:
+    var(--panel-shadow),
+    var(--bevel),
+    var(--panel-edge-top),
+    0 12px 26px rgb(0 0 0 / 0.65),
+    0 6px 18px -6px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* -- CARDS · the account-group picker (.tv-group-card) —
+ * joined the system on the owner's 2026-11-05 reversal of
+ * his 2026-10-17 calm-hover steer for this picker ("make
+ * these match everything we just did"). The card's resting
+ * skin is the input-well family (components.css), so the
+ * hover shadow extends THAT stack with the system's deep
+ * drop + accent glow. The card wraps its checkbox, so
+ * keyboard parity rides :focus-within, as it always has on
+ * this surface. The old components.css hover/focus rules
+ * are retired — this block is the single source.
+ * A SELECTED card (components.css .is-selected) keeps its
+ * full-accent outline and tint — the chosen state must stay
+ * stronger than hover — so the system's 60% border is
+ * scoped to unselected cards; a selected card being
+ * hovered still lifts and glows. -- */
+[data-theme="railsteel"] .tv-group-card:hover,
+[data-theme="railsteel"] .tv-group-card:focus-within {
+  transform: translateY(-2px);
+  box-shadow:
+    var(--input-shadow),
+    0 12px 26px rgb(0 0 0 / 0.65),
+    0 6px 18px -6px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+[data-theme="railsteel"] .tv-group-card:hover:not(.is-selected),
+[data-theme="railsteel"] .tv-group-card:focus-within:not(.is-selected) {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--edge));
+}
+
+/* -- CARDS · the footer's social seats (.tv-social-link,
+ * owner 2026-11-07). A wholly-clickable box at footer scale:
+ * the system's own recipe — lift, 60% accent outline, bevel +
+ * deep drop + accent glow — with the glyph brightening to the
+ * full text colour while the seat is lit. The seat's resting
+ * skin lives in surfaces.css with the footer itself. -- */
+[data-theme="railsteel"] .tv-social-link {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+[data-theme="railsteel"] .tv-social-link:hover,
+[data-theme="railsteel"] .tv-social-link:focus-visible {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--edge));
+  box-shadow:
+    var(--bevel),
+    0 12px 26px rgb(0 0 0 / 0.65),
+    0 6px 18px -6px color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--text);
+}
+
+/* -- CARDS · message thread rows (parked module, wired in
+ * code). The row's border is an INLINE style (MessagesPage),
+ * which a stylesheet border-color cannot reach — so the
+ * highlighted outline rides as the 1px accent ring in the
+ * shadow, the read this surface already used, now at the
+ * system's strength and lift. -- */
+[data-theme="railsteel"] .tv-msg-row:hover,
+[data-theme="railsteel"] .tv-msg-row:focus-visible {
+  transform: translateY(-2px);
+  box-shadow:
+    var(--bevel),
+    0 12px 26px rgb(0 0 0 / 0.65),
+    0 6px 18px -6px color-mix(in srgb, var(--accent) 45%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+/* -- ROWS · flush list rows (hairline-divided, locked in a
+ * grid): no lift — an accent-tinted wash, an inset accent
+ * outline, and a soft inset glow. Every row here carries the
+ * door to its record (a link or the row's own click). -- */
+[data-theme="railsteel"] :is(
+  .tv-inv-row, .tv-claims-trow, .tv-dir-row, .tv-myco-row,
+  .tv-notif-trow, .tv-fb-row, .tv-ix-row, .tv-maint-row,
+  .tv-dealer-truck-row, .tv-truck-rowline, .tv-dealer-claim-row,
+  .tv-truck-glance-row, .tv-video-row, .tv-bw-mlist-row
+),
+[data-theme="railsteel"] .tv-bw-table:not(.tv-bw-table--contacts) .tv-bw-row {
+  transition: box-shadow 0.15s ease, background-color 0.15s ease;
+}
+[data-theme="railsteel"] :is(
+  .tv-inv-row, .tv-claims-trow, .tv-dir-row, .tv-myco-row,
+  .tv-notif-trow, .tv-fb-row, .tv-ix-row, .tv-maint-row,
+  .tv-dealer-truck-row, .tv-truck-rowline, .tv-dealer-claim-row,
+  .tv-truck-glance-row, .tv-video-row, .tv-bw-mlist-row
+):hover,
+[data-theme="railsteel"] :is(
+  .tv-inv-row, .tv-claims-trow, .tv-dir-row, .tv-myco-row,
+  .tv-notif-trow, .tv-fb-row, .tv-ix-row, .tv-maint-row,
+  .tv-dealer-truck-row, .tv-truck-rowline, .tv-bw-mlist-row
+):focus-within,
+[data-theme="railsteel"] .tv-dealer-claim-row:focus-visible,
+[data-theme="railsteel"] .tv-truck-glance-row:focus-visible,
+[data-theme="railsteel"] .tv-bw-table:not(.tv-bw-table--contacts) .tv-bw-row:hover,
+[data-theme="railsteel"] .tv-bw-table:not(.tv-bw-table--contacts) .tv-bw-row:focus-within,
+[data-theme="railsteel"] .tv-search-trow:hover,
+[data-theme="railsteel"] .tv-search-trow:focus-visible,
+[data-theme="railsteel"] .tv-video-row:focus-visible {
+  background: color-mix(in srgb, var(--accent) 7%, var(--table-row-hover));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 0 16px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* -- ROWS · the shared DataTable's clickable rows
+ * (tr.is-clickable — AgentRoster, support tickets, admin
+ * users/support). border-collapse: collapse makes a tr's own
+ * box-shadow unreliable, so the inset outline is drawn per
+ * cell: top/bottom on every cell, the ends on the end cells. -- */
+[data-theme="railsteel"] .tv-table tbody tr.is-clickable > td {
+  transition: box-shadow 0.15s ease, background-color 0.15s ease;
+}
+[data-theme="railsteel"] .tv-table tbody tr.is-clickable:hover > td,
+[data-theme="railsteel"] .tv-table tbody tr.is-clickable:focus-within > td {
+  background: color-mix(in srgb, var(--accent) 7%, var(--table-row-hover));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 0 14px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+[data-theme="railsteel"] .tv-table tbody tr.is-clickable:hover > td:first-child,
+[data-theme="railsteel"] .tv-table tbody tr.is-clickable:focus-within > td:first-child {
+  box-shadow:
+    inset 1px 0 0 color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 0 14px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+[data-theme="railsteel"] .tv-table tbody tr.is-clickable:hover > td:last-child,
+[data-theme="railsteel"] .tv-table tbody tr.is-clickable:focus-within > td:last-child {
+  box-shadow:
+    inset -1px 0 0 color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 0 0 14px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* -- ROWS · bordered choice rows (the claim-tool picker, the
+ * checkout address-book rows): real box borders, still no
+ * lift — they sit in dense, scrolling pick lists where a
+ * lift would clip at the window's edge. Their resting hover
+ * was a full-accent border; the system's 60% mix + inset
+ * glow replaces it. A picked book row keeps its full-accent
+ * picked outline. -- */
+[data-theme="railsteel"] .tv-picker-row,
+[data-theme="railsteel"] .tv-bw-book-row {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+[data-theme="railsteel"] .tv-picker-row:hover,
+[data-theme="railsteel"] .tv-picker-row:focus-visible,
+[data-theme="railsteel"] .tv-bw-book-row:hover:not(.tv-bw-book-row--picked),
+[data-theme="railsteel"] .tv-bw-book-row:focus-visible:not(.tv-bw-book-row--picked) {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--edge));
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  box-shadow:
+    inset 0 0 16px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* -- TABS · main tab layout (owner amendment, 2026-11-05
+ * 17:09). An INACTIVE (clickable) tab gets the system's
+ * highlighted outline + glow; the ACTIVE tab is already
+ * selected — not a click target — and keeps its raised,
+ * one-accent-line treatment untouched. NO LIFT: a tab's base
+ * is seated on the shelf line (margin-bottom: -1px) and the
+ * active tab's join to the tray below depends on bases
+ * painting that line; lifting a hovered tab would notch the
+ * line, and the strip's scroll box would clip an outer glow
+ * — so the outline is the tab's own border at the system's
+ * 60% mix and the glow rides inset, where nothing clips it.
+ * (Coordinator's call — flagged for the owner.) -- */
+[data-theme="railsteel"] .tv-tab {
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+[data-theme="railsteel"] .tv-tab:hover:not([aria-selected="true"]):not(.is-active):not(:disabled),
+[data-theme="railsteel"] .tv-tab:focus-visible:not([aria-selected="true"]):not(.is-active):not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--edge));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+    inset 0 0 14px -4px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* -- Reduced motion: the lift stands down everywhere in the
+ * system; the outline and glow (colour, not movement)
+ * remain. (base.css already flattens transition durations;
+ * this removes the displacement itself.) -- */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="railsteel"] :is(
+    .tv-mkt-card, .tv-part-row,
+    .tv-forum-cat, .tv-forum-thread,
+    .tv-fork-row, .tv-broken-choice, .tv-msg-row, .tv-hoverable
+  ):hover,
+  [data-theme="railsteel"] :is(
+    .tv-mkt-card, .tv-part-row,
+    .tv-forum-cat, .tv-forum-thread, .tv-hoverable
+  ):focus-within,
+  [data-theme="railsteel"] .tv-fork-row:focus-visible,
+  [data-theme="railsteel"] .tv-broken-choice:focus-within,
+  [data-theme="railsteel"] .tv-msg-row:focus-visible,
+  [data-theme="railsteel"] .tv-home-widget:has(.tv-widget-title-link):hover,
+  [data-theme="railsteel"] .tv-home-widget:has(.tv-widget-title-link):focus-within,
+  [data-theme="railsteel"] .tv-stat-link:hover .tv-stat-card,
+  [data-theme="railsteel"] .tv-stat-link:focus-visible .tv-stat-card,
+  [data-theme="railsteel"] .tv-group-card:hover,
+  [data-theme="railsteel"] .tv-group-card:focus-within,
+  [data-theme="railsteel"] .tv-social-link:hover,
+  [data-theme="railsteel"] .tv-social-link:focus-visible {
+    transform: none;
+  }
+}

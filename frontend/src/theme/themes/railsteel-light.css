@@ -1,0 +1,180 @@
+
+
+/* ============ Light mode repaint (Silver Grey, 2026-10-24) ============
+ * The grain-stacked treatments above paint the OPAQUE dark grain
+ * photograph over var(--surface) / var(--panel), so a token flip
+ * alone cannot lighten them — in light mode they would stay dark
+ * while every token-driven surface went light (dark panels
+ * leaking into the light palette: a defect, not a look). This
+ * block repaints the same surfaces with a light in-family stack
+ * — a soft white-to-black lighting wash over the light
+ * palette's own surface/panel tokens. The screws, chrome and
+ * accent-plate materials are mode-invariant and stay. Every
+ * selector is gated on [data-mode="light"] (dark mode renders
+ * exactly as before) and outranks the treatments above via the
+ * extra attributes. This block shipped as the Phase D preview
+ * repaint, gated on the picked variant; with Silver Grey picked
+ * as THE light mode, the gate is simply light mode itself. */
+:root[data-theme="railsteel"][data-mode="light"] :is(
+  .tv-part-row, .tv-mkt-card,
+  .tv-stat-card:not(.tv-stat-card--accent), .tv-fork-row,
+  .tv-module-tile, .tv-dealer-agent,
+  .tv-reports-builder, .tv-reports-saved, .tv-report-kind,
+  .tv-msg-row, .tv-msg-bubble, .tv-forum-cat, .tv-forum-thread,
+  .tv-forum-post, .tv-agent-panel, .tv-agent-card,
+  .tv-settings-content .tv-panel, .tv-admin-content .tv-panel,
+  .tv-legal .tv-panel, .tv-roadmap .tv-panel, .tv-notfound .tv-panel
+) {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.30), rgb(0 0 0 / 0.05)),
+    var(--surface);
+}
+:root[data-theme="railsteel"][data-mode="light"] :is(
+  .tv-panel.tv-shell-panel, .tv-auth-panel
+) {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.30), rgb(0 0 0 / 0.05)),
+    var(--panel);
+}
+:root[data-theme="railsteel"][data-mode="light"] .tv-rail {
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / 0.10), transparent 18%, rgb(255 255 255 / 0.28) 50%, transparent 82%, rgb(0 0 0 / 0.12)),
+    linear-gradient(180deg, rgb(255 255 255 / 0.22), rgb(0 0 0 / 0.04)),
+    var(--rail-bg);
+}
+:root[data-theme="railsteel"][data-mode="light"] .tv-panel.tv-claim-nextstep {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 13%, transparent), transparent 60%),
+    var(--surface);
+}
+:root[data-theme="railsteel"][data-mode="light"] .tv-plan-box {
+  background:
+    url("../assets/screw.svg") left 10px top 10px / 11px 11px no-repeat,
+    url("../assets/screw.svg") right 10px top 10px / 11px 11px no-repeat,
+    linear-gradient(180deg, rgb(255 255 255 / 0.30), rgb(0 0 0 / 0.05)),
+    var(--surface-raised);
+}
+/* The machined seams under panel headers read as a soft light
+ * catch on light metal instead of the dark mode's black line. */
+:root[data-theme="railsteel"][data-mode="light"] .tv-panel-header {
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.35);
+}
+:root[data-theme="railsteel"][data-mode="light"] .tv-sp-title {
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.35);
+}
+/* Panel count chips were a fixed black wash (a dark chip for
+ * dark panels); in a variant they ride the ink at low alpha —
+ * except on the active (accent plate) row, which keeps its
+ * dark chip and on-accent ink exactly as in dark mode. */
+:root[data-theme="railsteel"][data-mode="light"] .tv-sp-count {
+  background: rgb(var(--ink-rgb) / 0.10);
+}
+:root[data-theme="railsteel"][data-mode="light"] .tv-sp-item.is-active .tv-sp-count {
+  background: rgb(0 0 0 / 0.35);
+}
+
+/* ============ Navy chrome ink re-point (2026-11-08) ============
+ * The Navy adoption (tokens.css light block) puts the chrome
+ * — rail, header, topbar — on the navy family, so the ink
+ * family the container scope rule hands those containers
+ * (the palette's dark-on-light set) would be unreadable
+ * there. This block re-points JUST the chrome containers at
+ * the palette's light-on-navy tones: white text, #c9d8ee
+ * (the recorded hero-muted / top-row nav tone) for muted and
+ * nav ink, ink-rgb at the same tone for hairlines and hover
+ * washes, and a derived mid-navy seam for the borders the
+ * chrome draws with --edge (the rail's right border).
+ * Form controls and menus inside the chrome keep the scope
+ * rule's own values — those rules set the tokens on the
+ * control elements themselves (white inputs, white menus),
+ * which outrank anything inherited from the chrome. Dark
+ * mode is untouched: every selector is [data-mode="light"]
+ * gated, and the extra attributes outrank the scope rule
+ * exactly as the repaints above do. Probed ratios on the
+ * navy stops: white 16.99 / 11.31 / 8.14, #c9d8ee
+ * 11.76 / 7.83 / 5.63 — all AA. */
+:root[data-theme="railsteel"][data-mode="light"] :is(
+  .tv-rail, .tv-header, .tv-topbar
+) {
+  --text: #ffffff;
+  --text-muted: #c9d8ee;
+  --nav-ink: #c9d8ee;
+  --text-soft: #dbe6f2;
+  --text-stats: #c9d8ee;
+  --text-bright: #ffffff;
+  --placeholder: #c9d8ee;
+  --ink-rgb: 201 216 238;
+  --edge: #14457e;
+  --edge-strong: #2c5a8f;
+  color: var(--text);
+}
+
+/* ============ Accent ink — dark-ground restores (FIX 2, 2026-11-11) ============
+ * tokens.css shadows --accent on <body> at the accent ink in
+ * light mode (meaning reads legible on light grounds). Two
+ * containers in light mode sit on DARK grounds of their own,
+ * where the bright picked accent is the legible one and the
+ * ink would sink: the navy rail (badges, the NEW dot) and the
+ * teaser countdown band (navy header material). They restore
+ * the root-resolved picked accent (--accent-base) on
+ * themselves; a declaration on the container beats the
+ * inherited body shadow for everything inside it. The header
+ * and topbar deliberately do NOT restore: their accent uses
+ * are dots and hovers, and the white popovers that live inside
+ * them (bell, menus, search results) need the ink. */
+:root[data-theme="railsteel"][data-mode="light"] :is(
+  .tv-rail, .tv-teaser-band
+) {
+  --accent: var(--accent-base);
+  --accent-strong: var(--accent-base);
+}
+
+/* ============ Accent ink — switch states (FIX 2, 2026-11-11) ============
+ * The shared switch carried its state on the accent: in light
+ * silver, ON (silver plate knob + pale border on a white
+ * track) and OFF (chrome knob + pale border) read as the same
+ * grey (sweep 09-F4 / 09b-F6). In light the state now reads
+ * from the TRACK: OFF is a white track behind a real
+ * edge-strong border; ON fills the track with the accent ink
+ * and throws a white knob. Both states clear 3:1 against the
+ * page grounds (ink 5.27:1 on the ground / 6.03:1 on white;
+ * edge-strong #8598af 3.0:1 on white). The knob's plate and
+ * the dark theme are untouched. */
+:root[data-theme="railsteel"][data-mode="light"] .tv-switch {
+  border-color: var(--edge-strong);
+}
+:root[data-theme="railsteel"][data-mode="light"] .tv-switch[aria-checked="true"] {
+  background: var(--accent-ink);
+  border-color: var(--accent-ink);
+}
+:root[data-theme="railsteel"][data-mode="light"] .tv-switch[aria-checked="true"]::after {
+  background: #ffffff;
+  border-color: var(--accent-ink);
+  box-shadow: var(--bevel), 0 1px 4px rgb(0 0 0 / 0.35);
+}
+
+/* ============ Accent ink — filled chips take white text (FIX 2, 2026-11-11) ============
+ * A small family of controls fills with var(--accent) and
+ * labels itself with --text-on-accent (the near-black ink
+ * chosen for bright fills). Under the body shadow their fill
+ * is now the deep ink, so the label flips to white (6.03:1
+ * on the default ink) — the fill keeps carrying the state,
+ * the words stay readable. */
+:root[data-theme="railsteel"][data-mode="light"] :is(
+  .tv-dp-day--selected,
+  .tv-pagination .tv-btn.is-current,
+  .tv-home-gallery-new,
+  .tv-setup-chip--new,
+  .tv-fb-vote[aria-pressed="true"],
+  /* The STEP door (.pr-download-step) shares .pr-download-btn
+   * but is an OUTLINE button — transparent ground, accent-ink
+   * text — so the white-label flip must not reach it: in light
+   * it rendered as an empty white box (Sweep B7). */
+  .pr-download-btn:not(.pr-download-step),
+  .pr-media-cover
+) {
+  color: #ffffff;
+}
+:root[data-theme="railsteel"][data-mode="light"] .tv-group-card.is-selected .tv-group-check::after {
+  border-color: #ffffff;
+}

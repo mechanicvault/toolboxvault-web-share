@@ -1,0 +1,171 @@
+/* Tool Expansion styles (suggestions page + inventory badge).
+   Split out of theme/components.css in the 2026-10-26 CSS filing
+   split; imported by the tool-expansion components so the rules
+   ship with that module. Rule order preserved verbatim. */
+
+.tv-exp-page {
+  display: grid;
+  gap: var(--spacing);
+}
+
+/* Main tab layout (lane 5, 2026-11-10): the page's own title /
+   subtitle rules retired with the hand-rolled header — the kit
+   header (SectionPageHeader) carries both now. Tab bodies stack
+   their panels with the page's own rhythm. */
+.tv-exp-tabgrid {
+  display: grid;
+  gap: var(--spacing);
+}
+
+/* The explainer tab (mirrors the disaster-claims how anatomy). */
+.tv-exp-how {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.tv-exp-how-title {
+  font-weight: 600;
+  margin: 0 0 var(--space-1);
+}
+
+.tv-exp-how-body {
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 75ch;
+  line-height: 1.55;
+}
+
+.tv-exp-how-doors {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* The archived tab: its intro line, and the five-column variant
+   of the shared suggestion grid (piece · model · expands ·
+   archived · actions). */
+.tv-exp-arch-intro {
+  margin: 0 0 0.85rem;
+  color: var(--text-muted);
+  max-width: 75ch;
+  line-height: 1.5;
+}
+
+.tv-ix-thead.tv-exp-arch-row,
+.tv-exp-page .tv-ix-row.tv-exp-arch-row {
+  grid-template-columns:
+    minmax(170px, 1.2fr) minmax(110px, 0.7fr) minmax(150px, 1fr)
+    minmax(105px, 0.7fr) 8.5rem;
+  min-width: 840px;
+}
+
+/* The honest tombstone note inside an archived row (the item is
+   gone / the match no longer generates). */
+.tv-exp-note {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.tv-exp-loading {
+  margin: 0;
+  color: var(--text-muted);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.tv-exp-scope {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-exp-expands {
+  margin: 0 0 0.6rem;
+  color: var(--text-muted);
+}
+
+.tv-exp-actions {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-exp-more {
+  margin: 0.6rem 0 0;
+}
+
+.tv-exp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tv-exp-badge:hover {
+  border-color: var(--accent);
+}
+
+.tv-exp-badge svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Suggestions list (list-standard wave 6, 2026-11-02): inside each
+   owned item's group panel, suggestions are a TRUE list — one
+   suggestion per row under a header row, Suggested piece · Model #
+   · Actions in their own columns (the dealer DirectoryTable
+   pattern). The group panel (a grid item) may shrink below the
+   table's min width; the table scrolls sideways on narrow screens.
+   The same grid row shape serves the item page's "Known expansions"
+   section, which keeps its headerless panel form. */
+
+.tv-exp-panel {
+  min-width: 0;
+}
+
+.tv-ix-table {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-ix-thead,
+.tv-exp-page .tv-ix-row {
+  display: grid;
+  grid-template-columns: minmax(190px, 1.2fr) minmax(130px, 0.8fr) 20rem;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 680px;
+  padding: 0.55rem 0.25rem;
+}
+
+.tv-ix-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-exp-page .tv-ix-row {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-ix-cell-name {
+  min-width: 0;
+}

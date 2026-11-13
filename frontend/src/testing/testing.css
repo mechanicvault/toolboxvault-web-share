@@ -1,0 +1,39 @@
+/* ============================================================
+ * LANDING TESTING — what remains (owner orders, 2026-11-08).
+ * The landing test program ended with Option 1's promotion
+ * to the official landing page: the variants, their styles,
+ * and the reviewer pager are gone (the page's styles moved
+ * with it to modules/core/landing-combo.css). What remains
+ * is the header Testing item's own styling — the item is now
+ * a plain link straight to the landing page, kept in the
+ * header for future test programs. .lt-menu-* classes only;
+ * nothing here may restyle a shared site class.
+ * ============================================================ */
+/* ---------- The header Testing menu ---------- */
+.lt-menu-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.lt-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text, #e8e6e1);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.lt-menu-btn:hover,
+.lt-menu-btn.is-active {
+  border-color: var(--edge, #4a443c);
+  background: var(--surface-2, rgba(255, 255, 255, 0.06));
+}

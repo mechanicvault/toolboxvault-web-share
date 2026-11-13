@@ -1,0 +1,673 @@
+/* Toolbox Vault design tokens — the ONLY source of visual truth.
+ *
+ * Every component and module styles itself with these var(--*) references.
+ * Themes override the values (see themes/*.css). Accent is user-controlled
+ * via ThemeContext, which sets --accent (+ derived) inline on <html>.
+ *
+ * RULE: no hard-coded colors anywhere else. A hex/rgb value outside this
+ * file, the theme files, and the theme layer CSS (base/components/surfaces)
+ * is a bug. Component CSS in this layer references tokens only.
+ */
+
+:root {
+  /* ---- Surfaces ---- */
+  --bg: #070605;
+  --surface: #181511;
+  --surface-raised: #221d16;
+  --panel: #161310;
+  /* Decorative background layer(s) painted on bg + panels (theme hook). */
+  --texture:
+    radial-gradient(560px 110px at 50% 108%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%),
+    linear-gradient(180deg, rgb(13 15 18 / 0.5) 0%, rgb(9 10 13 / 0.28) 55%, rgb(5 6 8 / 0.55) 100%),
+    url("./assets/steel9/grain.webp");
+  --texture-panel:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.18)),
+    url("./assets/steelworn2/grain-worn2.webp");
+
+  /* ---- Edges & depth ---- */
+  --edge: #423a31;
+  --edge-strong: #6a6053;
+  /* Extra inset box-shadow layer for machined/beveled looks (theme hook).
+   * The "off" value is a transparent zero shadow, NEVER `none`: a
+   * `none` layer inside a box-shadow list invalidates the WHOLE
+   * declaration in Chromium (invalid at computed-value time), which
+   * silently stripped every stacked shadow in themes whose bevel
+   * was off — the depth pass (2026-10-18) found Light's panels had
+   * computed box-shadow: none despite real --shadow values. */
+  --bevel:
+    inset 0 1px 0 rgb(255 255 255 / 0.17),
+    inset 0 -1px 0 rgb(0 0 0 / 0.65),
+    inset 1px 0 0 rgb(255 255 255 / 0.05),
+    inset -1px 0 0 rgb(0 0 0 / 0.45);
+  /* Machined frame border-image for panels/tables/modals (theme hook).
+   * A full border-image shorthand value: source + slice / width / repeat. */
+  --frame: none;
+  --shadow: 0 3px 10px rgb(0 0 0 / 0.55);
+  --shadow-lg: 0 20px 48px rgb(0 0 0 / 0.75), 0 3px 12px rgb(0 0 0 / 0.6);
+  /* Panel shadow — the resting depth of panels / cards / tiles
+   * (theme hook). Defaults to the theme's own --shadow so a theme
+   * that does not opt in (Steel family, Steel Light) renders
+   * exactly as before; Light and Dark override it with a soft
+   * layered drop shadow so surfaces read as floating on the page
+   * ground (owner, 2026-10-18: Light is "too light... flat white",
+   * panels should float a little; Dark gets the same depth). */
+  --panel-shadow: var(--shadow);
+  /* Raised-surface shadow for floating elements — modals, menus,
+   * popovers, toasts (theme hook). Defaults to --shadow-lg for
+   * the same opt-in reason as --panel-shadow. */
+  --shadow-raised: var(--shadow-lg);
+  /* 1px top-edge highlight layer for panels (theme hook). On dark
+   * grounds a shadow alone cannot lift a surface, so Dark adds a
+   * faint light edge along the panel's top; light themes leave the
+   * layer a transparent zero shadow (NOT `none` — see --bevel:
+   * a `none` layer would void the whole box-shadow stack). */
+  --panel-edge-top: 0 0 0 rgb(0 0 0 / 0);
+  --radius-sm: 3px;
+  --radius: 4px;
+  --radius-lg: 4px;
+  --radius-pill: 999px;
+
+  /* ---- Tag palette (gap wave 1) ----
+   * The fixed per-tag colors (backend palette: inventory
+   * TAG_COLORS). A tag chip's dot takes its color from here via
+   * --tag-color; the hexes live ONLY in this layer, like every
+   * other color in the system. */
+  --tag-amber: #f59e0b;
+  --tag-red: #ef4444;
+  --tag-orange: #f97316;
+  --tag-yellow: #eab308;
+  --tag-green: #22c55e;
+  --tag-blue: #3b82f6;
+  --tag-purple: #a855f7;
+  --tag-pink: #ec4899;
+  --tag-slate: #64748b;
+  --tag-gray: #9ca3af;
+
+  /* ---- Text ---- */
+  --text: #e6e1d8;
+  --text-muted: #9a927f;
+  --text-on-accent: #17110a;
+  --text-on-danger: #ffffff;
+  --placeholder: #a79a85;
+  --link: var(--accent);
+  /* Palette extensions (Rail Steel Phase 3 token sweep,
+   * 2026-10-24): every palette-bearing ink the railsteel
+   * treatments use, named once here so a future light palette
+   * overrides tokens ONLY. --ink-rgb is the warm off-white
+   * triplet behind every hairline / hover wash in the design
+   * (used as rgb(var(--ink-rgb) / <alpha>)); a light mode
+   * re-points it at a dark ink triplet and every hairline and
+   * wash flips with it. */
+  --ink-rgb: 230 225 216;
+  --text-soft: #c9c2b4;
+  /* The panel stats rows' ink — a hair cooler than --text-soft;
+   * it was a distinct literal (#c4beb2) before the sweep, and
+   * the sweep is render-neutral, so it keeps its own token. */
+  --text-stats: #c4beb2;
+  --text-bright: #ffffff;
+  /* The rail's resting item ink (a cool silver, distinct from
+   * the warm text family). */
+  --nav-ink: #b6bdc7;
+
+  /* ---- Accent (pre-hydration default; ThemeContext overrides
+   * per user. The default is the owner's orange — the orange
+   * preset's exact values, derived the same way ThemeContext
+   * derives them, so first paint already matches the default
+   * gear. ---- */
+  --accent: #f2760a;
+  --accent-soft: rgb(242 118 10 / 0.12);
+  --accent-strong: #bd5c08;
+  --glow: 0 0 12px rgb(242 118 10 / 0.45);
+  --accent-plate-mid: var(--accent);
+  /* The worn accent plate (Rail Steel): near-uniform painted metal
+   * with a machined top catch and a worn darker base. The full-
+   * strength stop reads --accent-plate-mid (ThemeContext derives
+   * it; pure pinned accents are pulled off 0/255 so wear can bite). */
+  --plate:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 74%, #ffffff) 0%,
+      color-mix(in srgb, var(--accent) 92%, #ffffff) 24%,
+      var(--accent-plate-mid, var(--accent)) 56%,
+      color-mix(in srgb, var(--accent) 86%, #000000) 88%,
+      color-mix(in srgb, var(--accent) 72%, #000000) 100%);
+  --plate-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 -2px 0 rgb(0 0 0 / 0.45),
+    0 10px 22px -8px color-mix(in srgb, var(--accent) 62%, transparent),
+    0 4px 10px -2px rgb(0 0 0 / 0.5);
+  --plate-btn:
+    url("./assets/screw.svg") left 7px center / 11px 11px no-repeat,
+    url("./assets/screw.svg") right 7px center / 11px 11px no-repeat,
+    var(--plate);
+  /* Glow cast by small indicator dots / progress fills (theme hook). */
+  --indicator-shadow:
+    0 0 6px var(--accent),
+    0 0 16px color-mix(in srgb, var(--accent) 55%, transparent);
+
+  /* ---- Status ---- */
+  --success: #3ecf6e;
+  --success-soft: rgb(62 207 110 / 0.14);
+  --warning: #e8b93e;
+  --warning-soft: rgb(232 185 62 / 0.14);
+  --danger: #e56a6a;
+  --danger-soft: rgb(229 106 106 / 0.16);
+  --info: var(--accent);
+  --info-soft: var(--accent-soft);
+
+  /* ---- Site banner (construction notice strip) ----
+   * The strip above the header on every page. Bg is the theme's
+   * warning amber; ink is near-black on it (every theme's --warning
+   * is a mid-to-bright amber) — Steel Light inks its --warning
+   * darker for light metal, so it overrides --banner-text instead. */
+  /* Company logo tiles (corporate directory): a neutral tile in
+   * every theme; the dark variant carries white-glyph logos
+   * (Mac Tools, Astro Pneumatic) that vanish on light grounds.
+   * The ground is a FIXED light neutral, never the theme surface:
+   * brand artwork is drawn for one backdrop or the other, and on
+   * the near-black Steel/Dark surfaces the dark wordmarks (Matco,
+   * Sunex, Tekton) rendered invisible — visual sweep 2026-10-19.
+   * The initial-letter fallback inks with --tile-logo-text. */
+  --tile-logo-bg: #edf0f3;
+  --tile-logo-edge: #c3c9d1;
+  --tile-logo-text: #20242a;
+  --tile-logo-dark-bg: #22262d;
+  --tile-logo-dark-text: #f2f4f7;
+
+  --banner-bg: var(--warning);
+  --banner-text: #191204;
+  --banner-edge: color-mix(in srgb, var(--warning) 55%, #000000);
+
+  /* ---- Controls ---- */
+  /* Density pass (owner directive 2026-10-22, "Fortune-500 feel"):
+   * the standard control stepped 40px → 36px and the large 48px →
+   * 44px, toward premium-product density. The small control stays
+   * 32px (already in the target band, dense desktop contexts).
+   * On coarse pointers (touch) the standard control returns to
+   * 40px — see the pointer media block at the end of this file. */
+  --control-height: 2.25rem;
+  --control-height-sm: 2rem;
+  --control-height-lg: 2.75rem;
+  --input-bg: #0a0908;
+  --input-edge: #77694f;
+  /* A transparent zero shadow, NOT `none`: components stack this
+   * token into multi-layer box-shadow lists (input + focus ring),
+   * and one `none` in a shadow list voids the WHOLE stack in
+   * Chromium — the same trap the depth pass fixed for --bevel /
+   * --panel-edge-top. Zero-alpha = visually identical, list-safe. */
+  --input-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.62),
+    inset 0 1px 0 rgb(255 255 255 / 0.13),
+    inset 0 2px 6px rgb(0 0 0 / 0.5),
+    inset 0 -1px 0 rgb(255 255 255 / 0.04);
+  --btn-secondary-bg:
+    linear-gradient(180deg, rgb(230 225 216 / 0.08), rgb(0 0 0 / 0.25)),
+    url("./assets/steelworn2/grain-worn2.webp"),
+    linear-gradient(180deg, #3a3f46, #26292e);
+  /* Primary button surface (theme hook — Steel plates it in dark metal). */
+  --btn-primary-bg: var(--plate-btn);
+  --btn-primary-hover-bg:
+    url("./assets/screw.svg") left 7px center / 11px 11px no-repeat,
+    url("./assets/screw.svg") right 7px center / 11px 11px no-repeat,
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 80%, #ffffff) 0%,
+      color-mix(in srgb, var(--accent) 96%, #ffffff) 24%,
+      var(--accent-plate-mid, var(--accent)) 56%,
+      color-mix(in srgb, var(--accent) 90%, #000000) 88%,
+      color-mix(in srgb, var(--accent) 76%, #000000) 100%);
+  --btn-primary-text: var(--text-on-accent);
+  --btn-primary-shadow: var(--plate-shadow);
+  --btn-ghost-hover: var(--accent-soft);
+  --focus-ring: 0 0 0 3px var(--accent-soft);
+  --focus-ring-danger: 0 0 0 3px var(--danger-soft);
+  /* The ONE focus outline (deep audit F3-09): every interactive
+   * control's :focus-visible speaks this language — base.css's
+   * global rule, the gear chooser, and Steel's inputs (which keep
+   * their inset accent line and add this outline on top). */
+  --focus-outline: 2px solid var(--accent);
+  --focus-outline-offset: 2px;
+
+  /* ---- Motion (deep audit F3-08) ----
+   * The motion token set. Values are the timings the product
+   * already shipped with (route fade 150ms, menus/buttons 120ms,
+   * modal/accordion base 160ms, progress/slow 240ms) — tokenized,
+   * not redesigned. New transitions use these, never raw ms. */
+  --motion-fast: 120ms;
+  --motion-base: 160ms;
+  --motion-slow: 240ms;
+  --motion-page: 150ms;
+  --ease-standard: ease;
+  --ease-out: cubic-bezier(0.22, 0.9, 0.3, 1);
+  --disabled-opacity: 0.55;
+
+  /* ---- Panel chrome (theme hooks) ---- */
+  --panel-header-bg: transparent;
+  --panel-header-text: var(--text);
+  --panel-header-edge: color-mix(in srgb, var(--accent) 50%, transparent);
+  /* Brushed nameplate gradient lives with the accent tokens above
+   * (Rail Steel: --plate is the worn accent plate gradient). */
+  /* Nameplate title shadow — engraving hook (theme hook). */
+  --panel-header-text-shadow: 0 1px 0 rgb(255 255 255 / 0.25);
+  /* Corner rivet background layers for plate panels (theme hook). */
+  --rivets:
+    url("./assets/screw.svg") left 8px top 8px / 11px 11px no-repeat,
+    url("./assets/screw.svg") right 8px top 8px / 11px 11px no-repeat;
+  /* Accent bloom painted at the top edge of panels (theme hook). */
+  --panel-glow: radial-gradient(110px 18px at 50% -4px, color-mix(in srgb, var(--accent) 50%, transparent), transparent 70%);
+
+  /* ---- Chrome material (Phase 3 token sweep) ----
+   * The brushed-chrome material ramp + its dark seam + the
+   * stamped-tag ground, named once. Chrome is a MATERIAL (like
+   * the asset art), mode-invariant by design: a future light
+   * palette may re-point these, but the treatments never carry
+   * the ramp literals again. */
+  --chrome-gradient: linear-gradient(180deg, #bcc2ca 0%, #9299a2 42%, #6e747c 54%, #878e96 82%, #a7adb5 100%);
+  /* Two chrome variants that were distinct literals before the
+   * sweep (render-neutral: they keep their exact pre-sweep
+   * ramps rather than consolidating into --chrome-gradient):
+   * the switch knob's tighter ramp and the modal close button's
+   * plain two-stop ramp. */
+  --chrome-gradient-knob: linear-gradient(180deg, #bcc2ca 0%, #9299a2 45%, #6e747c 55%, #a7adb5 100%);
+  --chrome-gradient-close: linear-gradient(180deg, #bcc2ca, #878e96);
+  --chrome-edge: #08090b;
+  --tag-ground: #100d0a;
+  /* The rail's deep metal ground (also the header ground's
+   * base layer, below). */
+  --rail-bg: linear-gradient(180deg, #1a1712, #100e0b);
+
+  /* ---- Table ---- */
+  --table-header-bg:
+    url("./assets/brushed-chrome.svg") center / 100% 100% no-repeat,
+    var(--chrome-gradient);
+  --table-header-text: #14161a;
+  --table-row-hover: #1e232b;
+  --table-row-alt: rgb(255 255 255 / 0.018);
+  --table-edge: rgb(230 225 216 / 0.07);
+
+  /* ---- Header / nav / shell ---- */
+  --header-bg:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.18)),
+    url("./assets/steelworn2/grain-worn2.webp"),
+    var(--rail-bg);
+  --header-edge: #05060a;
+  --header-shadow: var(--shadow);
+  --sidebar-bg: #161310;
+  /* 248px → 232px (density pass 2026-10-22): the rail of a slim
+   * app, not a billboard — nav labels keep their full room at the
+   * 15px base size. */
+  --nav-item-bg: transparent;
+  --nav-item-hover-bg: rgb(230 225 216 / 0.07);
+  --nav-active-bg: var(--plate);
+  --nav-active-text: var(--text-on-accent);
+  --nav-active-shadow: var(--plate-shadow);
+
+  /* ---- Overlay / modal ---- */
+  --overlay: rgb(0 0 0 / 0.72);
+  --z-header: 40;
+  --z-drawer: 60;
+  --z-modal: 80;
+  --z-toast: 100;
+
+  /* ---- Scrollbar ---- */
+  --scrollbar-thumb: #4a515b;
+  --scrollbar-track: transparent;
+
+  /* ---- Typography ---- */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Condensed industrial display stack (Rail Steel conversion:
+   * moved here from steel.css so it survives theme retirement —
+   * the preview's exact stack, no webfont download). */
+  --font-display: "Arial Narrow", "HelveticaNeue-CondensedBold", "Roboto Condensed", "Liberation Sans Narrow", "Segoe UI", Arial, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  /* Type scale stepped down one notch (density pass 2026-10-22):
+   * base 16px → 15px, lg 18 → 17, xl 22 → 20, 2xl 28 → 26. Every
+   * rem-sized control, row and heading in the system breathes a
+   * little less large; xs/sm were already at premium density. */
+  --font-size-base: 0.9375rem;
+  --font-size-lg: 1.0625rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.625rem;
+  --font-size-3xl: 2rem;
+  --line-height: 1.5;
+
+  /* ---- Spacing / layout ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --spacing: 1rem;
+  --max-content-width: 1200px;
+
+  /* ---- Unified live glow (the ONE light system) ----
+   * A dark socket recess with a live core in --accent: hot center,
+   * accent body, darker rim, plus a soft spill. Art NEVER contains
+   * light (masters ship dark unlit sockets); every visible light in
+   * every theme is this treatment or --indicator-shadow, so the accent
+   * wheel re-colors every light point on the page at once. Consumed by
+   * .tv-glow-dot (components.css) and theme pseudo-element sockets. */
+  --glow-dot-bg: radial-gradient(
+    circle at 50% 42%,
+    color-mix(in srgb, var(--accent) 30%, #ffffff) 0%,
+    var(--accent) 52%,
+    color-mix(in srgb, var(--accent) 58%, #000000) 100%
+  );
+  --glow-dot-shadow:
+    inset 0 1px 2px rgb(0 0 0 / 0.45),
+    0 0 0 2px rgb(0 0 0 / 0.38),
+    0 0 7px color-mix(in srgb, var(--accent) 65%, transparent),
+    0 0 15px color-mix(in srgb, var(--accent) 30%, transparent);
+
+  /* ---- Legacy aliases (pre-design-system names; do not use in new code) ---- */
+  /* Deep audit F3-07: --muted / --border / --panel-2 / --surface-2
+   * were referenced by production pages but defined nowhere (the
+   * no-fallback uses were invalid at computed-value time; the #ddd
+   * fallbacks leaked a light-grey literal into every theme). They
+   * are defined ONCE here in :root as aliases of the real tokens,
+   * so every theme — which overrides --text-muted / --edge /
+   * --surface — resolves them correctly. */
+  --muted: var(--text-muted);
+  --border: var(--edge);
+  --panel-2: var(--surface);
+  --surface-2: var(--surface);
+  /* Upward shadow for bottom-anchored bars (deep audit F3-16). */
+  --shadow-bar: 0 -4px 18px rgb(0 0 0 / 0.25);
+}
+
+/* ---- LIGHT MODE — "Silver Grey" (owner pick, 2026-10-24) ----
+ * THE light palette — the one and only. History: light v1
+ * (lighter brushed metal) and v2 ("Bright and clean": bright
+ * field, dark furniture) were both rejected by the owner from
+ * his seat; three complete light palettes then shipped as live
+ * previews (Phase D) and he picked SILVER GREY from them. The
+ * other looks and the preview picker are removed wholesale;
+ * this block is the Silver Grey preview's exact token set,
+ * promoted to the base [data-mode="light"] block (its probed
+ * contrast: body 8.85 / panel 10.16 / muted 5.78). One post-pick
+ * addition the same day, on the owner's steer: the field
+ * texture (see the --texture note in the block below).
+ *
+ * Silver Grey is a FULL palette in its own family — a medium
+ * silver-grey field, LIGHT panels/surfaces in-family, dark
+ * text throughout — not a tint of the dark design. Accent +
+ * live glow are untouched, exactly as in dark mode. Every
+ * selector in this section is [data-mode="light"] gated, so
+ * dark mode is byte-for-byte untouched.
+ *
+ * Container scope (the cascade that shaped the previews, kept
+ * because it is what made them render as probed): a value set
+ * directly on a container beats anything inherited from
+ * :root, so the palette ALSO mirrors its text/status/edge/
+ * table family into `--lv-*` tokens here at :root, and ONE
+ * scope rule (directly below) re-points the shared family on
+ * every audited container at those `--lv-*` values. The
+ * grain-stacked card treatments in railsteel.css get the
+ * matching light repaint at the end of that file (the grain
+ * photograph is opaque and dark, so a token flip alone would
+ * leave the cards dark). */
+/* ---- NAVY ADOPTION (owner order, 2026-11-08) ----
+ * The light palette above ("Silver Grey", picked 2026-10-24)
+ * is superseded in VALUES by the Navy palette of the landing
+ * Combination test page's light dress ("page 2"): ground
+ * #edf0f4, white surfaces, ink #16233a, muted #5a6b84, edge
+ * #d5dce5, the navy family #0a1c38 / #123a6e / #17508f on the
+ * chrome (header + rail), and the recorded card shadow
+ * 0 8px 22px rgb(18 38 68 / 0.13). The --lv-* mirror machinery
+ * and the container scope rule below are unchanged — only the
+ * palette values moved. Status colors are NOT part of the
+ * adoption (semantic family, untouched), and the accent
+ * system is untouched (the palette's #f2760a is the default
+ * accent the token set already ships). Chrome containers
+ * (rail / header / topbar) sit on navy, so railsteel-light.css
+ * re-points their ink family at the palette's light-on-navy
+ * tones (white + #c9d8ee). Measured WCAG ratios for the new
+ * pairings: ink on ground 13.75, ink on white 15.72, muted on
+ * white 5.42, muted on ground 4.75, white on the three navies
+ * 16.99 / 11.31 / 8.14, #c9d8ee on the three navies
+ * 11.76 / 7.83 / 5.63 — all AA. */
+:root[data-mode="light"] {
+  --bg: #edf0f4;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --panel: #ffffff;
+  /* The field wears the SAME brushed-aluminum photograph as
+   * dark mode, lightened: grain-light.webp is a gamma-lifted
+   * rendition of steel9/grain.webp (same brushing, same
+   * scratches; tonal floor 170 so no speckle can sink under the
+   * text) under a translucent silver veil — the flat ramp this
+   * palette previewed with, made sheer so the texture shows
+   * through. Owner steer, 2026-10-24: dark has a textured
+   * field, light gets one too, just not as dark. Worst-case
+   * contrast probed over the veiled texture before shipping:
+   * text 7.97:1, muted 4.54:1 (see the light-winner INDEX). */
+  /* Navy adoption: the SAME grain photograph (the field's
+   * material is not a color and stays), its veils retinted
+   * into the palette's ground family so the composite field
+   * reads in the #edf0f4 family, exactly as the old silver
+   * veils made the composite read in the Silver Grey family. */
+  --texture:
+    radial-gradient(560px 110px at 50% 108%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%),
+    linear-gradient(180deg, rgb(237 240 244 / 0.66) 0%, rgb(237 240 244 / 0.60) 55%, rgb(220 228 238 / 0.72) 100%),
+    url("./assets/steel9/grain-light.webp");
+  --texture-panel: linear-gradient(180deg, rgb(255 255 255 / 0.30), rgb(0 0 0 / 0.05));
+  --text: #16233a;
+  --text-muted: #5a6b84;
+  /* Placeholder takes the muted tone verbatim: on the white
+   * input ground it probes 5.42:1 (Silver Grey needed a
+   * darker-than-muted placeholder on its grey troughs). */
+  --placeholder: #5a6b84;
+  --ink-rgb: 22 35 58;
+  /* text-soft / text-stats are derived in-family (the Navy
+   * palette records no such steps): 70/30 and 60/40 blends
+   * of ink toward muted, probing 11.67 / 10.47 on white. */
+  --text-soft: #2a3950;
+  --text-stats: #314058;
+  --text-bright: #0a1c38;
+  /* Nav ink is the rail buttons' resting color (its only
+   * consumer); the rail sits on navy now, so it takes the
+   * palette's recorded top-row nav tone, #c9d8ee. */
+  --nav-ink: #c9d8ee;
+  --edge: #d5dce5;
+  /* Edge-strong derived in-family: the recorded edge
+   * deepened toward the primary navy (the palette records
+   * no stronger edge; borders that carried weight in Silver
+   * Grey still need a step above #d5dce5). */
+  --edge-strong: #8598af;
+  --bevel:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    inset 0 -1px 0 rgb(0 0 0 / 0.20),
+    inset 1px 0 0 rgb(255 255 255 / 0.18),
+    inset -1px 0 0 rgb(0 0 0 / 0.10);
+  /* Shadows retinted to the palette's shadow ink (18 38 68 —
+   * the recorded card shadow's own rgb); the panel shadow IS
+   * the recorded card shadow, verbatim. */
+  --shadow: 0 3px 10px rgb(18 38 68 / 0.16);
+  --shadow-lg: 0 20px 48px rgb(18 38 68 / 0.22), 0 3px 12px rgb(18 38 68 / 0.16);
+  --panel-shadow: 0 8px 22px rgb(18 38 68 / 0.13);
+  --shadow-raised: var(--shadow-lg);
+  --shadow-bar: 0 -4px 18px rgb(18 38 68 / 0.14);
+  --success: #0a5427;
+  --success-soft: rgb(10 84 39 / 0.14);
+  --warning: #5e4400;
+  --warning-soft: rgb(94 68 0 / 0.14);
+  --danger: #8a1f1f;
+  --danger-soft: rgb(138 31 31 / 0.13);
+  --banner-bg: #e8b93e;
+  --banner-text: #191204;
+  --banner-edge: color-mix(in srgb, var(--banner-bg) 55%, #000000);
+  --input-bg: #ffffff;
+  --input-edge: #d5dce5;
+  --input-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.25),
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    inset 0 2px 6px rgb(0 0 0 / 0.18),
+    inset 0 -1px 0 rgb(255 255 255 / 0.25);
+  --btn-secondary-bg:
+    linear-gradient(180deg, rgb(255 255 255 / 0.38), rgb(0 0 0 / 0.07)),
+    linear-gradient(180deg, #ffffff, #edf0f4);
+  --panel-header-text-shadow: 0 1px 0 rgb(255 255 255 / 0.40);
+  --tag-ground: #edf0f4;
+  /* The rail and the header/topbar wear the navy family:
+   * the rail takes the deep-to-primary ramp, the header the
+   * palette's recorded hero field verbatim (its top-row
+   * field). Their ink family flips light in
+   * railsteel-light.css (the chrome re-point). */
+  --rail-bg: linear-gradient(180deg, #0a1c38, #123a6e);
+  /* Table hover derived in-family: white stepped toward
+   * the bright navy (the palette records no table tones). */
+  --table-row-hover: #e8eef4;
+  --table-row-alt: rgb(22 35 58 / 0.04);
+  --table-edge: rgb(22 35 58 / 0.14);
+  --header-bg: linear-gradient(160deg, #0a1c38 0%, #123a6e 78%, #17508f 100%);
+  --header-edge: #0a1c38;
+  --overlay: rgb(10 28 56 / 0.45);
+  --scrollbar-thumb: #8598af;
+  /* --lv-* mirror for the container scope rule (see header). */
+  --lv-text: #16233a;
+  --lv-muted: #5a6b84;
+  --lv-placeholder: #5a6b84;
+  --lv-ink-rgb: 22 35 58;
+  --lv-soft: #2a3950;
+  --lv-stats: #314058;
+  --lv-bright: #0a1c38;
+  --lv-nav: #c9d8ee;
+  --lv-success: #0a5427;
+  --lv-success-soft: rgb(10 84 39 / 0.14);
+  --lv-warning: #5e4400;
+  --lv-warning-soft: rgb(94 68 0 / 0.14);
+  --lv-danger: #8a1f1f;
+  --lv-danger-soft: rgb(138 31 31 / 0.13);
+  --lv-edge: #d5dce5;
+  --lv-edge-strong: #8598af;
+  --lv-table-hover: #e8eef4;
+  --lv-table-alt: rgb(22 35 58 / 0.04);
+  --lv-table-edge: rgb(22 35 58 / 0.14);
+  /* ---- Accent ink (FIX 2 — the light accent collapse,
+   * 2026-11-11) ----
+   * Light's default accent is silver #c7ccd4 (1.41:1 on the
+   * ground, 1.61:1 on white): as TEXT or STATE it reads
+   * disabled — active tabs, links, switch states, rating
+   * stars all washed out (luxury sweep T1, ~30 symptoms, ONE
+   * cause). The silver identity stays: --accent itself, and
+   * every token COMPOSED from it at :root (the plate family,
+   * glows, textures), keeps the picked color untouched.
+   * What changes is the INK the accent carries meaning with:
+   * --accent-ink is the picked accent with its OKLCH
+   * lightness capped at 0.50 (relative color — hue and
+   * chroma are the user's, only the wash is removed; every
+   * preset was measured in-browser at this cap: all clear
+   * 4.5:1 on BOTH the ground and white). The default silver
+   * becomes a graphite silver (#5f636b: 5.27:1 on the
+   * ground, 6.03:1 on white); a saturated pick stays itself,
+   * deepened (orange #f2760a → #ad3500: 5.59 / 6.39). The
+   * color-mix line above the oklch() line is the fallback
+   * for engines without relative-color support (silver →
+   * #5d6778, 5.00 / 5.71 — still past the bar). --accent-base keeps a
+   * root-resolved copy of the picked accent so dark-ground
+   * chrome in light mode (the navy rail, the teaser band)
+   * can restore the bright original on its own containers
+   * (see railsteel-light.css). */
+  --accent-base: var(--accent);
+  --accent-ink: color-mix(in srgb, var(--accent) 60%, #16233a);
+  --accent-ink: oklch(from var(--accent) min(l, 0.5) c h);
+  /* Root-composed meaning roles re-point at the ink: these
+   * tokens substitute at :root, so naming the ink here is
+   * what carries it into links, info text, the focus outline
+   * and the panel-header seam everywhere. */
+  --link: var(--accent-ink);
+  --info: var(--accent-ink);
+  --focus-outline: 2px solid var(--accent-ink);
+  --panel-header-edge: color-mix(in srgb, var(--accent-ink) 55%, transparent);
+}
+
+/* ---- LIGHT MODE — container scope ----
+ * The audited container list, re-pointed at the palette's own
+ * family via the `--lv-*` tokens (defined in the block above;
+ * nothing else writes them, so they arrive from :root
+ * intact). Net effect: text inside panels, cards and chrome
+ * resolves the Silver Grey family exactly as the live preview
+ * rendered it. Dark mode is untouched — the selector is
+ * [data-mode="light"] gated. */
+:root[data-mode="light"] :is(
+  .tv-panel, .tv-tabpanel, .tv-auth-panel, .tv-rail, .tv-topbar, .tv-header,
+  .tv-modal, .tv-toast, .tv-menu, .tv-bell-pop, .tv-add-menu,
+  .tv-block-frame, .tv-table-wrap, .tv-part-row,
+  .tv-mkt-card, .tv-stat-card, .tv-module-tile,
+  .tv-dealer-agent, .tv-reports-builder, .tv-reports-saved,
+  .tv-report-kind, .tv-msg-row, .tv-msg-bubble, .tv-forum-cat,
+  .tv-forum-thread, .tv-forum-post, .tv-agent-panel, .tv-agent-card,
+  .tv-plan-box, .tv-share-box, .tv-danger-zone, .tv-roadmap-entry,
+  .tv-theme-current, .tv-sp-acct, .tv-sp-note,
+  .tv-claim-headbar, .tv-footer, .tv-empty, .tv-alert, .tv-input,
+  .tv-btn--secondary, .tv-badge, .tv-group-card,
+  .tv-upload, .tv-upload-file, .tv-appbar, .tv-framed-frame,
+  .tv-inv-list, .tv-landing-medallion
+) {
+  --text: var(--lv-text);
+  --text-muted: var(--lv-muted);
+  --placeholder: var(--lv-placeholder);
+  --ink-rgb: var(--lv-ink-rgb);
+  --text-soft: var(--lv-soft);
+  --text-stats: var(--lv-stats);
+  --text-bright: var(--lv-bright);
+  --nav-ink: var(--lv-nav);
+  --success: var(--lv-success);
+  --success-soft: var(--lv-success-soft);
+  --warning: var(--lv-warning);
+  --warning-soft: var(--lv-warning-soft);
+  --danger: var(--lv-danger);
+  --danger-soft: var(--lv-danger-soft);
+  --edge: var(--lv-edge);
+  --edge-strong: var(--lv-edge-strong);
+  --table-row-hover: var(--lv-table-hover);
+  --table-row-alt: var(--lv-table-alt);
+  --table-edge: var(--lv-table-edge);
+  --muted: var(--text-muted);
+  --border: var(--edge);
+  --panel-header-text: var(--text);
+  color: var(--text);
+}
+
+/* ---- LIGHT MODE — accent ink shadow (FIX 2, 2026-11-11) ----
+ * ThemeContext sets --accent (+ soft/strong) INLINE on <html>,
+ * so no stylesheet rule can re-value them at :root — and none
+ * should: the picked color is the identity. But a custom
+ * property declared on <body> SHADOWS the inherited inline
+ * value for every descendant, and the two kinds of accent use
+ * resolve differently:
+ *  - Tokens COMPOSED at :root from --accent (the plate family
+ *    --plate / --btn-primary-bg / --nav-active-bg, the glow
+ *    dots, the field texture) substitute ONCE at :root and
+ *    inherit as finished values — the shadow never reaches
+ *    them, so plates, glows and silver fills stay silver.
+ *  - DIRECT uses (color / border-color / background /
+ *    accent-color / fill: var(--accent) in component and
+ *    module rules, and inline styles) substitute at the USING
+ *    element — under <body> they now read the ink.
+ * That split is exactly the role split the sweep asked for:
+ * meaning (active-tab ink, links, phone numbers, stars,
+ * switch borders, quiet actions, selected fills) gets the
+ * legible ink; decoration keeps the silver. --accent-strong
+ * (inline-derived at 0.78×, 2.6:1 for silver) shadows the
+ * same way — it is a border/edge role everywhere it is used.
+ * Dark-ground containers inside light mode restore the
+ * bright accent on themselves in railsteel-light.css (the
+ * navy rail + teaser band); dark mode is untouched — this
+ * selector is [data-mode="light"] gated. */
+:root[data-mode="light"] body {
+  --accent: var(--accent-ink);
+  --accent-strong: var(--accent-ink);
+  --accent-soft: color-mix(in srgb, var(--accent-ink) 14%, transparent);
+}
+
+/* Touch density (density pass 2026-10-22): the slimmed 36px
+ * standard control is a desktop density. On coarse pointers —
+ * phones, tablets, touch laptops in touch mode — controls return
+ * to a 40px touch height so nothing gets fiddly under a thumb.
+ * Buttons/inputs read this token, so the whole control family
+ * follows from this one line. */
+@media (pointer: coarse) {
+  :root {
+    --control-height: 2.5rem;
+  }
+}

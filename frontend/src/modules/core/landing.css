@@ -1,0 +1,329 @@
+/* Landing page visuals (visual pass, 2026-10-20; Rail Steel
+ * Phase 4 translation, 2026-10-24). Scoped to the landing page's
+ * own classes only — no theme files, no shared component rules.
+ * TOKEN DISCIPLINE (Phase 3 seam): every palette color below
+ * resolves through theme tokens (surfaces, edges, inks, accent,
+ * the chrome material); the only literals are the black/white
+ * lighting poles (shadow stacks, bevel highlights, color-mix
+ * anchors) — mode-neutral, exactly the railsteel.css exception
+ * class. Asset-internal art (hero photo, product screens, group
+ * photos) is content, not palette. */
+
+/* -- Page column ----------------------------------------------- */
+.tv-landing-root {
+  display: grid;
+  gap: var(--spacing);
+  max-width: var(--max-content-width);
+  margin-inline: auto;
+  width: 100%;
+  min-width: 0;
+}
+.tv-landing-muted {
+  color: var(--text-muted);
+  margin: 0;
+}
+.tv-landing-plain {
+  margin: 0;
+}
+.tv-landing-tile-title {
+  font-weight: 700;
+  margin: 0;
+}
+
+/* -- Hero: a cinematic band the lockup plate mounts over -------
+ * The artwork lives in its own framed band at the top of the
+ * hero; its bottom edge fades into the page ground (--bg) and
+ * the lockup plate overlaps the fade (negative margin), so the
+ * brand reads as a physical plate mounted over the scene — and
+ * no text ever sits on the image itself. Phase 4: the lockup is
+ * a framed metal plate (grain, bevel, drop shadow) carrying the
+ * logo verbatim in a recess well and the wordmark on the
+ * brushed-chrome nameplate — the preview's panel-wordmark
+ * composition, at hero scale. */
+.tv-landing-hero {
+  display: grid;
+}
+.tv-landing-hero-art {
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+  overflow: hidden;
+  line-height: 0;
+}
+.tv-landing-hero-art img {
+  width: 100%;
+  height: clamp(170px, 26vw, 320px);
+  object-fit: cover;
+  object-position: center 62%;
+  display: block;
+  /* Fade the band's bottom edge into the page ground. A mask (not
+   * an overlay) so the artwork blends into whatever theme ground
+   * sits behind it. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 55%,
+    transparent 99%
+  );
+  mask-image: linear-gradient(to bottom, black 55%, transparent 99%);
+}
+.tv-landing-lockup {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  text-align: center;
+  width: min(54rem, calc(100% - var(--space-4)));
+  margin-inline: auto;
+  margin-top: -72px;
+  position: relative;
+  z-index: 1;
+  padding: var(--space-5) var(--space-4) var(--space-5);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    var(--texture-panel),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), 0 12px 28px rgb(0 0 0 / 0.6);
+}
+@media (max-width: 560px) {
+  .tv-landing-lockup {
+    margin-top: -52px;
+    padding: var(--space-4) var(--space-3);
+  }
+}
+/* The logo, verbatim, seated in a recess well. */
+.tv-landing-logo {
+  width: 112px;
+  height: 112px;
+  max-width: 40vw;
+  object-fit: contain;
+  background: var(--input-bg);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--input-shadow);
+  padding: 8px;
+}
+/* The wordmark on the chrome nameplate (screws at both ends —
+ * the preview's wordmark plate, verbatim composition). */
+.tv-landing-wordmark {
+  width: 420px;
+  max-width: 82vw;
+  height: auto;
+  background:
+    url("../../theme/assets/screw.svg") left 6px center / 10px 10px no-repeat,
+    url("../../theme/assets/screw.svg") right 6px center / 10px 10px no-repeat,
+    url("../../theme/assets/brushed-chrome.svg") center / 100% 100% no-repeat,
+    var(--chrome-gradient);
+  border: 1px solid var(--chrome-edge);
+  border-radius: var(--radius-sm);
+  padding: 8px 26px;
+}
+/* Stencil display slogan: display caps in the live accent with
+ * the preview's glow. */
+.tv-landing-slogan {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.tv-landing-tagline {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.tv-landing-herobody {
+  margin: 0;
+  color: var(--text-muted);
+  max-width: 42rem;
+}
+.tv-landing-ctas {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.tv-landing-free {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* -- App stores (settings-gated) --------------------------------
+ * The block renders only with real store URLs from the landing
+ * config; its buttons keep the operator-supplied destinations
+ * and the shared secondary (ghost-metal) treatment untouched. */
+.tv-landing-stores {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+}
+.tv-landing-stores-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.tv-landing-store-link {
+  text-decoration: none;
+}
+
+/* -- Ability tiles: a machined brand-icon medallion ------------- */
+/* The abilities grid holds exactly nine tiles: a 300px floor lands
+ * them 3x3 at desktop widths instead of the shared grid's 4+4+orphan
+ * (supervisory polish 2026-10-23). Landing-only modifier; the shared
+ * .tv-module-tiles keeps its 240px floor for Home and the merged
+ * concept page. The tiles themselves are framed metal via the
+ * railsteel .tv-module-tile treatment. */
+.tv-landing-abilities {
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+}
+.tv-landing-tile-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.tv-landing-medallion {
+  flex: 0 0 auto;
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge-strong);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.06), rgb(0 0 0 / 0.22)),
+    var(--surface-raised);
+  box-shadow: var(--bevel), inset 0 2px 5px rgb(0 0 0 / 0.4);
+  display: grid;
+  place-items: center;
+}
+
+/* -- "See the real thing" screenshot band ----------------------- */
+.tv-landing-shots-intro {
+  color: var(--text-muted);
+  margin: 0 0 var(--space-3);
+  max-width: 46rem;
+}
+.tv-landing-shots {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(430px, 100%), 1fr));
+}
+.tv-landing-shot {
+  margin: 0;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    var(--texture-panel),
+    var(--surface);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+}
+.tv-landing-shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-bottom: 1px solid var(--edge);
+}
+.tv-landing-shot figcaption {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  align-content: start;
+}
+.tv-landing-shot-title {
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* -- Who-it's-for cards: a photo header on the shared tile ------ */
+.tv-landing-group-tile {
+  padding: 0;
+  overflow: hidden;
+  gap: 0;
+}
+.tv-landing-group-photo {
+  width: 100%;
+  /* height:auto is load-bearing: the width/height attributes on
+   * the img otherwise act as a definite height in WebKit and
+   * override the aspect ratio. */
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+.tv-landing-group-body {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+/* -- Pricing: plan boxes (the preview's screwed raised box) ----- */
+/* The triple-class selector out-specifies the railsteel framed-tile
+ * background so the plan box's screwed raised stack wins. */
+[data-theme="railsteel"] .tv-module-tile.tv-landing-plan {
+  position: relative;
+  background:
+    url("../../theme/assets/screw.svg") left 10px top 10px / 11px 11px no-repeat,
+    url("../../theme/assets/screw.svg") right 10px top 10px / 11px 11px no-repeat,
+    linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(0 0 0 / 0.2)),
+    var(--texture-panel),
+    var(--surface-raised);
+  padding-top: var(--space-5);
+}
+.tv-landing-plan-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.tv-landing-price {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+.tv-landing-price-per {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* -- Trial panel body ------------------------------------------- */
+.tv-landing-trial-body {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* -- Footer strip ------------------------------------------------ */
+.tv-landing-footer {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  text-align: center;
+  padding: var(--space-3) var(--space-2);
+}
+.tv-landing-footer-links {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.tv-landing-footer-link {
+  color: var(--accent);
+}
+.tv-landing-disclaimer {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}

@@ -1,0 +1,331 @@
+
+
+/* ============ Phase 4: signed-out surfaces ============ */
+
+/* Token discipline (Phase 3 seam, continued): every palette color
+ * in this block resolves through tokens.css — surfaces, edges,
+ * inks (incl. rgb(var(--ink-rgb) / α) hairlines), the chrome
+ * material, status inks via the shared Alert rules. The only
+ * literals are the black/white lighting poles (shadow stacks,
+ * bevel highlights) — mode-neutral, the documented exception
+ * class. */
+
+/* -- Shared auth layout classes (the class form of the auth
+ * pages' former inline styles; layout + token inks only). -- */
+.tv-auth-stack {
+  display: grid;
+  gap: 0.9rem;
+}
+.tv-auth-link {
+  color: var(--accent);
+}
+.tv-auth-link-strong {
+  font-weight: 600;
+}
+.tv-auth-muted {
+  color: var(--text-muted);
+}
+.tv-auth-muted0 {
+  color: var(--text-muted);
+  margin: 0;
+}
+.tv-auth-intro {
+  color: var(--text-muted);
+  margin-top: 0;
+}
+.tv-auth-note-sm {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 0.9rem;
+}
+.tv-auth-forgot-row {
+  margin: -0.3rem 0 0;
+  text-align: right;
+  font-size: 0.9rem;
+}
+.tv-auth-foot-note {
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.tv-auth-back {
+  text-align: center;
+  margin-top: 1rem;
+}
+.tv-auth-back-link {
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+.tv-auth-legal {
+  text-align: center;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+.tv-auth-legal-link {
+  color: var(--text-muted);
+}
+.tv-auth-legal-sep {
+  color: var(--text-muted);
+}
+.tv-auth-inline-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  color: var(--text-muted);
+  margin: 0;
+}
+.tv-auth-acct-number {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  margin: 0.75rem 0;
+}
+.tv-auth-mt {
+  margin-top: 0.5rem;
+}
+.tv-auth-agree {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0.6rem 0 0;
+}
+.tv-auth-free-note {
+  color: var(--text-muted);
+  margin: var(--space-3) 0 0;
+  text-align: center;
+}
+.tv-auth-text-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+}
+.tv-auth-social {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.tv-auth-or {
+  margin: 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+.tv-auth-social-btn {
+  display: block;
+}
+/* Sign-up first paint (sweep 10-F7): while the gate posture is
+ * read, the optional code field's seat is held by this skeleton
+ * in the field's own register — the label and hint are the real
+ * ones, the well is the shared skeleton pulse at input height. */
+.tv-auth-gate-skel-input {
+  height: var(--control-height);
+}
+/* The never-sold promise at the sign-up email field (sweep
+ * 10-F16): the Downloads twin's treatment — quiet line, "Ever."
+ * as a bold dark word on an orange chip (.dl-ever in
+ * downloads.css is the original) — with ONE deliberate
+ * departure, per the brief's verbatim spec ("Ever." in bold +
+ * the orange/amber accent, BOTH themes): the chip's ground is
+ * the palette's brand orange (#f2760a, tokens.css's default
+ * --accent), NOT var(--accent) — in the light theme the user's
+ * accent resolves to silver, which rendered the chip grey and
+ * lost the promise's accent entirely (caught in this lane's
+ * light screenshot). The Downloads twin keeps var(--accent);
+ * flagged in the lane INDEX as a sibling to align. */
+.tv-auth-promise {
+  margin: -0.3rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.tv-auth-ever {
+  background: #f2760a;
+  color: #14100b;
+  font-weight: 700;
+  padding: 0.05em 0.32em;
+  border-radius: 0.2em;
+}
+
+/* -- B. The signed-out header strip: a metal strip carrying a
+ * brand plate (recess logo tile + wordmark, both verbatim art)
+ * on the left; on the right the accent gear chooser + language
+ * switcher ride the token treatments, "Log in" is a ghost-metal
+ * button and "Sign up" the accent plate (the shared .tv-btn
+ * primary). The phone block below is the audit P1 fix surface:
+ * the strip wraps instead of overflowing at 402px. -- */
+.tv-header-login {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-height-sm);
+  padding: 0.3rem 0.9rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge-strong);
+  background: var(--btn-secondary-bg);
+  color: var(--text);
+  box-shadow: var(--bevel);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.tv-header-login:hover {
+  border-color: var(--accent);
+}
+@media (max-width: 760px) {
+  [data-theme="railsteel"] .tv-header--strip .tv-wordmark-img {
+    height: 1.3rem;
+  }
+  [data-theme="railsteel"] .tv-header--strip .tv-header-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    row-gap: 0.35rem;
+    min-width: 0;
+  }
+  [data-theme="railsteel"] .tv-header--strip .tv-locale-select {
+    min-width: 0;
+    /* A-08 (Deep Audit Round 2 fix R3): the 7.75rem cap that
+     * used to live here clipped the select's longest option
+     * ("Automatic (from my country / browser)") to "Automatic ("
+     * at phone widths. The strip is stacked at this width (the
+     * plate has its own row, the actions wrap), so nothing can
+     * overlap — the select sizes to its longest option like
+     * every other select. */
+    max-width: none;
+  }
+  [data-theme="railsteel"] .tv-header--strip .tv-header-actions .tv-btn--primary {
+    padding-inline: 0.8rem;
+  }
+}
+
+/* -- C. Auth pages: the vault panel. AuthLayout's Panel becomes
+ * a framed vault card — grain, bevel, deep shadow, and corner
+ * bolts as the hero element (the modal's bolt composition).
+ * Fields are the global recess wells (Phase 1); labels are the
+ * global stencil caps with NO dash (Phase 1); submit buttons
+ * are the global plates; error/success ride the Alert tones
+ * (status inks). -- */
+[data-theme="railsteel"] .tv-auth-panel {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--panel);
+  border: 1px solid var(--edge);
+  border-image: none;
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), var(--shadow-lg);
+  padding: var(--space-5);
+}
+[data-theme="railsteel"] .tv-auth-panel::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  pointer-events: none;
+  background:
+    url("../assets/screw.svg") left top / 12px 12px no-repeat,
+    url("../assets/screw.svg") right top / 12px 12px no-repeat,
+    url("../assets/screw.svg") left bottom / 12px 12px no-repeat,
+    url("../assets/screw.svg") right bottom / 12px 12px no-repeat;
+  opacity: 0.9;
+  z-index: 1;
+}
+[data-theme="railsteel"] .tv-auth-panel .tv-panel-header {
+  margin: calc(var(--space-5) * -1) calc(var(--space-5) * -1) var(--spacing);
+  padding: 0.7rem var(--space-5) 0.6rem;
+}
+
+/* -- D. Public pages: Legal (terms/privacy), Roadmap, 404,
+ * Find an Agent. Headings already take display caps from the
+ * .tv-main h1/h2 rules; this block adds the readable measure,
+ * framed panels, the chrome table header on the legal tables,
+ * and metal link/CTA seating. 404 renders in BOTH chromes
+ * (signed-in shell / signed-out strip) — its treatment is
+ * chrome-independent, keyed on its own hook class only. -- */
+[data-theme="railsteel"] .tv-legal .tv-panel,
+[data-theme="railsteel"] .tv-roadmap .tv-panel {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-image: none;
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+}
+[data-theme="railsteel"] .tv-legal .tv-panel p,
+[data-theme="railsteel"] .tv-legal .tv-panel li {
+  max-width: 75ch;
+}
+[data-theme="railsteel"] .tv-legal table th {
+  background: var(--table-header-bg);
+  color: var(--table-header-text);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.42), 0 -1px 1px rgb(0 0 0 / 0.28);
+}
+[data-theme="railsteel"] .tv-roadmap-entry {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(0 0 0 / 0.16)),
+    var(--surface-raised);
+  box-shadow: var(--bevel);
+}
+.tv-notfound-code {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+[data-theme="railsteel"] .tv-notfound .tv-panel {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-image: none;
+  box-shadow: var(--bevel), var(--shadow-lg);
+}
+
+/* Find an Agent (anonymous-reachable): the search card and the
+ * result cards in the language. There is NO map on this surface
+ * in production — territories are text + stamped badges (the
+ * only Leaflet map is the dealer-side ServiceAreaEditor), so
+ * there is no map frame to treat here; if a map lands, its
+ * frame takes the .tv-agent-card frame and the tiles stay
+ * external imagery. */
+[data-theme="railsteel"] .tv-agent-panel {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-image: none;
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+}
+[data-theme="railsteel"] .tv-agent-card {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.16)),
+    url("../assets/steelworn2/grain-worn2.webp"),
+    var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--bevel), 0 3px 10px rgb(0 0 0 / 0.55);
+  padding: var(--space-3) var(--space-4);
+}
+.tv-agent-photo {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--edge);
+  box-shadow: var(--bevel);
+  flex: 0 0 auto;
+}

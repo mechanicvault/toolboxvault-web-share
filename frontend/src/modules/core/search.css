@@ -1,0 +1,193 @@
+/* Global search results LIST (list standard, 2026-11-02): under
+   each group heading, a true list — a header row and one row per
+   result, facts in columns, the dealer directory's grid-table
+   pattern. The column set is per group: the status column (--s,
+   busy work #2), the detail column (--d) and the matching-text
+   column (--e) join the base title · kind pair only when that
+   group's results carry them. Structural rules live here
+   unscoped so every theme gets the columns; the group heading
+   keeps its theme-scoped styling. Tables scroll sideways inside
+   their wrap on narrow screens rather than crushing the
+   columns. */
+
+.tv-search-tablewrap {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-search-thead,
+.tv-search-trow {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(100px, 0.5fr);
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 340px;
+  padding: 0.55rem 0.25rem;
+}
+
+.tv-search-table--d .tv-search-thead,
+.tv-search-table--d .tv-search-trow {
+  grid-template-columns:
+    minmax(190px, 1.1fr) minmax(95px, 0.5fr) minmax(150px, 1fr);
+  min-width: 520px;
+}
+
+.tv-search-table--e .tv-search-thead,
+.tv-search-table--e .tv-search-trow {
+  grid-template-columns:
+    minmax(190px, 1.1fr) minmax(95px, 0.5fr) minmax(210px, 1.3fr);
+  min-width: 560px;
+}
+
+.tv-search-table--d.tv-search-table--e .tv-search-thead,
+.tv-search-table--d.tv-search-table--e .tv-search-trow {
+  grid-template-columns:
+    minmax(180px, 1.1fr) minmax(90px, 0.5fr) minmax(140px, 0.9fr)
+    minmax(200px, 1.3fr);
+  min-width: 740px;
+}
+
+/* Status column (busy work #2, 2026-11-10): a third fact that
+   joins when a group's results carry statuses, seated after
+   Kind and ahead of detail/match — the same conditional-column
+   pattern, one grid per combination actually reachable. */
+.tv-search-table--s .tv-search-thead,
+.tv-search-table--s .tv-search-trow {
+  grid-template-columns:
+    minmax(190px, 1.1fr) minmax(95px, 0.5fr) minmax(230px, 0.7fr);
+  min-width: 665px;
+}
+
+.tv-search-table--s.tv-search-table--d .tv-search-thead,
+.tv-search-table--s.tv-search-table--d .tv-search-trow {
+  grid-template-columns:
+    minmax(180px, 1.1fr) minmax(90px, 0.5fr) minmax(230px, 0.65fr)
+    minmax(140px, 0.9fr);
+  min-width: 825px;
+}
+
+.tv-search-table--s.tv-search-table--e .tv-search-thead,
+.tv-search-table--s.tv-search-table--e .tv-search-trow {
+  grid-template-columns:
+    minmax(180px, 1.1fr) minmax(90px, 0.5fr) minmax(230px, 0.65fr)
+    minmax(200px, 1.3fr);
+  min-width: 845px;
+}
+
+.tv-search-table--s.tv-search-table--d.tv-search-table--e .tv-search-thead,
+.tv-search-table--s.tv-search-table--d.tv-search-table--e .tv-search-trow {
+  grid-template-columns:
+    minmax(170px, 1.05fr) minmax(85px, 0.45fr) minmax(230px, 0.6fr)
+    minmax(130px, 0.85fr) minmax(190px, 1.25fr);
+  min-width: 1005px;
+}
+
+.tv-search-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+/* The whole row is the door to the record (the click-through
+   doctrine the stacked panels carried). */
+.tv-search-trow {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+  text-decoration: none;
+  color: inherit;
+}
+
+.tv-search-trow:hover .tv-search-cell-title,
+.tv-search-trow:focus-visible .tv-search-cell-title {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Grouping chrome (2026-11-04): each group renders inside a
+ * Panel — the panel's own bottom edge closes the list, so the
+ * last row drops its hairline rather than leaving a stray rule
+ * floating above the panel's bottom padding. */
+.tv-search-table .tv-search-trow:last-child {
+  border-bottom: none;
+}
+
+/* Group lead + icon chip (owner, 2026-11-04: "each box should
+ * have a little icon with the header text"). The chip mirrors
+ * the Overview stat tiles' .tv-stat-icon language — framed
+ * square, surface fill, glyph in the accent — sized down to
+ * the panel header band it lives in. The lead keeps the glyph
+ * and the group name on one line, the count after them. */
+.tv-search-group-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.tv-search-group-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--bevel);
+  color: var(--accent);
+}
+
+.tv-search-cell-title {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  min-width: 0;
+  /* Inventory rows lead with the item's thumbnail (or the shared
+   * no-photo placeholder) — the title text truncates beside it. */
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.tv-search-title-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tv-search-cell-kind {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tv-search-cell-status {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.tv-search-cell-detail {
+  font-size: var(--font-size-sm);
+  color: var(--text-soft);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tv-search-cell-excerpt {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

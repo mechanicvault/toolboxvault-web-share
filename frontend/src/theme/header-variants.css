@@ -1,0 +1,50 @@
+/* ===================== Header variants =====================
+ * HeaderVariantContext pins `data-header-variant` on <html> to
+ * "yoke" (the variant era ended 2026-10-19; the setter is a
+ * no-op and the switcher UI is gone). The Layout 2 — Steel
+ * conversion then replaced the variant header markup (the
+ * .tv-hv-* beam/brand/flank composition) with the current
+ * AppShell shell, so every rule for that markup — Pendant and
+ * Yoke alike — was dead and was removed in the Deep Audit
+ * Round 2 CSS-budget round (2026-10-26).
+ *
+ * What remains is the part of the Yoke contract the live shell
+ * still consumes:
+ *  - the classic header plate stands down under the pinned
+ *    variant (AppShell's .tv-header floats on the page ground);
+ *  - --header-h per breakpoint, read by surfaces.css for the
+ *    sidebar's sticky offset and scroll parking.
+ * ============================================================ */
+
+/* The classic header plate (bar background, bottom edge, Steel's
+ * plate border/shadow) stands down: variant hardware floats on
+ * the page ground, as in the lab scenes. */
+[data-header-variant="yoke"] .tv-header {
+  background: transparent;
+  border: none;
+  border-bottom: none;
+  box-shadow: none;
+}
+
+/* ===================== YOKE ====================== */
+html[data-header-variant="yoke"] {
+  /* 116px → 106px (density pass 2026-10-22): the head's top air
+   * and the beam slim one step; the brand plate keeps its full
+   * lockup, a half-step smaller. --header-h moves in lockstep —
+   * the sidebar's sticky offset reads it. */
+  --header-h: 6.625rem; /* 106px */
+}
+
+/* ================= Below 1024px (tablet) =================== */
+@media (max-width: 1023px) {
+  html[data-header-variant="yoke"] {
+    --header-h: 6.125rem; /* 98px — density pass 2026-10-22 */
+  }
+}
+
+/* ====================== Phones (≤560px) ===================== */
+@media (max-width: 560px) {
+  html[data-header-variant="yoke"] {
+    --header-h: 5.25rem; /* 84px — density pass 2026-10-22 */
+  }
+}

@@ -1,0 +1,453 @@
+/* Flyers (2026-11-06): the source blocks (current flyer +
+   history list), the post form, and the photo-scan corner
+   editor. Shared by the flyer page and the dealer page's
+   Flyers tab. (The flyer page's header is the shared
+   SectionPageHeader kit since the 2026-11-09 conformance
+   lane — .tv-secpage-* in theme/surfaces.css.) */
+
+.flyer-error {
+  color: var(--danger);
+}
+
+.flyer-source {
+  display: grid;
+  gap: 1rem;
+}
+
+.flyer-current {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.flyer-current-thumb {
+  width: 7.5rem;
+  max-width: 40vw;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.flyer-current-thumb.is-openable {
+  cursor: pointer;
+}
+
+.flyer-current-meta {
+  flex: 1 1 220px;
+  min-width: 0;
+  display: grid;
+  gap: 0.35rem;
+  justify-items: start;
+}
+
+.flyer-current-meta p {
+  margin: 0;
+}
+
+.flyer-current-label {
+  font-weight: 600;
+}
+
+.flyer-none {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* History: a TRUE list — one flyer per row, facts in columns. */
+.flyer-list {
+  display: grid;
+}
+
+.flyer-row {
+  display: grid;
+  grid-template-columns: minmax(10rem, 2fr) minmax(9rem, 1.2fr) minmax(5rem, 0.6fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0.25rem;
+  border-bottom: 1px solid var(--edge);
+}
+
+/* List heads wear the kit's header-row treatment (the
+   widget kit's .tv-widget-row--head / inventory's thead:
+   stencil caps, tracked, display font) — sentence-case muted
+   heads read QUIETER than the rows under them, the hierarchy
+   inversion sweep 06-F8 named. */
+.flyer-row-head {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--edge-strong);
+}
+
+/* A history row is clickable too (it opens the preview
+   window), so it carries the same main highlight effect as
+   the company list's rows. */
+.flyer-row[role="button"] {
+  cursor: pointer;
+  transition: box-shadow 120ms ease;
+}
+
+.flyer-row[role="button"]:hover,
+.flyer-row[role="button"]:focus-visible {
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.flyer-row-main {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.flyer-row-thumb {
+  width: 2.2rem;
+  height: 2.8rem;
+  object-fit: cover;
+  object-position: top;
+  border: 1px solid var(--edge-strong);
+  border-radius: 0.25rem;
+  background: #fff;
+}
+
+.flyer-row-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flyer-row-actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* The company tab's list (flyer page, 2026-11-09): a TRUE
+   list — one flyer per row, facts in columns: flyer ·
+   posted by · edition window · pages · upload date ·
+   actions. */
+.flyer-company-row {
+  display: grid;
+  grid-template-columns:
+    minmax(12rem, 2fr) minmax(8rem, 1fr) minmax(9rem, 1.1fr)
+    minmax(4.5rem, 0.5fr) minmax(7.5rem, 0.9fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0.25rem;
+  border-bottom: 1px solid var(--edge);
+}
+
+.flyer-company-row-head {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--edge-strong);
+}
+
+/* The headline cell's text stack: the label row (label +
+   state pills) over the phone-only fact line. */
+.flyer-row-text {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.flyer-row-labelrow {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.flyer-row-sub {
+  display: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+/* The labelled door that opens the full flyer, in words —
+   a plain link-styled button so it can live inside a
+   clickable row without nesting an anchor in a button. */
+.flyer-open-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.flyer-open-btn:hover {
+  text-decoration: underline;
+}
+
+.flyer-open-short {
+  display: none;
+}
+
+/* A flyer whose window has closed says so (sweep 06-F7) —
+   the Current pill's muted sibling. */
+.flyer-ended-badge {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid var(--edge-strong);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+/* A flyer row is clickable (it opens the preview window), so
+   it carries the main highlight effect — the accent outline
+   and a soft glow, no lift, as list rows do. */
+.flyer-company-row[role="button"] {
+  cursor: pointer;
+  transition: box-shadow 120ms ease;
+}
+
+.flyer-company-row[role="button"]:hover,
+.flyer-company-row[role="button"]:focus-visible {
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.flyer-current-badge {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+/* The name over a poster's own manage block inside a company
+   tab — whose spot the settings + post form belong to. */
+.flyer-spot-title {
+  margin: 0;
+}
+
+/* The poster's manage door (sweep B6 F1): the door button
+   sits at rest; the settings + post form open under it. */
+.flyer-manage-block {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+}
+
+.flyer-manage-body {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.flyer-settings,
+.flyer-form {
+  display: grid;
+  gap: 0.8rem;
+  justify-items: start;
+}
+
+.flyer-settings .tv-field,
+.flyer-form .tv-field {
+  width: 100%;
+  max-width: 34rem;
+}
+
+.flyer-routes {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.flyer-window {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.flyer-manage {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.flyer-manage-title {
+  margin: 0;
+}
+
+/* -- the photo-scan editor ------------------------------------ */
+
+.flyer-file-input {
+  display: none;
+}
+
+.flyer-scan {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+  width: 100%;
+}
+
+.flyer-scan-help {
+  margin: 0;
+  color: var(--text-muted);
+  max-width: 40rem;
+}
+
+.flyer-scan-pages {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.flyer-scan-page {
+  display: grid;
+  gap: 0.4rem;
+  justify-items: start;
+  width: 16rem;
+  max-width: 80vw;
+}
+
+.flyer-scan-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  touch-action: none;
+}
+
+.flyer-scan-quad {
+  fill: color-mix(in srgb, var(--accent) 18%, transparent);
+  stroke: var(--accent);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.flyer-scan-handle {
+  fill: var(--accent);
+  stroke: #fff;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  cursor: grab;
+}
+
+.flyer-scan-warn {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+/* -- Home widget teasers + dealer tab -------------------------- */
+
+.flyer-widget-thumb {
+  width: 2rem;
+  height: 2.6rem;
+  object-fit: cover;
+  object-position: top;
+  border: 1px solid var(--edge-strong);
+  border-radius: 0.25rem;
+  background: #fff;
+}
+
+.flyer-widget-cell {
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.flyer-dealer-blocks {
+  display: grid;
+  /* One minmax(0, 1fr) column: an auto column sized itself
+     to the widest block's max-content and pushed the dealer
+     Flyers tab ~20px sideways at 390px (sweep B6 F4). */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.flyer-dealer-blocks > *,
+.flyer-source {
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  /* Dealer history list on a phone (coordinator gate fix):
+     the company list's phone split — headline · actions stay
+     as columns and the window + pages columns fold into the
+     fact line under the headline (rendered by FlyerRow as
+     .flyer-row-sub). The squeezed three-column split let the
+     ENDED pill ride over the date cell and collapsed the
+     headline to a stub ("B."). */
+  .flyer-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .flyer-row > :nth-child(2),
+  .flyer-row > :nth-child(3) {
+    display: none;
+  }
+
+  /* The headline wraps in full instead of ellipsizing, and
+     the state pill stacks under it via .flyer-row-labelrow's
+     wrap below — no pill ever sits on the dates again. */
+  .flyer-row .flyer-row-label {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  /* Company list on a phone: headline · actions stay as
+     columns; posted-by, window, pages and upload date fold
+     into the fact line under the headline (never away —
+     sweep B6 F6/F4), so no fact needs sideways room. */
+  .flyer-company-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .flyer-company-row > :nth-child(2),
+  .flyer-company-row > :nth-child(3),
+  .flyer-company-row > :nth-child(4),
+  .flyer-company-row > :nth-child(5) {
+    display: none;
+  }
+
+  .flyer-row-sub {
+    display: block;
+  }
+
+  /* Let the state pill wrap under the headline instead of
+     squeezing the headline into an ellipsis stub. */
+  .flyer-row-labelrow {
+    flex-wrap: wrap;
+    row-gap: 0.2rem;
+  }
+
+  .flyer-open-long {
+    display: none;
+  }
+
+  .flyer-open-short {
+    display: inline;
+  }
+}

@@ -1,0 +1,142 @@
+/* Notifications page LIST (list standard, 2026-11-02): a true
+   list — one notification per row under a header row, facts in
+   columns (status · notification · category · time · actions),
+   the dealer directory's grid-table pattern. Structural rules
+   live here unscoped so every theme gets the columns; the bell
+   popup keeps its own theme-scoped anatomy. The table scrolls
+   sideways inside its wrap on narrow screens rather than
+   crushing the columns — the wrap may shrink below the table's
+   min-content width. The page runs full width (not the narrow
+   measure): notification texts are whole messages and wrap
+   inside their column, and the wide column is what keeps those
+   rows short — at the narrow measure a paragraph-length notice
+   wrapped to 188px, taller than the 130px panel it replaced
+   (live-measured in this fix's proof). */
+
+.tv-notif-tablewrap {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.tv-notif-thead,
+.tv-notif-trow {
+  display: grid;
+  grid-template-columns:
+    minmax(92px, 0.55fr) minmax(260px, 1.6fr) minmax(110px, 0.7fr)
+    minmax(150px, 0.85fr) 9.5rem;
+  gap: 0.4rem 1rem;
+  align-items: start;
+  min-width: 840px;
+  padding: 0.55rem 0.25rem;
+}
+
+.tv-notif-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-notif-trow {
+  border-bottom: 1px solid var(--border, rgba(127, 127, 127, 0.2));
+}
+
+.tv-notif-cell-status {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding-top: 0.15rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.tv-notif-trow:not([data-read]) .tv-notif-cell-status {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* The unread marker: the bell dot's colors, carried here so the
+   page's status column reads the same in every theme. */
+.tv-notif-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.tv-notif-dot[data-tone="success"] {
+  background: var(--success);
+}
+
+.tv-notif-dot[data-tone="warning"] {
+  background: var(--warning);
+}
+
+.tv-notif-dot[data-tone="danger"] {
+  background: var(--danger);
+}
+
+.tv-notif-trow[data-read] .tv-notif-dot {
+  background: var(--edge-strong);
+}
+
+/* The row body is the click-through door (marks read + navigates
+   to the source), exactly the bell popup's button behavior. The
+   title sits over the text inside the one Notification column;
+   the text wraps — it IS the message, so it is never truncated. */
+.tv-notif-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.tv-notif-main:hover .tv-notif-title {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.tv-notif-title {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+}
+
+.tv-notif-trow[data-read] .tv-notif-title {
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.tv-notif-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-soft);
+  overflow-wrap: anywhere;
+}
+
+.tv-notif-cell-cat {
+  padding-top: 0.15rem;
+  font-size: 0.9rem;
+}
+
+.tv-notif-cell-time {
+  padding-top: 0.15rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.tv-notif-cell-actions {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}

@@ -1,0 +1,48 @@
+# Toolbox Vault API dependencies — pinned to exact versions.
+# A routine deploy must never silently pull a new major/minor release;
+# bump versions deliberately, one at a time, with the test suite green.
+fastapi==0.142.2
+uvicorn[standard]==0.54.0
+sqlalchemy==2.1.3
+alembic==1.20.0
+pydantic==2.13.5
+pydantic[email]==2.13.5
+pydantic-settings==2.15.0
+argon2-cffi==25.1.0
+pyjwt==2.15.1
+# Required by PyJWT to verify RS256 signatures (Google id_tokens).
+cryptography==50.0.2
+psycopg[binary]==3.3.6
+python-multipart==0.0.32
+boto3==1.43.108
+# Payments (Stripe). The integration ships DARK: with no
+# STRIPE_SECRET_KEY in the server .env every payment surface
+# answers "not configured" and nothing is chargeable.
+stripe==16.0.0
+# Runtime HTTP client for OAuth provider calls (code exchange,
+# Facebook token validation). Previously dev-only (Starlette TestClient).
+httpx==0.28.1
+# Report exports (reports module, 2026-10-19): XLSX workbooks and
+# the server-side PDF. Both pure-Python and pinned like everything
+# else; nothing else in the stack generates office/PDF files.
+openpyxl==3.1.5
+fpdf2==2.8.3
+# QR codes for the server-side for-sale poster PDF (wave 2,
+# 2026-10-20): pure Python on top of Pillow (already pulled by
+# the reports photo normalization path). The bin-label QRs stay
+# client-side; only the poster renders on the server.
+qrcode==8.2
+# Pillow arrives via fpdf2 today; pinned explicitly because the
+# poster + reports photo paths import it directly. Version is
+# the one the deployed stack already runs — do not downgrade.
+Pillow==13.0.0
+# Flyer module (2026-11-06): page-photo scanning (paper-edge
+# detection + perspective correction) and PDF first-page
+# thumbnails. opencv-python-headless is the proven open-source
+# scanner the side note's feasibility check named; it pulls
+# numpy with it (pinned here so the pair never drifts apart).
+# pypdfium2 (PDFium, BSD) renders PDF pages to images and
+# counts pages — no system packages needed.
+opencv-python-headless==4.10.0.84
+numpy==2.5.4
+pypdfium2==4.30.0

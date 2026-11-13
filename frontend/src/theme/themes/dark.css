@@ -1,0 +1,61 @@
+/* Dark theme — dark industrial. Built for low-light shop environments.
+ * Near-black surfaces, strong contrast, restrained depth. */
+
+[data-theme="dark"] {
+  --bg: #0d0f12;
+  --surface: #14171c;
+  --surface-raised: #1d2129;
+  --panel: #171a20;
+  --texture: none;
+  --texture-panel: none;
+
+  --edge: #2b303a;
+  --edge-strong: #454d5c;
+  --bevel: inset 0 1px 0 rgb(255 255 255 / 0.05);
+  --shadow: 0 2px 6px rgb(0 0 0 / 0.5), 0 10px 24px rgb(0 0 0 / 0.42);
+  --shadow-lg: 0 24px 56px rgb(0 0 0 / 0.68), 0 4px 14px rgb(0 0 0 / 0.55);
+  /* Depth on a near-black ground (owner, 2026-10-18: the same
+   * floating-shadow idea as Light, "to give it some depth"): a
+   * deeper, layered black shadow under panels — and, because a
+   * shadow alone barely reads on black, a faint 1px light edge
+   * along each panel's top (--panel-edge-top) so the surface
+   * catches a rim of light and reads as lifted. */
+  --panel-shadow:
+    0 2px 5px rgb(0 0 0 / 0.55), 0 14px 30px rgb(0 0 0 / 0.5),
+    0 28px 56px rgb(0 0 0 / 0.35);
+  --panel-edge-top: inset 0 1px 0 rgb(255 255 255 / 0.09);
+  --shadow-raised:
+    0 10px 20px rgb(0 0 0 / 0.55), 0 28px 56px rgb(0 0 0 / 0.62);
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+
+  --text: #e9ecf1;
+  --text-muted: #9aa3b2;
+  --text-on-accent: #101216;
+  --placeholder: #646e7d;
+
+  --success: #35c06f;
+  --success-soft: rgb(53 192 111 / 0.14);
+  --warning: #e8b93e;
+  --warning-soft: rgb(232 185 62 / 0.14);
+  --danger: #e56a6a;
+  --danger-soft: rgb(229 106 106 / 0.14);
+
+  --input-bg: #12151a;
+  --input-shadow: inset 0 1px 3px rgb(0 0 0 / 0.35);
+  --btn-secondary-bg: #1d2129;
+
+  --table-header-bg: #12151a;
+  --table-header-text: #9aa3b2;
+  --table-row-hover: #1d2129;
+  --table-row-alt: rgb(255 255 255 / 0.02);
+
+  --header-bg: #14171c;
+  --sidebar-bg: #11141a;
+  --nav-item-hover-bg: #1d2129;
+  --nav-active-bg: var(--accent-soft);
+
+  --overlay: rgb(0 0 0 / 0.65);
+  --scrollbar-thumb: #454d5c;
+}

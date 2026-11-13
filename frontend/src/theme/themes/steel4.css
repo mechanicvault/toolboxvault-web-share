@@ -1,0 +1,730 @@
+/* STEEL — "Worn Workhorse" — the refined Steel 4, promoted to the
+ * canonical "steel" theme id (owner pick + restructure, 2026-10-17).
+ * This file keeps its steel4.css name for history; it serves
+ * [data-theme="steel"], and its scoped construction below is shared
+ * with Steel Light ([data-theme="steellight"], steellight.css) —
+ * identical chamfered geometry, different kit + ink tokens.
+ * Maximum battle wear, kept trustworthy: the app-style panel and
+ * nameplate kits with the wear overlay driven through them in PIL,
+ * a worn field, the heaviest plate wear of the family on primary
+ * buttons, and warm-shifted dark surfaces. The door that has survived
+ * decades of shop life — and still seals. Legibility is untouched:
+ * text, glow and status colors are the family standards.
+ * Machinery: themes/steel.css (shared construction).
+ *
+ * REFINEMENT PASS (owner's four adjustments, 2026-10-17):
+ *  1. Panels A LITTLE lighter — measured, not eyeballed: well grain
+ *     +18% mean luminance, frame stock +18%, nameplate stock +17%
+ *     (assets/steelworn2/, the worn kit re-derived with a gain stage;
+ *     see SLICES.md). Surface tokens lifted ~+20% to match. The worn
+ *     character and text contrast are unchanged.
+ *  2. CHAMFERED panel frames + CENTER CHAMFER — every panel/modal
+ *     frame is built from the new steelworn2 chamfered kit: corner
+ *     gussets whose silhouette is the app master's own 45°-clipped
+ *     corner (alpha from the master's silhouette + a matching
+ *     clip-path on the panel), and fixed center-step pieces on the
+ *     long edges (header band, headerless top rail, bottom rail) —
+ *     a trapezoid step into the panel that breaks the straight run,
+ *     the owner's reference-frame geometry at panel scale.
+ *  3. Per-panel ILLUMINATION — SUPERSEDED by the foundation reset
+ *     (below): the glow dots read as bulbs stuck on the surface.
+ *     Panels are now lit by a soft interior wash + a lit hairline
+ *     under the header band; the center steps are pure geometry.
+ *  4. Metal buttons MORE WORN — secondary buttons, icon buttons,
+ *     nav plates and inactive tabs get the owner's wear overlay
+ *     (steelworn2/btnwear.webp) overlay-blended over their plate
+ *     material, plus a brighter machined edge catch. The orange
+ *     accent plates are untouched (already right).
+ * Panels too narrow for a center piece: the center layers are
+ * width-capped (min() against panel width) and the runs close up —
+ * below ~180px the corners and material carry the frame, the same
+ * graceful degradation the family already used. The popover menu
+ * keeps the previous steelworn kit (it is a small surface; the
+ * chamfered kit's min-size fallback). */
+
+[data-theme="steel"] {
+  --bg: #070605;
+  /* The page field is the owner's background design on a fixed body
+   * layer (steel.css) — the shell wears no texture of its own. */
+  --texture: none;
+  --surface: #181511;
+  --surface-raised: #1b1714;
+  --panel: #161310;
+  --texture-panel:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(0 0 0 / 0.18)),
+    url("../assets/steelworn2/grain-worn2.webp");
+  --grain-img: url("../assets/steelworn2/grain-worn2.webp");
+
+  --edge: #423a31;
+  --edge-strong: #6a6053;
+  --text: #e6e1d8;
+  --text-muted: #9a927f;
+  /* Lifted twice: from #655d50 (~3.4:1 — under AA), then again when
+   * the wells themselves were lifted to panel parity (see FORM
+   * WELLS below). #a79a85 holds ~4.8:1 on the lifted well. */
+  --placeholder: #a79a85;
+
+  /* Soft interior illumination (foundation reset — replaces the
+   * glow-dot bulbs): --panel-glow is the wash stack surfaces.css
+   * paints on panels the scoped ::after rules below don't cover
+   * (the accent-edge variant); the rules themselves compose the same
+   * --wash-* tokens plus the lit hairline under the header band. */
+  --wash-top: color-mix(in srgb, var(--accent) 13%, transparent);
+  --wash-edge: color-mix(in srgb, var(--accent) 7%, transparent);
+  --wash-line: color-mix(in srgb, var(--accent) 50%, transparent);
+  --panel-glow:
+    linear-gradient(180deg, var(--wash-top), transparent 52%),
+    linear-gradient(90deg, var(--wash-edge), transparent 16%, transparent 84%, var(--wash-edge));
+  --input-bg: #0a0908;
+  /* Form wells join the plate family (see the FORM WELLS section
+   * at the end of this file): the border is the thin machined rim
+   * face; the groove + inner lip + single soft recess live in the
+   * shadow stack, replacing the shared steel-family recess. The rim
+   * face was lifted (#5c5344 → #77694f) with the wells so the edge
+   * reads as machined steel against the panel, not a dark seam. */
+  --input-edge: #77694f;
+  --input-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.62),
+    inset 0 1px 0 rgb(255 255 255 / 0.13),
+    inset 0 2px 6px rgb(0 0 0 / 0.5),
+    inset 0 -1px 0 rgb(255 255 255 / 0.04);
+  /* Retired for Steel inputs (the FORM WELLS rules below no longer
+   * paint these pieces); kept defined for history. */
+  --in-l: url("../assets/steelapp/in-l.webp");
+  --in-m: url("../assets/steelapp/in-m.webp");
+  --in-r: url("../assets/steelapp/in-r.webp");
+  --in-cap-w: 30px;
+  /* Was 2.7rem to clear the retired cap art; the family inset is
+   * back now that the caps are gone (SearchBar re-declares its own
+   * icon clearance in the FORM WELLS section). */
+  --input-pad-l: 1.05rem;
+  /* WORN PLATES (owner rule 2026-10-17, final pass): every metal
+   * button is a WORN PLATE — matte, scuffed, edge-worn; smooth
+   * gradients that read as polished sheen are a defect. The old
+   * wear overlay (steelapp/btng-m) was a nearly featureless plate
+   * in its middle, so the smooth gradient under it showed through
+   * as sheen. The new wear map (assets/steelbtn/wear.webp) is the
+   * luminance of the owner's proof plate — dense scratches, pits
+   * and edge-rub across the whole face — overlay-blended over a
+   * FLATTENED painted-metal base (below), so the wheel recolors
+   * the plate and the wear shows through at any hue. */
+  --btn-plate-art: url("../assets/steelbtn/wear.webp");
+  --btn-plate-art-opacity: 1;
+  --btn-wear-img: url("../assets/steelbtn/wear.webp");
+  /* The accent plate, matte: painted metal is near-uniform color
+   * with a machined top catch and a worn darker base — NOT a
+   * chrome ramp. No radial highlight blob (that was the sheen). */
+  --accent-plate-bg:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 74%, #ffffff) 0%,
+      color-mix(in srgb, var(--accent) 92%, #ffffff) 24%,
+      var(--accent-plate-mid, var(--accent)) 56%,
+      color-mix(in srgb, var(--accent) 86%, #000000) 88%,
+      color-mix(in srgb, var(--accent) 72%, #000000) 100%);
+  --accent-plate-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 -2px 0 rgb(0 0 0 / 0.45),
+    0 10px 22px -8px color-mix(in srgb, var(--accent) 62%, transparent),
+    0 4px 10px -2px rgb(0 0 0 / 0.5);
+  --btn-primary-hover-bg:
+    url("../assets/screw.svg") left 7px center / 11px 11px no-repeat,
+    url("../assets/screw.svg") right 7px center / 11px 11px no-repeat,
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 68%, #ffffff) 0%,
+      color-mix(in srgb, var(--accent) 88%, #ffffff) 24%,
+      color-mix(in srgb, var(--accent) 96%, #ffffff) 56%,
+      color-mix(in srgb, var(--accent) 82%, #000000) 88%,
+      color-mix(in srgb, var(--accent) 70%, #000000) 100%);
+  /* Gunmetal plate stock: the owner's proof gunmetal plate as a
+   * finished texture (bolts patched out — bolts stay separate
+   * screw decals, as on the primary). One stock for every dark
+   * metal control: secondary buttons, icon buttons, nav items,
+   * inactive tabs. */
+  --gun-plate-bg:
+    url("../assets/steelbtn/gun.webp") center / 100% 100% no-repeat,
+    linear-gradient(180deg, #26241f, #16140f);
+  --btn-secondary-bg: var(--gun-plate-bg);
+  /* Nav items sit a shade darker than loose buttons (gun stock
+   * under a grime tint); the hover lifts the tint. */
+  --nav-item-bg:
+    linear-gradient(180deg, rgb(10 9 8 / 0.34), rgb(10 9 8 / 0.5)),
+    var(--gun-plate-bg);
+  --nav-item-hover-bg:
+    linear-gradient(180deg, rgb(10 9 8 / 0.16), rgb(10 9 8 / 0.3)),
+    var(--gun-plate-bg);
+
+  --plate:
+    url("../assets/screw.svg") left 8px center / 13px 13px no-repeat,
+    url("../assets/screw.svg") right 8px center / 13px 13px no-repeat,
+    var(--np-mid) center / 100% 100% no-repeat,
+    linear-gradient(180deg, #2a2724, #1a1815);
+  --panel-header-text: #e3ded4;
+  --panel-header-text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.65),
+    0 -1px 0 rgb(0 0 0 / 0.4);
+  --header-ink: #eae5da;
+  --header-ink-shadow:
+    0 1px 2px rgb(0 0 0 / 0.6),
+    0 -1px 0 rgb(0 0 0 / 0.35);
+  --header-hover-bg: rgb(255 255 255 / 0.11);
+  --btn-secondary-ink: #eae5da;
+  --btn-secondary-ink-shadow: 0 1px 2px rgb(0 0 0 / 0.55);
+  --modal-close-ink: #e3ded4;
+  --modal-close-hover-ink: #ffffff;
+  --modal-close-hover-bg: rgb(255 255 255 / 0.11);
+  --table-header-text: #e3ded4;
+  --table-row-hover: #221e1a;
+  --table-edge: #2b2721;
+  --sidebar-bg: #0b0a09;
+  --scrollbar-thumb: #4d463c;
+
+  --np-dot-size: 10px;
+  --np-dot-lf: 0.3571;
+  --np-dot-rf: 0.3571;
+
+  /* Legacy kit assignment — UNCHANGED on purpose: the popover menu
+   * (and only it) still builds from the steelworn kit; the chamfered
+   * construction below uses the --pk4-* sources. */
+  --pk-hl: url("../assets/steelworn/pk-hl.webp");
+  --pk-hm: url("../assets/steelworn/pk-hm.webp");
+  --pk-hr: url("../assets/steelworn/pk-hr.webp");
+  --pk-tl: url("../assets/steelworn/pk-tl.webp");
+  --pk-tm: url("../assets/steelworn/pk-tm.webp");
+  --pk-tr: url("../assets/steelworn/pk-tr.webp");
+  --pk-el: url("../assets/steelworn/pk-el.webp");
+  --pk-er: url("../assets/steelworn/pk-er.webp");
+  --pk-bl: url("../assets/steelworn/pk-bl.webp");
+  --pk-br: url("../assets/steelworn/pk-br.webp");
+  --pk-blrun: url("../assets/steelworn/pk-blrun.webp");
+  --pk-brun: url("../assets/steelworn/pk-brun.webp");
+  --pk-bm: url("../assets/steelworn/pk-bm.webp");
+  /* Nameplate: the lighter, harder-worn steelworn2 derivation (it is
+   * also the app-header / table-header / metal-button stock). */
+  --np-l: url("../assets/steelworn2/pk4-np-l.webp");
+  --np-mid: url("../assets/steelworn2/pk4-np-m.webp");
+  --np-r: url("../assets/steelworn2/pk4-np-r.webp");
+
+  /* ---- Chamfered-kit geometry (adjustment 2) ----
+   * Same thin-wall law as the family (rails stay --pk-sw/--pk-th);
+   * the corners become gusset plates, sized by these clamps. The
+   * clip cut tracks the art's own chamfer leg (45 source px of the
+   * 260-wide corner crops ≈ 0.18 × corner width at every clamp). */
+  --pk4-cw: clamp(30px, 4.2vw, 42px);   /* corner gusset width */
+  --pk4-td: clamp(15px, 2.1vw, 21px);   /* headerless top zone depth */
+  --pk4-bd: clamp(19px, 2.7vw, 27px);   /* bottom zone depth */
+  --pk4-nw: clamp(64px, 10vw, 96px);    /* center step piece width */
+  --pk4-nwe: min(var(--pk4-nw), 36%);   /* center width, top/bottom */
+  --pk4-nwe2: min(var(--pk4-nw), 40%);  /* center width, header band */
+  --pk4-tab: clamp(6px, 1vw, 9px);      /* header step tab drop */
+  --pk4-cut: clamp(5px, 0.75vw, 8px);   /* silhouette chamfer leg */
+
+  /* Chamfered kit sources (assets/steelworn2/ — SLICES.md). */
+  --pk4-hl: url("../assets/steelworn2/pk4-hl.webp");
+  --pk4-hr: url("../assets/steelworn2/pk4-hr.webp");
+  --pk4-hm: url("../assets/steelworn2/pk4-hm.webp");
+  --pk4-hc: url("../assets/steelworn2/pk4-hc.webp");
+  --pk4-tl: url("../assets/steelworn2/pk4-tl.webp");
+  --pk4-tr: url("../assets/steelworn2/pk4-tr.webp");
+  --pk4-tm: url("../assets/steelworn2/pk4-tm.webp");
+  --pk4-tc: url("../assets/steelworn2/pk4-tc.webp");
+  --pk4-el: url("../assets/steelworn2/pk4-el.webp");
+  --pk4-er: url("../assets/steelworn2/pk4-er.webp");
+  --pk4-bl: url("../assets/steelworn2/pk4-bl.webp");
+  --pk4-br: url("../assets/steelworn2/pk4-br.webp");
+  --pk4-blrun: url("../assets/steelworn2/pk4-blrun.webp");
+  --pk4-brun: url("../assets/steelworn2/pk4-brun.webp");
+  --pk4-bm: url("../assets/steelworn2/pk4-bm.webp");
+}
+
+/* ==================================================================
+ * Chamfered construction — scoped to Steel + Steel Light (the two
+ * variants built on the chamfered kit; identical geometry, tokens
+ * differ). Everything else Steel lives in steel.css (shared).
+ * ================================================================== */
+
+/* The silhouette itself is chamfered: the panel's box (background,
+ * border, shadow, art) is clipped to the same 45° corners the art
+ * carries, so the page field shows through the cut — a real clipped
+ * corner, not a square box with a picture on it. */
+[data-theme="steel"] .tv-panel:not(.tv-panel--accent-edge),
+[data-theme="steellight"] .tv-panel:not(.tv-panel--accent-edge),
+[data-theme="steel"] .tv-modal,
+[data-theme="steellight"] .tv-modal {
+  clip-path: polygon(
+    var(--pk4-cut) 0, calc(100% - var(--pk4-cut)) 0, 100% var(--pk4-cut),
+    100% calc(100% - var(--pk4-cut)), calc(100% - var(--pk4-cut)) 100%,
+    var(--pk4-cut) 100%, 0 calc(100% - var(--pk4-cut)), 0 var(--pk4-cut));
+}
+/* Content clears the gusset zones (top/bottom), rails on the sides.
+ * (The shared :has(> header) rule still zeroes the top padding —
+ * the header band replaces the top zone on headered panels.) */
+[data-theme="steel"] .tv-panel,
+[data-theme="steellight"] .tv-panel {
+  padding: calc(var(--pk4-td) + 0.9rem) calc(var(--pk-sw) + 0.95rem)
+    calc(var(--pk4-bd) + 0.9rem);
+}
+/* F1-21 (Round F): the Steel line is scoped to the CLASSIC
+ * .tv-panel — unscoped it also padded Steel's VaultPanel section
+ * (same variant class), offsetting the Costs panel 16px against
+ * its siblings. The Steel Light line is untouched: Steel Light
+ * renders the classic panel, where this padding is the design. */
+[data-theme="steel"] .tv-panel.tv-panel--accent-edge,
+[data-theme="steellight"] .tv-panel--accent-edge {
+  padding: var(--spacing);
+}
+/* Title text starts past the corner gusset + its bolt. */
+[data-theme="steel"] .tv-panel .tv-panel-header,
+[data-theme="steellight"] .tv-panel .tv-panel-header {
+  padding: 0 calc(var(--pk4-cw) + 0.6rem);
+}
+
+/* Headerless frame: gusset corners, thin rim runs split around the
+ * center step, side rails, deep bottom zone with its center step. */
+[data-theme="steel"] .tv-panel::before,
+[data-theme="steellight"] .tv-panel::before {
+  background-image:
+    var(--pk4-tl), var(--pk4-tr), var(--pk4-tm), var(--pk4-tm),
+    var(--pk4-tc), var(--pk4-el), var(--pk4-er), var(--pk4-bl),
+    var(--pk4-br), var(--pk4-blrun), var(--pk4-brun), var(--pk4-bm);
+  background-position:
+    left top, right top, left var(--pk4-cw) top, right var(--pk4-cw) top,
+    center top, left top var(--pk4-td), right top var(--pk4-td),
+    left bottom, right bottom, left var(--pk4-cw) bottom,
+    right var(--pk4-cw) bottom, center bottom;
+  background-size:
+    var(--pk4-cw) var(--pk4-td), var(--pk4-cw) var(--pk4-td),
+    calc(50% - var(--pk4-nwe) / 2 - var(--pk4-cw)) var(--pk-th),
+    calc(50% - var(--pk4-nwe) / 2 - var(--pk4-cw)) var(--pk-th),
+    var(--pk4-nwe) var(--pk4-td),
+    var(--pk-sw) calc(100% - var(--pk4-td) - var(--pk4-bd)),
+    var(--pk-sw) calc(100% - var(--pk4-td) - var(--pk4-bd)),
+    var(--pk4-cw) var(--pk4-bd), var(--pk4-cw) var(--pk4-bd),
+    calc(50% - var(--pk4-nwe) / 2 - var(--pk4-cw)) var(--pk4-bd),
+    calc(50% - var(--pk4-nwe) / 2 - var(--pk4-cw)) var(--pk4-bd),
+    var(--pk4-nwe) var(--pk4-bd);
+}
+/* Headered frame (panels with a header + all modals): the band gets
+ * chamfered caps and its own center step, tab dropped into the well
+ * margin; everything below the band is the headerless stack. */
+[data-theme="steel"] .tv-panel:has(> .tv-panel-header)::before,
+[data-theme="steellight"] .tv-panel:has(> .tv-panel-header)::before,
+[data-theme="steel"] .tv-modal::before,
+[data-theme="steellight"] .tv-modal::before {
+  background-image:
+    var(--pk4-hl), var(--pk4-hr), var(--pk4-hm), var(--pk4-hm),
+    var(--pk4-hc), var(--pk4-el), var(--pk4-er), var(--pk4-bl),
+    var(--pk4-br), var(--pk4-blrun), var(--pk4-brun), var(--pk4-bm);
+  background-position:
+    left top, right top, left var(--pk4-cw) top, right var(--pk4-cw) top,
+    center top, left top var(--pk-hh), right top var(--pk-hh),
+    left bottom, right bottom, left var(--pk4-cw) bottom,
+    right var(--pk4-cw) bottom, center bottom;
+  background-size:
+    var(--pk4-cw) var(--pk-hh), var(--pk4-cw) var(--pk-hh),
+    calc(50% - var(--pk4-nwe2) / 2 - var(--pk4-cw)) var(--pk-hh),
+    calc(50% - var(--pk4-nwe2) / 2 - var(--pk4-cw)) var(--pk-hh),
+    var(--pk4-nwe2) calc(var(--pk-hh) + var(--pk4-tab)),
+    var(--pk-sw) calc(100% - var(--pk-hh) - var(--pk4-bd)),
+    var(--pk-sw) calc(100% - var(--pk-hh) - var(--pk4-bd)),
+    var(--pk4-cw) var(--pk4-bd), var(--pk4-cw) var(--pk4-bd),
+    calc(50% - var(--pk4-nwe) / 2 - var(--pk4-cw)) var(--pk4-bd),
+    calc(50% - var(--pk4-nwe) / 2 - var(--pk4-cw)) var(--pk4-bd),
+    var(--pk4-nwe) var(--pk4-bd);
+}
+
+/* Per-panel illumination (FOUNDATION RESET 2026-10-17 — replaces
+ * adjustment 3's glow-dot bulbs): the center steps are pure geometry
+ * again (their painted glow seats are deleted, sockets dark), and
+ * every panel well is lit by a SOFT INTERIOR WASH — an accent-tinted
+ * overlay strongest just beneath the header band (or the top rail on
+ * headerless panels) and softly at the well edges, fading to
+ * nothing toward the center. The content reads as LIT, not tinted:
+ * at the default accent the wash adds ~+13 luminance at the well's
+ * top edge, ~+3 at quarter height, 0 past the middle (measured —
+ * see the reset report). Headered panels and modals also get a thin
+ * LIT HAIRLINE directly under the header band — the reference
+ * panel's top light line — in place of the header dot. All light is
+ * live --accent via the --wash-* tokens; Steel Light re-values the
+ * tokens, the construction is identical. */
+[data-theme="steel"] .tv-panel:not(.tv-panel--accent-edge)::after,
+[data-theme="steellight"] .tv-panel:not(.tv-panel--accent-edge)::after {
+  background:
+    linear-gradient(180deg, var(--wash-top), transparent 52%),
+    linear-gradient(90deg, var(--wash-edge), transparent 16%, transparent 84%, var(--wash-edge));
+}
+[data-theme="steel"] .tv-panel:not(.tv-panel--accent-edge):has(> .tv-panel-header)::after,
+[data-theme="steellight"] .tv-panel:not(.tv-panel--accent-edge):has(> .tv-panel-header)::after {
+  background:
+    linear-gradient(180deg,
+      transparent calc(var(--pk-hh) - 1px),
+      var(--wash-line) var(--pk-hh),
+      transparent calc(var(--pk-hh) + 9px)),
+    linear-gradient(180deg,
+      transparent var(--pk-hh),
+      var(--wash-top) calc(var(--pk-hh) + 4px),
+      transparent calc(var(--pk-hh) + 55%)),
+    linear-gradient(90deg, var(--wash-edge), transparent 16%, transparent 84%, var(--wash-edge));
+}
+/* Modals wear the same lit hairline + wash under their band. */
+[data-theme="steel"] .tv-modal::after,
+[data-theme="steellight"] .tv-modal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg,
+      transparent calc(var(--pk-hh) - 1px),
+      var(--wash-line) var(--pk-hh),
+      transparent calc(var(--pk-hh) + 9px)),
+    linear-gradient(180deg,
+      transparent var(--pk-hh),
+      var(--wash-top) calc(var(--pk-hh) + 4px),
+      transparent calc(var(--pk-hh) + 55%));
+}
+
+/* Metal-button wear (adjustment 4): blend the wear tile over the
+ * plate stock, and cut a brighter machined edge into every gunmetal
+ * control. Labels keep the family ink + shadow — fully readable. */
+[data-theme="steel"] .tv-btn--secondary,
+[data-theme="steellight"] .tv-btn--secondary,
+[data-theme="steel"] .tv-icon-btn,
+[data-theme="steellight"] .tv-icon-btn {
+  background-blend-mode: overlay, normal, normal;
+}
+[data-theme="steel"] .tv-nav-item,
+[data-theme="steellight"] .tv-nav-item {
+  background-blend-mode: overlay, normal, normal, normal;
+}
+[data-theme="steel"] .tv-btn--secondary,
+[data-theme="steellight"] .tv-btn--secondary,
+[data-theme="steel"] .tv-icon-btn,
+[data-theme="steellight"] .tv-icon-btn,
+[data-theme="steel"] .tv-nav-item,
+[data-theme="steellight"] .tv-nav-item,
+[data-theme="steel"] .tv-tab,
+[data-theme="steellight"] .tv-tab {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 -2px 0 rgb(0 0 0 / 0.55),
+    inset 1px 0 0 rgb(255 255 255 / 0.08),
+    inset -1px 0 0 rgb(0 0 0 / 0.4);
+}
+/* Inactive segmented tabs wear the same scuffed plate (the active
+ * tab stays the accent plate, per the shared construction). */
+[data-theme="steel"] .tv-tab,
+[data-theme="steellight"] .tv-tab {
+  background:
+    url("../assets/steelworn2/btnwear.webp") center / 300px 300px repeat,
+    linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(0 0 0 / 0.2)),
+    var(--grain-img),
+    linear-gradient(180deg, #28231e, #16130f);
+  background-blend-mode: overlay, normal, normal, normal;
+}
+[data-theme="steel"] .tv-tab:hover,
+[data-theme="steellight"] .tv-tab:hover {
+  background:
+    url("../assets/steelworn2/btnwear.webp") center / 300px 300px repeat,
+    linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(0 0 0 / 0.14)),
+    var(--grain-img),
+    linear-gradient(180deg, #322b25, #1b1712);
+  background-blend-mode: overlay, normal, normal, normal;
+}
+
+/* ==================================================================
+ * WORN PLATES — Steel only (Steel Light keeps its bright kit).
+ * The gun stock above is a FINISHED texture: the overlay blend
+ * modes the shared rules set for the old btnwear-over-nameplate
+ * stacks must not blend it against its own fallback gradient.
+ * ================================================================== */
+[data-theme="steel"] .tv-btn--secondary,
+[data-theme="steel"] .tv-icon-btn,
+[data-theme="steel"] .tv-nav-item {
+  background-blend-mode: normal;
+}
+/* Inactive tabs wear the same gun plate as the other dark metal
+ * controls (replaces the btnwear-over-grain stack for Steel). */
+[data-theme="steel"] .tv-tab {
+  background: var(--gun-plate-bg);
+  background-blend-mode: normal;
+}
+[data-theme="steel"] .tv-tab:hover {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.02)),
+    var(--gun-plate-bg);
+  background-blend-mode: normal;
+}
+/* The wear map rides the accent plate on the controls that have
+ * no ::after wear hook of their own (the primary button's hook is
+ * the shared construction in steel.css, fed by --btn-plate-art):
+ * active tab, active nav item — both get the same overlay layer
+ * the primary wears, so every accent plate is equally distressed. */
+[data-theme="steel"] .tv-tab[aria-selected="true"],
+[data-theme="steel"] .tv-nav-item.is-active {
+  position: relative;
+}
+[data-theme="steel"] .tv-tab[aria-selected="true"]::after,
+[data-theme="steel"] .tv-nav-item.is-active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--btn-wear-img) center / 100% 100% no-repeat;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+/* Active nav item: the same wear map ALSO rides in the item's own
+ * background stack, overlay-blended against the plate gradient.
+ * The ::after pass alone measured identical to the primary button's
+ * per pixel, yet the item still read as bare gradient in the live
+ * render: it is the widest accent plate on the page and the only
+ * one with no screw decals, so the lone pseudo-layer's wear did not
+ * carry the face. Painting the map into the background makes the
+ * wear atomic with the plate (it cannot lag or lift off the face)
+ * and brings the item's visible distress level with the primary's.
+ * Scoped to .is-active: inactive items keep the finished gun stock
+ * with blend normal (worn-plates override above). The ::before
+ * glow bar and the active under-glow (box-shadow) are untouched. */
+[data-theme="steel"] .tv-nav-item.is-active {
+  background:
+    var(--btn-wear-img) center / 100% 100% no-repeat,
+    var(--nav-active-bg);
+  background-blend-mode: overlay, normal;
+}
+/* Danger is a worn RUST plate: the status red desaturated toward
+ * brick, flattened to a painted range, wear map over it — same
+ * construction family as the accent plate, never a smooth ramp. */
+[data-theme="steel"] .tv-btn--danger {
+  background:
+    var(--btn-wear-img) center / 100% 100% no-repeat,
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--danger) 72%, #b4502e) 0%,
+      color-mix(in srgb, var(--danger) 58%, #7c3520) 52%,
+      color-mix(in srgb, var(--danger) 45%, #571f12) 100%);
+  background-blend-mode: overlay, normal;
+  border-color: color-mix(in srgb, var(--danger) 40%, #2a0f08);
+  text-transform: uppercase;
+}
+/* Pagination's current page is an accent plate too — wear included. */
+[data-theme="steel"] .tv-pagination .tv-btn.is-current {
+  background:
+    var(--btn-wear-img) center / 100% 100% no-repeat,
+    var(--accent-plate-bg);
+  background-blend-mode: overlay, normal;
+}
+
+/* ==================================================================
+ * FORM WELLS — Steel only (owner ruling 2026-10-17: "make those
+ * panels the same as the ones we finally used for the rest").
+ * The old wells painted the steelapp milled-trough ART (the
+ * --in-l/--in-m/--in-r cap strips from steel.css's shared rules)
+ * into every field; the chunky beveled cap ends rendered as odd
+ * bright/dark blocks and clashed with the VaultPanel frame around
+ * them. That construction is replaced with the settled plate
+ * language, at input scale:
+ *   - a THIN MACHINED RIM: the 1px border (a brighter steel face
+ *     via --input-edge) + an inset groove and inner lip carried
+ *     in --input-shadow (see the token block above);
+ *   - the panel family's OCTAGONAL CHAMFER, clipped at 5px — the
+ *     same silhouette cut the panels wear (--pk4-cut's geometry,
+ *     fixed at input scale);
+ *   - a CALM DARK WELL inside: the grain stock under one soft
+ *     inset recess shadow — no multi-step bevel blocks;
+ *   - PANEL PARITY (owner report 2026-10-17: the wells "look very
+ *     dark" — black slots against the panel): measured on the
+ *     rendered page, the well centres sat at L≈31.5 against the
+ *     VaultPanel well's L≈48.9. A soft material veil now rides
+ *     over the grain (second background layer) lifting the wells
+ *     to L≈47 — the same material family as the panel interior —
+ *     while the inset recess keeps the seat readable;
+ *   - the small live GLOW TICK at the left edge, kept from the
+ *     old wells (softened values unchanged; it stretches on
+ *     focus, as before);
+ *   - FOCUS = accent EDGE LIGHT: the outer focus ring cannot
+ *     survive the chamfer clip, so the light moves to the edge
+ *     itself — a lit border tone + a thin inset accent line and
+ *     a spill from the tick. Lit, not tinted: the well stays dark.
+ * Steel Light keeps its art wells untouched — every rule here is
+ * scoped [data-theme="steel"] and replaces the shared
+ * [data-theme^="steel"] background stacks wholesale.
+ * ================================================================== */
+[data-theme="steel"] .tv-input {
+  height: var(--control-height);
+  clip-path: polygon(
+    5px 0, calc(100% - 5px) 0, 100% 5px,
+    100% calc(100% - 5px), calc(100% - 5px) 100%,
+    5px 100%, 0 calc(100% - 5px), 0 5px);
+  background-image:
+    linear-gradient(180deg, transparent 8%,
+      color-mix(in srgb, var(--accent) 44%, transparent) 36%,
+      color-mix(in srgb, var(--accent) 38%, #ffffff) 50%,
+      color-mix(in srgb, var(--accent) 44%, transparent) 64%,
+      transparent 92%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.085), rgb(255 255 255 / 0.055)),
+    var(--grain-img);
+  background-position: left center, 0 0, 0 0;
+  background-size: 3px 46%, 100% 100%, 512px 512px;
+  background-repeat: no-repeat, no-repeat, repeat;
+}
+[data-theme="steel"] select.tv-input {
+  background-image:
+    linear-gradient(180deg, transparent 8%,
+      color-mix(in srgb, var(--accent) 44%, transparent) 36%,
+      color-mix(in srgb, var(--accent) 38%, #ffffff) 50%,
+      color-mix(in srgb, var(--accent) 44%, transparent) 64%,
+      transparent 92%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.085), rgb(255 255 255 / 0.055)),
+    var(--grain-img),
+    linear-gradient(45deg, transparent 48%, var(--text-muted) 48%, var(--text-muted) 52%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, var(--text-muted) 48%, var(--text-muted) 52%, transparent 52%);
+  background-position:
+    left center, 0 0, 0 0,
+    right 0.95rem center, right 0.65rem center;
+  background-size: 3px 46%, 100% 100%, 512px 512px, 6px 6px, 6px 6px;
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat, no-repeat;
+}
+/* Focus: the tick stretches (as it did over the art wells) and
+ * the rim lights — inset accent line + tick spill, no outer ring
+ * (the chamfer clip would eat it) and no wash over the well. */
+[data-theme="steel"] .tv-input:focus {
+  background-size: 3px 78%, 100% 100%, 512px 512px;
+  border-color: color-mix(in srgb, var(--accent) 72%, #ffffff);
+  box-shadow:
+    var(--input-shadow),
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent),
+    inset 4px 0 8px -3px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+[data-theme="steel"] select.tv-input:focus {
+  background-size: 3px 78%, 100% 100%, 512px 512px, 6px 6px, 6px 6px;
+}
+/* Deep audit F3-09: keyboard focus ALSO speaks the one shared
+ * language — the token outline — on top of Steel's inset accent
+ * line above, so a keyboard user crossing from a button to an
+ * input in Steel sees the same focus treatment as everywhere
+ * else (mouse focus keeps the inset-only treatment). */
+[data-theme="steel"] .tv-input:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+}
+[data-theme="steel"] .tv-input--invalid:focus {
+  border-color: var(--danger);
+  box-shadow:
+    var(--input-shadow),
+    inset 0 0 0 1px color-mix(in srgb, var(--danger) 60%, transparent);
+}
+/* SearchBar keeps the icon clearance its component declares —
+ * steel's old 2.7rem pad-l (cap-art clearance) used to override
+ * it as a side effect; with the caps gone the component value
+ * stands again. */
+[data-theme="steel"] .tv-search .tv-input {
+  padding-left: 2.3rem;
+}
+
+/* Field labels are plain stencil caps in Steel — the short accent
+ * hairline the steel-family base paints after the label text
+ * (steel.css .tv-field-label::after) is removed (owner, 2026-10-17:
+ * "remove that orange dash next to the wording on those lines, it
+ * looks bad and makes the lines get doubled up"). content:none means
+ * the pseudo box is never generated; the label's own height and the
+ * filter-grid label block below are untouched, so box alignment is
+ * exactly as verified. (Steel Light originally kept the family
+ * treatment; the same fix was later applied there too, in
+ * steellight.css, under the standing cross-impact rule.) */
+[data-theme="steel"] .tv-field-label::after {
+  content: none;
+}
+
+/* ==================================================================
+ * CONTROL GEOMETRY — one exact height, one shared label block
+ * (owner report 2026-10-17: the Inventory filter boxes "are not
+ * lined up"). Measured on the rendered page, two defects:
+ *   1. The shared .tv-input sets only min-height, so a control's
+ *      height floats on its content metrics (UA-dependent — a
+ *      select and an input can land on different heights). Steel
+ *      pins the exact token height instead: inputs and selects
+ *      share --control-height BY CONSTRUCTION. Textarea keeps its
+ *      auto height + taller min-height.
+ *   2. In the filter grid, the steel stencil labels wrap unevenly
+ *      at grid-column width — "CATEGORY" takes one line, "MIN
+ *      REPLACEMENT" two — and each box hangs directly under its
+ *      own label, stepping the row by one label line (18px).
+ *      Fields in a .tv-filter-fields grid reserve the SAME
+ *      two-line label block for every label, bottom-aligned so
+ *      the label-to-box gap is identical for all of them; the
+ *      boxes then share one top line and one bottom line.
+ * ================================================================== */
+[data-theme="steel"] .tv-input--sm {
+  height: var(--control-height-sm);
+}
+[data-theme="steel"] textarea.tv-input {
+  height: auto;
+}
+/* The lifted rim face (#77694f) is brighter than the shared
+ * --edge-strong hover tone, so hover brightens from the rim token
+ * instead of darkening toward it. */
+[data-theme="steel"] .tv-input:hover:not(:disabled):not(:focus) {
+  border-color: color-mix(in srgb, var(--input-edge) 78%, #ffffff);
+}
+[data-theme="steel"] .tv-filter-fields .tv-field-label {
+  min-height: calc(var(--font-size-xs) * var(--line-height) * 2);
+  align-items: flex-end;
+}
+
+/* ==================================================================
+ * GROUP PICKER ROWS — the input-well family, NOT plates (owner,
+ * 2026-10-17: the tier picker "looks bad — whatever that metal
+ * plate backgrounds are look bad"). The plate construction (gun
+ * stock / accent plate + wear map + under-glow + stencil-on-plate
+ * ink) is REMOVED. The rows wear the approved well construction at
+ * row scale, mirroring .tv-input above: grain stock under the
+ * material veil, the thin machined rim in --input-edge, the recess
+ * in --input-shadow, the family's 5px octagonal chamfer. A picked
+ * row lights its edge exactly like a focused input — lit accent
+ * border + thin inset accent line — over a faint accent tint, and
+ * the face stays a calm dark well (ink stays the standard text
+ * tones; the checkbox carries the filled selected mark).
+ * ================================================================== */
+[data-theme="steel"] .tv-group-card {
+  clip-path: polygon(
+    5px 0, calc(100% - 5px) 0, 100% 5px,
+    100% calc(100% - 5px), calc(100% - 5px) 100%,
+    5px 100%, 0 calc(100% - 5px), 0 5px);
+  background-color: var(--input-bg);
+  background-image:
+    linear-gradient(180deg, rgb(255 255 255 / 0.085), rgb(255 255 255 / 0.055)),
+    var(--grain-img);
+  background-size: 100% 100%, 512px 512px;
+  background-repeat: no-repeat, repeat;
+  border-color: var(--input-edge);
+  box-shadow: var(--input-shadow);
+}
+[data-theme="steel"] .tv-group-card:hover {
+  border-color: color-mix(in srgb, var(--input-edge) 78%, #ffffff);
+}
+/* The chamfer clip would eat an outer focus ring, so — exactly as
+ * with the inputs — the focus light moves to an inset line. */
+[data-theme="steel"] .tv-group-card:focus-within {
+  box-shadow:
+    var(--input-shadow),
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+[data-theme="steel"] .tv-group-card.is-selected {
+  /* The tint rides as a translucent layer over the grain (the
+   * grain tile is opaque, so a background-color tint under it
+   * would never show). */
+  background-image:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 17%, transparent),
+      color-mix(in srgb, var(--accent) 11%, transparent)),
+    linear-gradient(180deg, rgb(255 255 255 / 0.085), rgb(255 255 255 / 0.055)),
+    var(--grain-img);
+  border-color: color-mix(in srgb, var(--accent) 72%, #ffffff);
+  box-shadow:
+    var(--input-shadow),
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+[data-theme="steel"] .tv-group-card-title {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

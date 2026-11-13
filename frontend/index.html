@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en" data-theme="generic">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Toolbox Vault — the tool inventory built by a mechanic, for mechanics. Document every tool with photos, serials, and values; be ready for insurance claims, repairs, and recovery. Free to start."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Toolbox Vault" />
+    <meta property="og:title" content="Toolbox Vault — Organize. Protect. Recover." />
+    <meta
+      property="og:description"
+      content="Every tool documented, provable, and recoverable: inventory, insurance-ready records, guided claims, dealer network, and reports. Free to start — no card required."
+    />
+    <meta property="og:url" content="https://toolboxvault.com/" />
+    <!-- The share card (owner order, 2026-11-08): a designed
+         1200x630 card (scripts/make-og-cards.py) — the old
+         og:image was the square badge art, which share
+         renderers center-cropped into a zoomed wrench mess. -->
+    <meta property="og:image" content="https://toolboxvault.com/brand/og-card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Toolbox Vault — Organize. Protect. Recover." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://toolboxvault.com/brand/og-card.png" />
+    <meta name="twitter:title" content="Toolbox Vault — Organize. Protect. Recover." />
+    <meta
+      name="twitter:description"
+      content="The tool inventory built by a mechanic, for mechanics. Free to start — no card required."
+    />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=oct1" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=oct1" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=oct1" />
+    <!-- The header emblem's asset, warmed with the document
+         (sweep 10-F10): the brand mark is on every page's first
+         paint, so its 27KB face should arrive with the shell,
+         never race it on a cold cache. -->
+    <link rel="preload" as="image" type="image/webp" href="/brand/logo-256.webp" />
+    <title>Toolbox Vault</title>
+    <!-- CSP WARNING (deep audit F4-04): the inline boot script below
+         is hash-pinned in frontend/nginx.conf.template (script-src
+         'sha256-…'). ANY edit to the script body — even whitespace —
+         changes its hash and browsers will refuse to run it.
+         Recompute the sha256 of the exact script text and update the
+         template in the same commit. -->
+    <script>
+      // Boot theme (deep audit F1-01): apply the saved theme to
+      // <html> BEFORE first paint so the boot shell below renders
+      // in the user's own theme instead of flashing the default.
+      // Mirrors ThemeContext's storage key; the app re-resolves
+      // authoritatively on mount.
+      try {
+        var savedTheme = localStorage.getItem("tv-theme");
+        if (["generic", "dark", "steel", "steellight"].indexOf(savedTheme) >= 0) {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch (e) {}
+    </script>
+    <style>
+      /* Boot shell (deep audit F1-01): a static frame painted by
+       * the browser the moment the HTML arrives — header bar,
+       * sidebar column, content skeletons — so no navigation or
+       * reload ever opens on a blank grey void while the app
+       * bundle loads. React's first render replaces it wholesale.
+       * Colours are the themes' own --bg/--surface/--edge values,
+       * repeated here because the theme stylesheet itself has not
+       * loaded yet; this block is pre-theme plumbing, not a theme. */
+      .tv-boot {
+        --boot-bg: #e8ebef;
+        --boot-surface: #e4e9ef;
+        --boot-edge: #d9dde3;
+        --boot-text: #232a35;
+        min-height: 100vh;
+        background: var(--boot-bg);
+        color: var(--boot-text);
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      [data-theme="dark"] .tv-boot {
+        --boot-bg: #0d0f12;
+        --boot-surface: #14171c;
+        --boot-edge: #2b303a;
+        --boot-text: #e9ecf1;
+      }
+      [data-theme="steel"] .tv-boot {
+        --boot-bg: #07080a;
+        --boot-surface: #12151a;
+        --boot-edge: #333842;
+        --boot-text: #e2e6ec;
+      }
+      [data-theme="steellight"] .tv-boot {
+        --boot-bg: #97917f;
+        --boot-surface: #a09a8b;
+        --boot-edge: #8d8776;
+        --boot-text: #232019;
+      }
+      .tv-boot-header {
+        height: 4rem;
+        background: var(--boot-surface);
+        border-bottom: 1px solid var(--boot-edge);
+        display: flex;
+        align-items: center;
+        padding: 0 1.25rem;
+        font-weight: 800;
+        font-size: 1.0625rem;
+      }
+      .tv-boot-body {
+        display: flex;
+        align-items: stretch;
+      }
+      .tv-boot-side {
+        width: 232px;
+        flex: 0 0 232px;
+        background: var(--boot-surface);
+        border-right: 1px solid var(--boot-edge);
+        padding: 1rem 0.75rem;
+        display: grid;
+        gap: 0.6rem;
+        align-content: start;
+        min-height: calc(100vh - 4rem);
+      }
+      .tv-boot-main {
+        flex: 1;
+        min-width: 0;
+        padding: 1.25rem;
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+        max-width: 1600px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .tv-boot-skel {
+        background: var(--boot-surface);
+        border: 1px solid var(--boot-edge);
+        border-radius: 10px;
+        animation: tv-boot-pulse 1.6s ease-in-out infinite;
+      }
+      .tv-boot-stats {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(168px, 100%), 1fr));
+      }
+      .tv-boot-stat {
+        height: 5.25rem;
+      }
+      .tv-boot-panel {
+        height: 9rem;
+      }
+      .tv-boot-line {
+        height: 0.8rem;
+      }
+      @keyframes tv-boot-pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.55;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .tv-boot-skel {
+          animation: none;
+        }
+      }
+      @media (max-width: 860px) {
+        .tv-boot-side {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="tv-boot" aria-hidden="true">
+        <div class="tv-boot-header">Toolbox Vault</div>
+        <div class="tv-boot-body">
+          <div class="tv-boot-side">
+            <div class="tv-boot-skel tv-boot-line"></div>
+            <div class="tv-boot-skel tv-boot-line"></div>
+            <div class="tv-boot-skel tv-boot-line"></div>
+            <div class="tv-boot-skel tv-boot-line"></div>
+            <div class="tv-boot-skel tv-boot-line"></div>
+            <div class="tv-boot-skel tv-boot-line"></div>
+          </div>
+          <div class="tv-boot-main">
+            <div class="tv-boot-stats">
+              <div class="tv-boot-skel tv-boot-stat"></div>
+              <div class="tv-boot-skel tv-boot-stat"></div>
+              <div class="tv-boot-skel tv-boot-stat"></div>
+              <div class="tv-boot-skel tv-boot-stat"></div>
+              <div class="tv-boot-skel tv-boot-stat"></div>
+              <div class="tv-boot-skel tv-boot-stat"></div>
+            </div>
+            <div class="tv-boot-skel tv-boot-panel"></div>
+            <div class="tv-boot-skel tv-boot-panel"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
