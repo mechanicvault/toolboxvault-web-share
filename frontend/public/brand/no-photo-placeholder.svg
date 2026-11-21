@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480">
+  <!-- Sweep B2-F7: the no-photo placeholder is a rendered toolbox
+       in the site's full-colour icon language (the same red
+       toolbox the Inventory header wears), replacing the old
+       flat line-drawn gears on a black slab. The ground is
+       transparent on purpose: the .tv-thumb frame behind this
+       image carries a theme-aware steel ground, so the plate is
+       dark steel in dark mode and pale silver in light mode —
+       never a black slab inside a light page. Display-only
+       paint, exactly as before: an item showing it is still
+       photo-less to every count and claim check. -->
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0492f"/>
+      <stop offset="0.45" stop-color="#c23320"/>
+      <stop offset="1" stop-color="#8f1d10"/>
+    </linearGradient>
+    <linearGradient id="lid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0603f"/>
+      <stop offset="1" stop-color="#c23320"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b6672"/>
+      <stop offset="0.5" stop-color="#39424c"/>
+      <stop offset="1" stop-color="#232a31"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd97a"/>
+      <stop offset="0.55" stop-color="#f2b63c"/>
+      <stop offset="1" stop-color="#c07f16"/>
+    </linearGradient>
+    <linearGradient id="wrench" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d7dee6"/>
+      <stop offset="0.55" stop-color="#9aa7b4"/>
+      <stop offset="1" stop-color="#6e7c8a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ground shadow -->
+  <ellipse cx="240" cy="392" rx="168" ry="26" fill="#000000" opacity="0.28"/>
+
+  <!-- wrench leaning on the box's right side -->
+  <g transform="rotate(24 356 300)">
+    <path d="M356 168 a30 30 0 1 0 20 55 l-8 14 -26 -14 6 -16 a30 30 0 0 0 -2 -39 z" fill="url(#wrench)" stroke="#4c5865" stroke-width="4"/>
+    <rect x="338" y="238" width="26" height="118" rx="11" fill="url(#wrench)" stroke="#4c5865" stroke-width="4"/>
+    <circle cx="351" cy="336" r="7" fill="#39424c"/>
+  </g>
+
+  <!-- handle -->
+  <path d="M168 176 v-14 a24 24 0 0 1 24 -24 h96 a24 24 0 0 1 24 24 v14" fill="none" stroke="url(#steel)" stroke-width="17" stroke-linecap="round"/>
+  <rect x="196" y="124" width="88" height="19" rx="9" fill="url(#steel)" stroke="#171d23" stroke-width="3"/>
+
+  <!-- lid -->
+  <rect x="84" y="176" width="312" height="58" rx="13" fill="url(#lid)" stroke="#6e1307" stroke-width="4"/>
+  <rect x="84" y="188" width="312" height="10" fill="#ffffff" opacity="0.20"/>
+
+  <!-- body -->
+  <path d="M84 234 h312 v118 a20 20 0 0 1 -20 20 h-272 a20 20 0 0 1 -20 -20 z" fill="url(#body)" stroke="#6e1307" stroke-width="4"/>
+  <rect x="84" y="234" width="312" height="12" fill="#000000" opacity="0.18"/>
+  <!-- base rail -->
+  <path d="M84 330 h312 v22 a20 20 0 0 1 -20 20 h-272 a20 20 0 0 1 -20 -20 z" fill="#000000" opacity="0.16"/>
+
+  <!-- latches -->
+  <g stroke="#7a5205" stroke-width="3">
+    <rect x="138" y="216" width="40" height="62" rx="7" fill="url(#gold)"/>
+    <rect x="302" y="216" width="40" height="62" rx="7" fill="url(#gold)"/>
+  </g>
+  <rect x="150" y="238" width="16" height="20" rx="4" fill="#7a5205"/>
+  <rect x="314" y="238" width="16" height="20" rx="4" fill="#7a5205"/>
+
+  <!-- brand plate -->
+  <rect x="196" y="262" width="88" height="30" rx="7" fill="url(#steel)" stroke="#171d23" stroke-width="3"/>
+  <circle cx="210" cy="277" r="4" fill="#c8d2dc"/>
+  <circle cx="270" cy="277" r="4" fill="#c8d2dc"/>
+
+  <!-- corner rivets -->
+  <g fill="#f2b63c" stroke="#7a5205" stroke-width="2">
+    <circle cx="106" cy="256" r="5"/>
+    <circle cx="374" cy="256" r="5"/>
+    <circle cx="106" cy="316" r="5"/>
+    <circle cx="374" cy="316" r="5"/>
+  </g>
+</svg>

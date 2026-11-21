@@ -1,0 +1,189 @@
+/* ===== Toolbox Vault light mode: Brushed Aluminum (floating) ===== */
+html[data-mode="light"]:root {
+  --bg:#E9EBEE; --surface:#F8F9FA; --surface-raised:#F8F9FA; --panel:#F8F9FA;
+  --texture: repeating-linear-gradient(90deg, rgb(0 0 0 / .018) 0 1px, transparent 1px 3px),
+             linear-gradient(#E9EBEE,#E9EBEE);
+  --text:#1D2228; --text-muted:#5F6873; --placeholder:#5F6873; --text-soft:#353C45;
+  --text-stats:#353C45; --text-bright:#0F1317; --ink-rgb:29 34 40;
+  --edge:#D3D8DE; --edge-strong:#9AA3AE; --input-bg:#FFFFFF; --input-edge:#D3D8DE;
+  --lv-text:#1D2228; --lv-muted:#5F6873; --lv-placeholder:#5F6873; --lv-ink-rgb:29 34 40;
+  --lv-soft:#353C45; --lv-stats:#353C45; --lv-bright:#0F1317;
+  --lv-edge:#D3D8DE; --lv-edge-strong:#9AA3AE; --lv-table-hover:#EEF1F4;
+  --lv-table-alt:rgb(29 34 40 / .035); --lv-table-edge:#D3D8DE;
+  --table-row-hover:#EEF1F4; --table-row-alt:rgb(29 34 40 / .035); --table-edge:#D3D8DE;
+  --accent-base:#E8731A; --accent-ink:#B4530C; --link:#B4530C; --info:#B4530C;
+}
+html[data-mode="light"] body {
+  --accent:#E8731A; --accent-strong:#B4530C;
+  --accent-soft: color-mix(in srgb, #E8731A 14%, transparent);
+}
+
+/* Header + side menu: white text on steel */
+html:root[data-mode="light"][data-theme="railsteel"] .tv-topbar,
+html:root[data-mode="light"][data-theme="railsteel"] .tv-rail {
+  --text:#FFFFFF; --text-muted:rgb(255 255 255 / .72); --nav-ink:rgb(255 255 255 / .78);
+  --text-soft:rgb(255 255 255 / .86); --text-bright:#FFFFFF; --placeholder:rgb(255 255 255 / .6);
+  --ink-rgb:255 255 255; --edge:rgb(255 255 255 / .16); --edge-strong:rgb(255 255 255 / .3);
+  color:var(--text);
+}
+html[data-mode="light"] .tv-topbar {
+  background: linear-gradient(180deg,#5A626C,#3B4148 55%,#2E3339) !important;
+  border-bottom:1px solid #22262B !important;
+}
+html[data-mode="light"] .tv-rail {
+  background: linear-gradient(90deg,#3B4148,#4A515A 50%,#3B4148) !important;
+}
+html[data-mode="light"] .tv-rail-btn.is-active {
+  background: linear-gradient(180deg,#F59340,#E8731A 55%,#C95F10) !important;
+  color:#fff !important; border-color:#8A3F08 !important;
+}
+
+/* Panels: brushed aluminum, floating off the background */
+html[data-mode="light"] .tv-panel {
+  background: linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .2)),
+              repeating-linear-gradient(90deg, rgb(0 0 0 / .018) 0 1px, transparent 1px 3px),
+              #EEF0F2 !important;
+  border:1px solid #C9CFD6 !important;
+  border-radius:8px !important;
+  box-shadow: inset 0 1px 0 #fff,
+              0 1px 2px rgb(30 40 55 / .10),
+              0 8px 16px rgb(30 40 55 / .16),
+              0 22px 42px -8px rgb(30 40 55 / .32) !important;
+}
+/* Remove the orange "lamp glow" arc above panels in light mode */
+html[data-mode="light"] .tv-panel::after { display:none !important; }
+
+/* Panel titles clear the corner rivet (owner's deep-dive audit,
+ * sheet row 151, 2026-11-18): the plate's top-left rivet spans
+ * 8-19px while the header's 16px padding starts the title at
+ * ~17px, so the screw head sits on the title's first letter.
+ * Auth panels (title at ~25px) show the intended spacing —
+ * plate panel headers get the same clearance in light mode. */
+html[data-mode="light"] .tv-panel--plate .tv-panel-header {
+  padding-left: 24px;
+}
+
+/* Home widget title tags: steel plate with an orange left edge */
+html[data-mode="light"] .tv-home-frame .tv-widget-title {
+  background: linear-gradient(180deg,#6A727C,#454C55) !important;
+  border-left:5px solid #E8731A;
+  color:#fff !important;
+}
+html[data-mode="light"] .tv-home-frame .tv-widget-title .tv-widget-title-link { color:inherit !important; }
+html[data-mode="light"] .tv-home-frame .tv-widget-title::after {
+  border-color:#2A2F35 transparent transparent transparent !important;
+}
+
+/* Buttons */
+html[data-mode="light"] .tv-btn--primary {
+  background: linear-gradient(180deg,#F59340,#E8731A 55%,#C95F10) !important;
+  color:#fff !important; border:1px solid #8A3F08 !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .4), 0 2px 5px rgb(0 0 0 / .25) !important;
+}
+html[data-mode="light"] .tv-btn--secondary,
+html[data-mode="light"] .tv-home-btn {
+  background: linear-gradient(180deg,#FFFFFF,#DDE1E6) !important;
+  border:1px solid #AEB6BF !important; color:#2B3138 !important;
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgb(0 0 0 / .15) !important;
+}
+
+/* Page header icon tile — the steel plate behind the icon was
+ * REMOVED by the owner on 2026-11-18 (sheet row 130): the wide
+ * thumb box reads as a box around the header icon, the same
+ * outline box he had taken off before. The thumb stays
+ * transparent; the icon artwork carries its own shadow. */
+html[data-mode="light"] .tv-secpage-thumb {
+  background: transparent;
+  border-radius:10px;
+}
+
+/* Badges: style #6 "Stamped" in light metal (sheet row 155,
+ * owner pick, 2026-11-19; supersedes row 129's flat tints).
+ * The row 129 rule still holds - a badge must not read as a
+ * button: the metal is flat and matte, the lettering is
+ * engraved grey (dark cut with the white catch-light under
+ * it, the etched-into-metal tell), there is no sheen and no
+ * lift shadow, and the status color lives only in the dot. */
+/* The selector outranks tokens.css's light container scope,
+ * which otherwise re-inks every badge to the full-strength
+ * text color - engraved lettering is a grey, not the body
+ * ink. */
+html[data-mode="light"][data-theme="railsteel"] .tv-badge {
+  background: linear-gradient(180deg, #f3f4f6, #e4e6ea);
+  border-color: #c2c7cd;
+  color: #585f66;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.85);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.75),
+    inset 0 -1px 0 rgb(0 0 0 / 0.06);
+}
+
+/* Status dots keep their colors in light mode (sheet row 197,
+ * 2026-11-19): the dot rules read var(--success) / --warning /
+ * --danger, and light mode re-points those tokens at the dark
+ * --lv-* variants built for TEXT contrast — so on the light
+ * metal pill the dots rendered nearly black and the status
+ * colors vanished. The dots (badge + panel pill) wear the
+ * vivid tones here; the dark lv-* variants stay exactly where
+ * they belong, on status text. */
+html[data-mode="light"][data-theme="railsteel"] .tv-badge--success .tv-badge-dot {
+  background: #3ecf6e;
+}
+html[data-mode="light"][data-theme="railsteel"] .tv-badge--warning .tv-badge-dot {
+  background: #e8b93e;
+}
+html[data-mode="light"][data-theme="railsteel"] .tv-badge--danger .tv-badge-dot {
+  background: #e5484d;
+}
+html[data-mode="light"][data-theme="railsteel"] .tv-panel-pill[data-status="ok"]::before {
+  background: #3ecf6e;
+}
+html[data-mode="light"][data-theme="railsteel"] .tv-panel-pill[data-status="check"]::before {
+  background: #e5484d;
+}
+
+/* Signed-out Log in link (sheet row 131, found by the light
+ * audit 2026-11-18): in the top bar it takes the bar's white
+ * text (--text) while its background is the light secondary
+ * gradient — white on white, effectively invisible next to
+ * the orange Sign up. In light mode it wears the same dark
+ * ink as every other secondary button. */
+html[data-mode="light"] .tv-header-login {
+  color: #2B3138;
+}
+/* Highlight surfaces sit in the Brushed Aluminum family
+ * (owner's deep-dive audit, sheet row 152, 2026-11-18): the
+ * accent wash (10% orange over the panel, or --accent-soft)
+ * read as a warm beige, dirty material next to the brushed
+ * panels. In light mode the large persistent fills — selected
+ * side-list rows, selected claim rows, and the banner strips —
+ * take a light steel gradient instead; the orange stays as the
+ * accent EDGE (the side list's existing left bar, an inset bar
+ * on the claim row, the banners' accent border). Small chips,
+ * badges and hover states keep the accent language. */
+html[data-mode="light"] .tv-sidelist-row--selected {
+  background: linear-gradient(180deg, #F7F8FA, #E2E6EB);
+  box-shadow:
+    inset 0 0 0 1px #C3C9D1,
+    inset 0 0 16px -6px rgb(59 65 72 / 0.25);
+}
+html[data-mode="light"] .tv-claim-split-row--selected {
+  background: linear-gradient(180deg, #F7F8FA, #E2E6EB);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+html[data-mode="light"] .tv-setup-banner,
+html[data-mode="light"] .tv-widget-banner,
+html[data-mode="light"] .tv-preview-banner {
+  background: linear-gradient(180deg, #F7F8FA, #E2E6EB);
+}
+/* Flag title in light: the steel tag with the orange left
+ * edge, same as the light Home widget titles (sheet row 191). */
+html[data-mode="light"] .tv-flag-title {
+  background: linear-gradient(180deg, #6A727C, #454C55);
+  border-left: 5px solid #E8731A;
+  color: #fff;
+}
+html[data-mode="light"] .tv-flag-title::after {
+  border-color: #2A2F35 transparent transparent transparent;
+}
+/* ===== end ===== */

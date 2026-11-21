@@ -1,0 +1,69 @@
+/* Find the manual (owner order 2026-11-05): the shared
+   finder block on the item pages' Manuals area and in the
+   Add wizard. Layout only — every color comes from the theme
+   tokens, so all themes (Steel Light included) dress it. */
+
+.tv-manual-finder {
+  display: grid;
+  gap: 10px;
+}
+
+.tv-manual-finder__head {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.tv-manual-finder__intro {
+  margin: 0;
+  flex: 1 1 260px;
+}
+
+.tv-manual-finder__note {
+  margin: 0;
+}
+
+.tv-manual-rows {
+  display: grid;
+  gap: 8px;
+}
+
+.tv-manual-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.tv-manual-row__main {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.tv-manual-row__title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.tv-manual-picked {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border: 1px solid var(--accent-edge, var(--edge));
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+/* The wizard's Manuals step: finder, upload, paste-a-link. */
+.tv-manual-wizard-stack {
+  display: grid;
+  gap: 14px;
+}

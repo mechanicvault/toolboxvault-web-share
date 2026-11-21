@@ -1,0 +1,81 @@
+#cloud-config
+# Toolbox Vault — full server provisioning (recreate-safe).
+# Reproduces the 2026-10-04 hardening AND completes the one-time deploy
+# setup: authorizes BOTH the admin (pax) key and the GitHub Actions
+# deploy key, and generates the production .env with secrets created
+# on the server at first boot. No secret exists anywhere else.
+timezone: UTC
+ssh_pwauth: false
+package_update: true
+packages:
+  - fail2ban
+  - unattended-upgrades
+  - ufw
+  - openssl
+  - curl
+write_files:
+  - path: /root/.ssh/authorized_keys
+    permissions: "0600"
+    content: |
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJVGEQjIItbR9lKpDiBlpUdJap8syH+oJ7zlXtjniAMu pax-toolbox-vault
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIm+3EMNxWyE/Hz4z0kmAbhe/9kzx5CIOf4WA7V+z4iE github-deploy-toolbox-vault
+  - path: /etc/ssh/sshd_config.d/99-toolbox.conf
+    permissions: "0644"
+    content: |
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitRootLogin prohibit-password
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    permissions: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+  - path: /root/firstboot-setup.sh
+    permissions: "0700"
+    content: |
+      #!/bin/bash
+      set -x
+      exec > /var/log/toolbox-provision.log 2>&1
+      chmod 700 /root/.ssh
+      mkdir -p /opt/toolbox-vault/app /opt/toolbox-vault/db-data /opt/toolbox-vault/storage /opt/toolbox-vault/backups /opt/toolbox-vault/logs
+      ufw allow 22/tcp
+      ufw allow 80/tcp
+      ufw allow 443/tcp
+      ufw --force enable
+      systemctl enable --now fail2ban || true
+      curl -fsSL https://get.docker.com | sh
+      systemctl enable --now docker || true
+      ENV_FILE=/opt/toolbox-vault/app/.env
+      if [ ! -f "$ENV_FILE" ]; then
+        POSTGRES_PASSWORD=$(openssl rand -hex 24)
+        JWT_SECRET=$(openssl rand -hex 64)
+        MINIO_ROOT_PASSWORD=$(openssl rand -hex 24)
+        MINIO_APP_PASSWORD=$(openssl rand -hex 24)
+        umask 077
+        echo "APP_DOMAIN=toolboxvault.com" > "$ENV_FILE"
+        echo "FILES_DOMAIN=files.toolboxvault.com" >> "$ENV_FILE"
+        echo "POSTGRES_USER=toolbox" >> "$ENV_FILE"
+        echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> "$ENV_FILE"
+        echo "POSTGRES_DB=toolbox_vault" >> "$ENV_FILE"
+        echo "DATABASE_URL=postgresql+psycopg://toolbox:$POSTGRES_PASSWORD@postgres:5432/toolbox_vault" >> "$ENV_FILE"
+        echo "MINIO_ROOT_USER=minioadmin" >> "$ENV_FILE"
+        echo "MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD" >> "$ENV_FILE"
+        echo "MINIO_APP_USER=toolbox-app" >> "$ENV_FILE"
+        echo "MINIO_APP_PASSWORD=$MINIO_APP_PASSWORD" >> "$ENV_FILE"
+        echo "MINIO_ENDPOINT=http://storage:8333" >> "$ENV_FILE"
+        echo "MINIO_BUCKET=toolbox-vault" >> "$ENV_FILE"
+        echo "S3_PUBLIC_ENDPOINT=https://files.toolboxvault.com" >> "$ENV_FILE"
+        echo "JWT_SECRET=$JWT_SECRET" >> "$ENV_FILE"
+        echo "JWT_ALGORITHM=HS256" >> "$ENV_FILE"
+        echo "ACCESS_TOKEN_EXPIRE_MINUTES=30" >> "$ENV_FILE"
+        echo "REFRESH_TOKEN_EXPIRE_DAYS=30" >> "$ENV_FILE"
+        echo "APP_BASE_URL=https://toolboxvault.com" >> "$ENV_FILE"
+        echo "VITE_API_URL=/api" >> "$ENV_FILE"
+        chmod 600 "$ENV_FILE"
+      fi
+      systemctl restart ssh || true
+      chage -d "$(date +%F)" root || true
+      touch /root/.toolbox-provisioned
+runcmd:
+  - bash /root/firstboot-setup.sh
+final_message: "Toolbox Vault provisioning finished."

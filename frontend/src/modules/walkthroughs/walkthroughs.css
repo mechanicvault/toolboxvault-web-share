@@ -1,0 +1,176 @@
+/**
+ * "Do it with me" walkthroughs (sweep D3): the guided passes
+ * wear the SETUP WIZARD's own furniture — its step shell
+ * (tv-setup-step / tv-setup-intro / tv-setup-example /
+ * tv-setup-actions from onboarding.css, imported by the shell)
+ * and its progress words. This file adds only what the wizard
+ * doesn't already have: the door, the pick rows, the review
+ * rows, and the step-change motion. Class-styled only.
+ */
+
+/* -- the door (standing entry point) ---------------------------- */
+
+.tv-walk-door {
+  margin-bottom: 1rem;
+}
+
+.tv-walk-door .tv-setup-banner-cta {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* -- a gentle offer inside a real flow (checkout modal / claim
+ *    form): quieter than the door, same words ------------------ */
+
+.tv-walk-offer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent-soft);
+}
+
+.tv-walk-offer p {
+  flex: 1 1 240px;
+  margin: 0;
+  font-size: 0.93rem;
+}
+
+.tv-walk-offer button {
+  flex: none;
+}
+
+/* -- shell ------------------------------------------------------ */
+
+.tv-walk-stepof {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tv-walk-progress {
+  margin-bottom: 1rem;
+}
+
+.tv-walk-stepanim {
+  animation: tv-walk-in var(--motion-med, 220ms) var(--ease-out, ease);
+}
+
+@keyframes tv-walk-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tv-walk-stepanim {
+    animation: none;
+  }
+}
+
+/* -- pick rows (one record per row, the wizard's chip words) --- */
+
+.tv-walk-picklist {
+  display: grid;
+  gap: 0.4rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.tv-walk-pickrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform var(--motion-fast, 120ms) var(--ease-out, ease),
+    box-shadow var(--motion-fast, 120ms) var(--ease-out, ease),
+    border-color var(--motion-fast, 120ms) var(--ease-out, ease);
+}
+
+.tv-walk-pickrow:hover,
+.tv-walk-pickrow:focus-visible {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 12px var(--accent-soft);
+}
+
+.tv-walk-pickrow.is-picked {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.tv-walk-pickrow-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.tv-walk-pickrow-sub {
+  flex: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* -- review rows ------------------------------------------------- */
+
+.tv-walk-review {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tv-walk-review-row {
+  display: flex;
+  gap: 0.8rem;
+  align-items: baseline;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+}
+
+.tv-walk-review-label {
+  flex: 0 0 7.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tv-walk-review-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.tv-walk-muted {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.tv-walk-error {
+  margin: 0;
+  color: var(--danger);
+}

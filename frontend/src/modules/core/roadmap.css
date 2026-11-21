@@ -1,0 +1,213 @@
+/* What's Coming / Roadmap (stage rebuild, 2026-11-12).
+ *
+ * The admin page is a Main list layout task list: rows ride the
+ * shared .tv-inv-list frame with grid geometry mirroring
+ * .tv-inv-thead/.tv-inv-row. The public page lists the same
+ * items in the same frame. The status bar (.tv-rmbar) is shared
+ * by both pages (RoadmapStageBar.tsx).
+ */
+
+/* -- the stepped status bar -------------------------------- */
+.tv-rmbar {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.tv-rmbar-track {
+  display: flex;
+  gap: 3px;
+}
+.tv-rmbar-seg {
+  flex: 1 1 0;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--edge);
+}
+.tv-rmbar-seg.is-done {
+  background: var(--accent);
+}
+.tv-rmbar-seg.is-now {
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.tv-rmbar-labels {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 3px;
+  font-size: 0.68rem;
+  line-height: 1.25;
+  color: var(--text-muted);
+}
+.tv-rmbar-labels span {
+  text-align: center;
+  overflow-wrap: break-word;
+}
+.tv-rmbar-labels span.is-done {
+  color: var(--text);
+}
+.tv-rmbar-labels span.is-now {
+  color: var(--text);
+  font-weight: 700;
+}
+/* The current-stage caption only takes over when the name row
+ * folds away on narrow screens. */
+.tv-rmbar-now {
+  display: none;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.tv-rmbar-now strong {
+  color: var(--text);
+}
+
+/* -- public page ------------------------------------------- */
+.tv-rm-pub-row {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--table-edge);
+}
+.tv-rm-pub-list > .tv-rm-pub-row:last-child {
+  border-bottom: none;
+}
+.tv-rm-pub-title {
+  font-weight: 650;
+}
+.tv-rm-pub-note {
+  margin: 0.2rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* -- admin task list ---------------------------------------- */
+.tv-rm-addrow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.tv-rm-thead,
+.tv-rm-trow {
+  display: grid;
+  grid-template-columns:
+    2rem minmax(190px, 1.4fr) minmax(168px, 0.85fr)
+    minmax(180px, 1.05fr) auto;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 880px;
+  padding: 0.45rem 0.75rem;
+}
+.tv-rm-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--table-edge);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+.tv-rm-trow {
+  border-bottom: 1px solid var(--table-edge);
+}
+.tv-rm-list > .tv-rm-trow:last-child {
+  border-bottom: none;
+}
+.tv-rm-trow:hover {
+  background: var(--table-row-hover);
+}
+.tv-rm-trow[data-dragging] {
+  opacity: 0.55;
+}
+.tv-rm-trow[data-dragover] {
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+.tv-rm-grip {
+  cursor: grab;
+  justify-self: center;
+}
+.tv-rm-item {
+  min-width: 0;
+}
+.tv-rm-item-title {
+  font-weight: 600;
+  overflow-wrap: break-word;
+}
+.tv-rm-item-note {
+  margin: 0.15rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+.tv-rm-item-edit {
+  display: grid;
+  gap: 0.45rem;
+}
+.tv-rm-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+.tv-rm-remove {
+  /* The list-standard remove: a red minus control (the big
+   * primary Add at the top is the exempt case). */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--danger, #c0392b);
+  background: transparent;
+  color: var(--danger, #c0392b);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.tv-rm-remove:hover {
+  background: var(--danger, #c0392b);
+  color: #fff;
+}
+
+/* -- narrow screens ------------------------------------------
+ * Public bar: names fold away, the current stage is named in
+ * words beside the bar. Admin rows fold into stacked lines
+ * (no sideways scroll, nothing clipped). */
+@media (max-width: 700px) {
+  .tv-rmbar-labels {
+    display: none;
+  }
+  .tv-rmbar-now {
+    display: block;
+  }
+  .tv-rm-thead {
+    display: none;
+  }
+  .tv-rm-trow {
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    min-width: 0;
+  }
+  .tv-rm-grip {
+    grid-row: 1;
+    grid-column: 1;
+  }
+  .tv-rm-item {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .tv-rm-actions {
+    grid-row: 1;
+    grid-column: 3;
+  }
+  .tv-rm-stage {
+    grid-row: 2;
+    grid-column: 2 / -1;
+  }
+  .tv-rm-status {
+    grid-row: 3;
+    grid-column: 2 / -1;
+  }
+}

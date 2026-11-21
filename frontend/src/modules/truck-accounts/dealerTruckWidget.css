@@ -1,0 +1,134 @@
+/* Dealer Truck Accounts widget (sheet row 29, 2026-11-15):
+   the dealer's own truck widget — stat tiles + customer rows
+   in the panel anatomy (label over value, ruled rows, the
+   status pill in its OWN column). Tokens only. */
+
+.tv-dtruck-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.tv-dtruck-tile {
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: grid;
+  gap: 1px;
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+}
+
+.tv-dtruck-tile-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tv-dtruck-tile-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tv-dtruck-tile[data-warn="true"] .tv-dtruck-tile-value {
+  color: var(--accent);
+}
+
+.tv-dtruck-counts {
+  margin: 0 0 var(--space-2);
+  color: var(--text-soft);
+  font-size: var(--font-size-sm);
+}
+
+.tv-dtruck-counts strong {
+  color: var(--text);
+}
+
+.tv-dtruck-rows {
+  display: grid;
+}
+
+.tv-dtruck-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px 104px 92px;
+  gap: var(--space-2);
+  align-items: center;
+  padding: 6px 2px;
+  border-top: 1px solid var(--edge);
+  font-size: var(--font-size-sm);
+  color: var(--text-soft);
+  text-decoration: none;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.tv-dtruck-row:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--text);
+}
+
+.tv-dtruck-name {
+  display: grid;
+  min-width: 0;
+}
+
+.tv-dtruck-name-main {
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-dtruck-name-sub {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-dtruck-due {
+  text-align: right;
+}
+
+.tv-dtruck-pill {
+  text-align: center;
+}
+
+.tv-dtruck-balance {
+  text-align: right;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tv-dtruck-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.tv-dtruck-received {
+  color: var(--text-soft);
+  font-size: var(--font-size-sm);
+}
+
+.tv-dtruck-received strong {
+  color: var(--text);
+}
+
+.tv-dtruck-empty {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- Machined Phillips screw head (Steel theme). Domed radial metal,
+       recessed cross with a machined lower-edge highlight, soft seat
+       shadow. Drawn at 48px, used at 11–14px. -->
+  <defs>
+    <radialGradient id="dome" cx="0.38" cy="0.30" r="0.78">
+      <stop offset="0" stop-color="#f4f6f9"/>
+      <stop offset="0.32" stop-color="#c3c9d1"/>
+      <stop offset="0.58" stop-color="#83898f"/>
+      <stop offset="0.82" stop-color="#43474e"/>
+      <stop offset="1" stop-color="#232529"/>
+    </radialGradient>
+    <radialGradient id="seat" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.78" stop-color="#000000" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="24" cy="25" r="21" fill="url(#seat)"/>
+  <circle cx="24" cy="24" r="20" fill="url(#dome)" stroke="#0e0f12" stroke-opacity="0.65" stroke-width="1"/>
+  <circle cx="24" cy="24" r="15.5" fill="none" stroke="#2b2e33" stroke-opacity="0.5" stroke-width="1"/>
+  <g transform="rotate(24 24 24)">
+    <g fill="#ffffff" opacity="0.22" transform="translate(0 1.1)">
+      <rect x="13" y="20.6" width="22" height="6.8" rx="2"/>
+      <rect x="20.6" y="13" width="6.8" height="22" rx="2"/>
+    </g>
+    <g fill="#141518">
+      <rect x="13" y="20.6" width="22" height="6.8" rx="2"/>
+      <rect x="20.6" y="13" width="6.8" height="22" rx="2"/>
+    </g>
+  </g>
+  <circle cx="24" cy="24" r="2.1" fill="#0c0d0f"/>
+  <path d="M 11 15 A 15.5 15.5 0 0 1 24 8.6" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

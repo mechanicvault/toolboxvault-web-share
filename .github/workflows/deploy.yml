@@ -1,0 +1,145 @@
+# Auto-deploy: every push to `main` syncs the code to the Hetzner VPS
+# and rebuilds the Docker stack. No build happens here; the server builds.
+#
+# Required GitHub repo secrets (Settings -> Secrets and variables -> Actions):
+#   DEPLOY_HOST      the server's public IP
+#   DEPLOY_SSH_KEY   base64-encoded private half of the deploy keypair
+#                    whose public half is in the server's
+#                    /root/.ssh/authorized_keys (base64 so a browser
+#                    copy/paste cannot mangle the multi-line PEM)
+#
+# Optional secrets — social login + transactional email + the
+# Disaster Vault backup legs. When set, each is upserted into the
+# server's /opt/toolbox-vault/app/.env by the "Sync provider
+# secrets" step:
+#   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, FACEBOOK_APP_ID,
+#   FACEBOOK_APP_SECRET, EMAIL_PROVIDER, RESEND_API_KEY, EMAIL_FROM,
+#   BACKUP_AGE_PUBLIC_KEY, BACKUP_DRIVE_FOLDER_ID,
+#   BACKUP_REPORT_EMAIL,
+#   STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET
+#   (Stripe payments — without the secret key the whole payment
+#   surface stays dark by design; price ids are operator settings
+#   in Admin -> Settings, not secrets)
+# APP_GIT_COMMIT is not a secret: the step always stamps it from
+# github.sha so backup manifests can name the exact deployed commit.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+# Serialize deploys (2026-10-24): two overlapping runs raced —
+# the older run's rsync finished LAST and silently reverted the
+# server tree to the older commit while .env's APP_GIT_COMMIT
+# and the migrated DB said otherwise. Queue runs; never cancel
+# one mid-flight (a half-synced tree is worse than a wait).
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inline-style ratchet (Deep Audit F3-01)
+        # Fails the deploy BEFORE any code reaches the server when the
+        # inline `style={{...}}` count grows past the recorded baseline
+        # (frontend/inline-style-baseline.txt). The same check is chained
+        # into `npm run build`, so the server-side Docker build enforces
+        # it too. The script is dependency-free Node — no npm ci needed.
+        run: node frontend/scripts/check-inline-styles.mjs
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' "${{ secrets.DEPLOY_SSH_KEY }}" | base64 -d > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Sync code to server
+        # The server's .env holds real secrets and is never in the repo,
+        # so it is excluded from the sync and never deleted or overwritten.
+        run: |
+          rsync -az --delete \
+            --exclude='.git/' \
+            --exclude='.venv/' \
+            --exclude='frontend/node_modules/' \
+            --exclude='frontend/dist/' \
+            --exclude='.env' \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
+            ./ "root@${{ secrets.DEPLOY_HOST }}:/opt/toolbox-vault/app/"
+
+      - name: Sync provider secrets into server .env
+        # Provider credentials (social login, transactional email)
+        # live ONLY as GitHub secrets and in the server .env (never
+        # in the repo). For each secret that is set, upsert its
+        # KEY=value line in the server .env (replace if present,
+        # append if absent). When none are set, the .env is left
+        # completely untouched. Values travel over stdin only and
+        # are never echoed — just the key names are printed.
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          FACEBOOK_APP_ID: ${{ secrets.FACEBOOK_APP_ID }}
+          FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}
+          EMAIL_PROVIDER: ${{ secrets.EMAIL_PROVIDER }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          BACKUP_AGE_PUBLIC_KEY: ${{ secrets.BACKUP_AGE_PUBLIC_KEY }}
+          BACKUP_DRIVE_FOLDER_ID: ${{ secrets.BACKUP_DRIVE_FOLDER_ID }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          BACKUP_REPORT_EMAIL: ${{ secrets.BACKUP_REPORT_EMAIL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          APP_GIT_COMMIT: ${{ github.sha }}
+        run: |
+          updates_file="$(mktemp)"
+          chmod 600 "$updates_file"
+          for pair in \
+            "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" \
+            "GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET" \
+            "FACEBOOK_APP_ID=$FACEBOOK_APP_ID" \
+            "FACEBOOK_APP_SECRET=$FACEBOOK_APP_SECRET" \
+            "EMAIL_PROVIDER=$EMAIL_PROVIDER" \
+            "RESEND_API_KEY=$RESEND_API_KEY" \
+            "EMAIL_FROM=$EMAIL_FROM" \
+            "BACKUP_AGE_PUBLIC_KEY=$BACKUP_AGE_PUBLIC_KEY" \
+            "BACKUP_DRIVE_FOLDER_ID=$BACKUP_DRIVE_FOLDER_ID" \
+            "BACKUP_REPORT_EMAIL=$BACKUP_REPORT_EMAIL" \
+            "STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY" \
+            "STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY" \
+            "STRIPE_WEBHOOK_SECRET=$STRIPE_WEBHOOK_SECRET" \
+            "OPENAI_API_KEY=$OPENAI_API_KEY" \
+            "APP_GIT_COMMIT=$APP_GIT_COMMIT"
+          do
+            if [ -n "${pair#*=}" ]; then
+              printf '%s\n' "$pair" >> "$updates_file"
+            fi
+          done
+          if [ ! -s "$updates_file" ]; then
+            echo "No provider secrets set; server .env untouched."
+            exit 0
+          fi
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
+            "root@${{ secrets.DEPLOY_HOST }}" '
+              env_file=/opt/toolbox-vault/app/.env
+              touch "$env_file"
+              while IFS= read -r line; do
+                key="${line%%=*}"
+                grep -v "^${key}=" "$env_file" > "$env_file.oauth-tmp" || true
+                printf "%s\n" "$line" >> "$env_file.oauth-tmp"
+                cat "$env_file.oauth-tmp" > "$env_file"
+                rm -f "$env_file.oauth-tmp"
+                echo "upserted ${key} in server .env"
+              done
+            ' < "$updates_file"
+          rm -f "$updates_file"
+
+      - name: Rebuild and restart stack
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
+            "root@${{ secrets.DEPLOY_HOST }}" \
+            "cd /opt/toolbox-vault/app && docker compose up --build -d && docker compose ps"

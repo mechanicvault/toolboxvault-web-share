@@ -1,0 +1,149 @@
+/* -- Converter (shared: Downloads panel + Home widget) ---------------
+ * One implementation, two hosts (converter widget lane, owner
+ * 2026-11-08): the Downloads → Documents panel and the Home
+ * dashboard widget render the SAME ConverterBody component, so
+ * its styles live here under a neutral `conv-` prefix — moved
+ * out of downloads.css, where they were `dl-conv-*` — and both
+ * hosts import this file. The `--widget` root tightens the
+ * density to widget size; the layout rules are shared. */
+
+.conv-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.1rem;
+}
+.conv-kind {
+  border: 1px solid var(--edge-strong, #3a3a42);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.conv-kind:hover {
+  border-color: var(--accent, #ff6a00);
+  box-shadow: 0 0 0 1px var(--accent, #ff6a00), 0 0 12px color-mix(in srgb, var(--accent, #ff6a00) 35%, transparent);
+}
+.conv-kind.conv-selected {
+  background: var(--accent, #ff6a00);
+  border-color: var(--accent, #ff6a00);
+  color: #17110a;
+}
+.conv-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-width: 34rem;
+}
+@media (max-width: 700px) {
+  .conv-inputs {
+    grid-template-columns: 1fr;
+  }
+}
+.conv-field {
+  display: grid;
+  gap: 0.35rem;
+}
+.conv-field span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.conv-field input,
+.conv-field select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--edge-strong, #3a3a42);
+  border-radius: 0.5rem;
+  background: var(--bg, #101013);
+  color: var(--text);
+  font: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+.conv-field input:focus,
+.conv-field select:focus {
+  outline: 2px solid var(--accent, #ff6a00);
+  outline-offset: 1px;
+}
+.conv-results {
+  list-style: none;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  max-width: 34rem;
+}
+.conv-results li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.2rem;
+  border-bottom: 1px solid var(--edge, #2c2c33);
+}
+.conv-results li strong {
+  font-variant-numeric: tabular-nums;
+}
+.conv-from-row {
+  color: var(--text-muted);
+}
+.conv-elec {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  max-width: 44rem;
+}
+@media (max-width: 700px) {
+  .conv-elec {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.conv-derived {
+  background: color-mix(in srgb, var(--accent, #ff6a00) 12%, var(--bg, #101013)) !important;
+  font-weight: 700;
+}
+.conv-hint {
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+/* -- Widget density ---------------------------------------------------
+ * The same body at widget size: tighter rhythm, fields fill the
+ * box instead of the panel's reading measure, and the Ohm's-law
+ * quartet runs 2×2 at half width (4 across only at full width,
+ * the widget system's own size vocabulary). */
+.conv-root--widget {
+  /* The widget renders the body in the frame's actions slot, a
+   * flex row — the body takes the slot's full width. */
+  flex: 1 1 auto;
+  width: 100%;
+}
+.conv-root--widget .conv-kinds {
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+.conv-root--widget .conv-kind {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.9rem;
+}
+.conv-root--widget .conv-inputs,
+.conv-root--widget .conv-results,
+.conv-root--widget .conv-elec {
+  max-width: none;
+}
+.conv-root--widget .conv-inputs {
+  gap: 0.75rem;
+}
+.conv-root--widget .conv-results {
+  margin-top: 0.85rem;
+}
+.conv-root--widget .conv-results li {
+  padding: 0.4rem 0.2rem;
+}
+.conv-root--widget .conv-elec {
+  gap: 0.75rem;
+}
+.conv-root--widget.conv-size-half .conv-elec {
+  grid-template-columns: 1fr 1fr;
+}

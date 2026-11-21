@@ -1,0 +1,529 @@
+/* The admin Home widgets (admin lane 2026-11-07; polish lane
+   2026-11-07): the widgets wear the standard Home widget
+   chrome (components.css + the railsteel sheets own the panel,
+   cover, head and row rules); this sheet only carries the
+   admin rows' own anatomy — a stat row is a label cell and a
+   value cell on the standard row rhythm (the .tv-widget-rows
+   3px cadence, small text), the value right-aligned and
+   weighted, delta notes muted. Rows never stretch: the rowset
+   is a plain column at the content's own height, so a panel
+   fits the lines it shows. God + moderator_admin seats only;
+   the blocks never render for anyone else. */
+
+.tv-admin-rows .tv-widget-row {
+  padding: 1px 2px;
+}
+
+.tv-admin-label {
+  flex: 1 1 auto;
+}
+
+.tv-admin-value {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+}
+
+.tv-admin-note {
+  color: var(--text-muted);
+  font-weight: 400;
+  /* Uniformity 2026-11-10: no private size — the note inherits
+   * the row register it sits in (small), like every other
+   * muted note in a widget body. The one-off 0.9rem is retired. */
+}
+
+.tv-admin-subhead {
+  margin-top: 0.35rem;
+  padding: 0.1rem 2px;
+  /* Heading hierarchy (owner rule, 2026-11-10): the subhead
+   * heads content groups, so it takes the full ink like
+   * .tv-widget-group-label — the heading register of the
+   * micro-label family. */
+  color: var(--text);
+  /* Uniformity 2026-11-10: the subhead wears the widget kit's
+   * micro-label register verbatim (display family / 0.72rem /
+   * 700 / 0.12em / uppercase — the same values as
+   * .tv-widget-group-label in theme/widget-kit.css), not its
+   * own 0.85rem body-family variant. */
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* -- The three admin PANEL widgets (owner, 2026-11-15) ------
+ * Admin overview / Site scoreboard / System health, from the
+ * owner's sample panels. Same registers as the widget kit:
+ * micro-labels for tile labels, bright values, hairline
+ * dividers, pills in their own column. */
+
+.tv-panel-hero {
+  display: flex;
+  gap: var(--space-3, 1rem);
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.tv-panel-hero-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tv-panel-hero-label,
+.tv-panel-tile-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tv-panel-hero-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.tv-panel-hero-sub,
+.tv-panel-hero-note,
+.tv-panel-tile-sub {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.tv-panel-hero-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.tv-panel-spark {
+  display: block;
+}
+
+/* Sheet row 50: the overview signups chart — full width of
+ * the top main area, with the hover date readout. */
+.tv-panel-chart {
+  margin-top: var(--space-3, 1rem);
+}
+
+.tv-panel-chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.tv-panel-chart-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tv-panel-chart-readout {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tv-panel-chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 4px;
+  cursor: crosshair;
+}
+
+.tv-panel-chart-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.tv-panel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--edge);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tv-panel-chip[data-tone="good"] {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 55%, transparent);
+}
+
+.tv-panel-chip[data-tone="warn"] {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.tv-panel-chip[data-tone="flat"] {
+  color: var(--text-muted);
+}
+
+.tv-panel-tabs {
+  display: inline-flex;
+  gap: 2px;
+  margin-top: var(--space-2);
+  padding: 2px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.tv-panel-tab {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: calc(var(--radius-sm) - 2px);
+  cursor: pointer;
+}
+
+.tv-panel-tab[data-active="true"] {
+  background: var(--accent);
+  color: #171310;
+}
+
+.tv-panel-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.tv-panel-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.tv-panel-tile-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.tv-panel-tile-unit {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tv-panel-attention {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-2);
+  margin-top: 4px;
+}
+
+.tv-panel-attn {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 10px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text-soft);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.tv-panel-attn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--text);
+}
+
+.tv-panel-attn-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tv-panel-attn-label {
+  font-size: var(--font-size-sm);
+}
+
+.tv-panel-attn-sub {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.tv-panel-attn-sub[data-warn="true"] {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tv-panel-table {
+  margin-top: 2px;
+}
+
+.tv-panel-trow {
+  display: grid;
+  grid-template-columns: 1.7fr 0.7fr 0.7fr 0.7fr 0.95fr;
+  gap: var(--space-2);
+  align-items: center;
+  padding: 4px 2px;
+  border-top: 1px solid var(--edge);
+  font-size: var(--font-size-sm);
+  color: var(--text-soft);
+}
+
+/* Sheet row 50 (owner, 2026-11-15): hovering a scoreboard row
+ * lights the whole row so it is easy to follow left to right. */
+.tv-panel-trow:not(.tv-panel-thead):hover {
+  background: var(--table-row-hover);
+}
+
+.tv-panel-trow > span {
+  text-align: right;
+}
+
+.tv-panel-trow > span:first-child {
+  text-align: left;
+}
+
+.tv-panel-thead {
+  border-top: none;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tv-panel-tname {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tv-panel-note {
+  margin: 6px 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.tv-panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.tv-panel-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-soft);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.tv-panel-btn:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1.5px var(--accent),
+    0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--text);
+}
+
+.tv-panel-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #171310;
+}
+
+.tv-panel-health-head {
+  display: flex;
+  gap: var(--space-3, 1rem);
+  align-items: center;
+}
+
+.tv-panel-ring {
+  position: relative;
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+}
+
+.tv-panel-ring-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tv-panel-health-words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tv-panel-health-title {
+  font-size: var(--font-size-base, 1rem);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tv-panel-health-sub {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.tv-panel-checks {
+  margin-top: var(--space-2);
+}
+
+.tv-panel-check {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: var(--space-2);
+  align-items: center;
+  padding: 5px 2px;
+  border-top: 1px solid var(--edge);
+}
+
+/* Sheet row 50: same row light-up as the scoreboard. */
+.tv-panel-check:hover {
+  background: var(--table-row-hover);
+}
+
+/* Sheet row 50: the Site stats widget's rows light up the same
+ * way (its rows are the shared stat rows inside the admin rowset). */
+.tv-admin-rows .tv-widget-row:hover {
+  background: var(--table-row-hover);
+}
+
+.tv-panel-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.tv-panel-dot[data-status="ok"] {
+  background: var(--success);
+}
+
+.tv-panel-dot[data-status="watch"] {
+  background: var(--accent);
+}
+
+.tv-panel-dot[data-status="check"] {
+  background: var(--danger);
+}
+
+.tv-panel-check-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tv-panel-check-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tv-panel-check-detail {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.tv-panel-check-value {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-soft);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Stamped metal like every status pill (sheet row 155):
+ * flat tag ground, engraved muted lettering, and the status
+ * color carried by a small pressed dot before the label. */
+.tv-panel-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--edge);
+  background: var(--tag-ground);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.tv-panel-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.3);
+  flex-shrink: 0;
+}
+
+.tv-panel-pill[data-status="ok"]::before {
+  background: var(--success);
+}
+
+.tv-panel-pill[data-status="watch"]::before {
+  background: var(--accent);
+}
+
+.tv-panel-pill[data-status="check"]::before {
+  background: var(--danger);
+}

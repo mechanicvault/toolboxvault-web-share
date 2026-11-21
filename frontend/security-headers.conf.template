@@ -1,0 +1,37 @@
+# The site's security headers — ONE definition (sheet row 122,
+# 2026-11-19; before this, the set was copy-pasted into every
+# nginx location that needed it, the CSP line alone 6 times).
+# The nginx image entrypoint envsubst's this file alongside
+# nginx.conf.template on container start (filling
+# ${FILES_DOMAIN}); nginx.conf.template includes the rendered
+# /etc/nginx/conf.d/security-headers.conf at server level and
+# inside every location that carries its own add_header (a
+# location with any add_header of its own inherits NONE of the
+# server-level ones — the include is how those locations get
+# the set).
+#
+# The set (blueprint §11; deep audit F4-04 grew the CSP from
+# frame-ancestors-only into a full policy + HSTS). `always` so
+# error responses carry them too. Framing is denied outright —
+# nothing embeds this app. The script-src sha256 pins
+# index.html's inline boot-theme script BYTE-FOR-BYTE: any edit
+# to that script changes its hash and the browser refuses to
+# run it (the app still loads; the pre-paint theme just falls
+# back) — recompute the hash when touching the boot script.
+# The two cloudflareinsights hosts are Cloudflare Web
+# Analytics: the beacon script is injected by the CF edge (it
+# is not in this repo), and blocking it silently killed the
+# owner's analytics — pinned to its exact hosts. frame-src
+# carries blob: on purpose (owner bug 2026-11-09): the
+# inspection wizard frames its just-generated PDF — a blob:
+# URL — in the preview step. Without blob: the browser refuses
+# the frame and the visitor gets a broken-document icon instead
+# of the form. blob: URLs are minted by the page itself, so
+# this opens no external framing surface (frame-ancestors
+# still denies embeds).
+add_header X-Content-Type-Options "nosniff" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header X-Frame-Options "DENY" always;
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+add_header Permissions-Policy "camera=(self), microphone=(), geolocation=()" always;
+add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-A98/OsF2kTyInWcwmNiKljSG7kQG8Wl8jJClVhbR2D4=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://${FILES_DOMAIN} https://tile.openstreetmap.org https://i.ytimg.com; font-src 'self'; connect-src 'self' https://${FILES_DOMAIN} https://cloudflareinsights.com; media-src 'self' blob: https://${FILES_DOMAIN}; frame-src https://${FILES_DOMAIN} blob: https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'" always;

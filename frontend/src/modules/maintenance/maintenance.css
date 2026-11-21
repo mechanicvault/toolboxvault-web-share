@@ -1,0 +1,316 @@
+/* Maintenance list tables (list-standard wave 6, 2026-11-02):
+   both boards are TRUE lists — one record per row, a header row,
+   each fact in its own column (the dealer DirectoryTable
+   pattern). Tables scroll sideways inside their panel on narrow
+   screens; the panel (a grid item) may shrink below the table's
+   min width. A repair's problem rides as a truncated single-line
+   cell — the full text lives on the item's Repairs panel. */
+
+.tv-maint-panel {
+  min-width: 0;
+}
+
+/* Main list layout (MLL program lane #4, 2026-11-13): both
+   boards wear the framed list presentation, applied at this
+   shared base (lane #3's precedent — the table's only
+   consumers are the two boards on the Repairs & Maintenance
+   page): the .tv-inv-list frame values, reference padding,
+   --table-edge dividers, the reference hover tint, and a
+   borderless last row. */
+.tv-maint-table {
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
+}
+
+.tv-maint-thead,
+.tv-maint-row {
+  display: grid;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  padding: 0.45rem 0.75rem;
+}
+
+/* Column floors retuned (repairs-list-width fix, 2026-11-10):
+   the old floors + the blanket min-widths summed past the
+   panel at desktop widths (1055px against an 834px panel at a
+   1024px viewport), so the lists scrolled sideways. The new
+   floors are the measured one-line widths of the facts
+   themselves (dates 91px, the "On schedule" pill 118px, the
+   "Open claim CL-…" link 182px, longest name words ~97px);
+   the flexible columns (item · problem · schedule) absorb the
+   rest, and the blanket min-widths are deleted — the floors
+   alone keep the in-table scroll honest on phones. The
+   out-of-service board's last column was a fixed 6.5rem while
+   its claim cluster needs 182px for the link alone: it is a
+   flexible column now, and the cluster wraps inside it (see
+   .tv-maint-claimcell). */
+.tv-maint-table--repairs .tv-maint-thead,
+.tv-maint-table--repairs .tv-maint-row {
+  /* Six columns since the Dealer column landed (owner, sheet
+     row 143, 2026-11-18): item · dealer/brand · problem ·
+     since · status · the claim/open links. */
+  grid-template-columns:
+    minmax(100px, 1.1fr) minmax(100px, 0.8fr) minmax(170px, 1.4fr)
+    minmax(92px, 0.65fr) minmax(112px, 0.75fr) minmax(200px, 1.3fr);
+}
+
+/* The Dealer cell's second line (row 143): the dealer under
+   the brand, muted — the main tools list's stack. */
+.tv-maint-dealer-sub {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-maint-table--schedules .tv-maint-thead,
+.tv-maint-table--schedules .tv-maint-row {
+  grid-template-columns:
+    minmax(98px, 1fr) minmax(100px, 0.95fr) minmax(80px, 0.6fr)
+    minmax(84px, 0.65fr) minmax(92px, 0.65fr) minmax(92px, 0.65fr)
+    minmax(118px, 0.75fr) 102px;
+  /* The eight-column table is the tightest on the page: its
+     column gaps run narrower so the floors fit a 1024px
+     desktop without a sideways scroll. */
+  gap: 0.4rem 0.5rem;
+}
+
+.tv-maint-thead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--table-edge);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+.tv-maint-row {
+  border-bottom: 1px solid var(--table-edge);
+}
+
+.tv-maint-table > .tv-maint-row:last-child {
+  border-bottom: none;
+}
+
+.tv-maint-row:hover {
+  background: var(--table-row-hover);
+}
+
+.tv-maint-cell-item {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.tv-maint-problem {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+/* The board row's claim cell (Repairs & Maintenance merge,
+   2026-11-05): the claim link and the claim's status badge ride
+   side by side, wrapping under each other on narrow rows.
+   It must be a block-level flex for that promise to hold: as
+   an inline-flex it sized to its max-content (link + badge on
+   one line, up to ~445px) and spilled out of its column at
+   every width — the out-of-service board's constant sideways
+   scroll (repairs-list-width fix, 2026-11-10). As a flex it is
+   capped by the cell and the badge wraps under the link, as
+   designed. */
+.tv-maint-claimcell {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+/* Phone cell labels: hidden while the table's header row
+ * speaks for the columns; the phone fold below turns them on
+ * (the claims tables' .tv-claims-cell-label pattern). */
+.tv-maint-mlabel {
+  display: none;
+}
+
+/* Phone fold (MLL program lane #4, 2026-11-13; the lanes
+ * #1/#2 shape): at phone width the boards' header rows hide
+ * and each row restacks in one column — the item line first,
+ * then every fact in header order carrying its column word,
+ * then the row's action. No sideways scroll, no fact lost:
+ * the problem text, a one-line ellipsis on desktop, wraps in
+ * full here. The variant templates above set the multi-column
+ * grids, so the fold re-states the rows under both variant
+ * scopes to win the cascade. */
+@media (max-width: 640px) {
+  .tv-maint-thead {
+    display: none;
+  }
+  .tv-maint-table--repairs .tv-maint-row,
+  .tv-maint-table--schedules .tv-maint-row {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    padding: 0.6rem 0.75rem;
+  }
+  .tv-maint-mlabel {
+    display: inline;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+  .tv-maint-problem {
+    white-space: normal;
+  }
+}
+
+/* Service book (M3, owner's pick 2026-11-16): the item
+   Maintenance tab — Coming due cards, one combined service
+   record table, and the schedules strip. */
+.tv-maint-table--service .tv-maint-thead,
+.tv-maint-table--service .tv-maint-row {
+  grid-template-columns:
+    minmax(96px, 0.8fr) minmax(140px, 1.2fr) minmax(100px, 0.9fr)
+    minmax(64px, 0.5fr) minmax(170px, 1.2fr);
+}
+
+.tv-svc-head {
+  margin: 0 0 0.6rem;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.tv-svc-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 0.75rem;
+}
+
+.tv-svc-card {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  padding: 0.8rem 0.9rem;
+}
+
+.tv-svc-card.is-overdue {
+  border-color: var(--danger);
+  box-shadow: inset 3px 0 0 var(--danger);
+  background: color-mix(in srgb, var(--danger) 6%, var(--panel-2));
+}
+
+.tv-svc-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tv-svc-card-head strong {
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.tv-svc-card-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.tv-svc-card-actions,
+.tv-svc-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.tv-svc-logform,
+.tv-svc-addform {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  align-items: end;
+}
+
+.tv-svc-field {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.tv-svc-field > span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tv-svc-note {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tv-svc-doccell {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.tv-svc-doclink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.tv-svc-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--edge);
+  padding-top: 0.7rem;
+}
+
+.tv-svc-strip-names {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.tv-svc-strip-names strong {
+  color: var(--text);
+  font-weight: 600;
+}

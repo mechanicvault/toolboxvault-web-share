@@ -1,0 +1,238 @@
+/* Tool Expansion styles (suggestions page + inventory badge).
+   Split out of theme/components.css in the 2026-10-26 CSS filing
+   split; imported by the tool-expansion components so the rules
+   ship with that module. Rule order preserved verbatim. */
+
+.tv-exp-page {
+  display: grid;
+  gap: var(--spacing);
+}
+
+/* Main tab layout (lane 5, 2026-11-10): the page's own title /
+   subtitle rules retired with the hand-rolled header — the kit
+   header (SectionPageHeader) carries both now. Tab bodies stack
+   their panels with the page's own rhythm. */
+.tv-exp-tabgrid {
+  display: grid;
+  gap: var(--spacing);
+}
+
+/* The explainer tab (mirrors the disaster-claims how anatomy). */
+.tv-exp-how {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.tv-exp-how-title {
+  font-weight: 600;
+  margin: 0 0 var(--space-1);
+}
+
+.tv-exp-how-body {
+  color: var(--text-muted);
+  margin: 0;
+  /* Full page width (Ryan, sheet row 79) — the explainer text
+     used to stop at 75ch, about half the panel; same fix as the
+     Help explainer (row 67). */
+  max-width: none;
+  line-height: 1.55;
+}
+
+.tv-exp-how-doors {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* The archived tab: its intro line above the framed list (the
+   five-column variant of the Main list layout below). */
+.tv-exp-arch-intro {
+  margin: 0 0 0.85rem;
+  color: var(--text-muted);
+  max-width: 75ch;
+  line-height: 1.5;
+}
+
+/* The honest tombstone note inside an archived row (the item is
+   gone / the match no longer generates). */
+.tv-exp-note {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.tv-exp-loading {
+  margin: 0;
+  color: var(--text-muted);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.tv-exp-scope {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-exp-expands {
+  margin: 0 0 0.6rem;
+  color: var(--text-muted);
+}
+
+.tv-exp-actions {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-exp-more {
+  margin: 0.6rem 0 0;
+}
+
+.tv-exp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tv-exp-badge:hover {
+  border-color: var(--accent);
+}
+
+.tv-exp-badge svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* -- Main list layout (owner's program, 2026-11-13) -----------
+ * Both of the page's lists in the Inventory tool list's
+ * presentation: the framed .tv-inv-list surface (the shared
+ * class in surfaces.css) around module rows that mirror its
+ * geometry — the quiet uppercase header row, one record per
+ * row, facts in columns, hairline dividers (--table-edge), the
+ * row hover tint. Column sets are the lists' own, unchanged
+ * from the lists they replace: Matches = Suggested piece ·
+ * Model # · Actions under each owned item's "Expands your …"
+ * group line; Archived = Suggested piece · Model # · Expands ·
+ * Archived · Actions (the .tv-exp-arch-cols variant). The
+ * framed list scrolls sideways between 641px and the columns'
+ * min width, exactly like the reference list. */
+.tv-exp-group {
+  display: grid;
+  min-width: 0;
+}
+
+.tv-exp-mlist {
+  min-width: 0;
+}
+
+.tv-exp-mhead,
+.tv-exp-mrow {
+  display: grid;
+  grid-template-columns: minmax(190px, 1.2fr) minmax(130px, 0.8fr) 20rem;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  min-width: 680px;
+  padding: 0.45rem 0.75rem;
+}
+
+.tv-exp-mhead.tv-exp-arch-cols,
+.tv-exp-mrow.tv-exp-arch-cols {
+  grid-template-columns:
+    minmax(170px, 1.2fr) minmax(110px, 0.7fr) minmax(150px, 1fr)
+    minmax(105px, 0.7fr) 8.5rem;
+  min-width: 840px;
+}
+
+.tv-exp-mhead {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--table-edge);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+.tv-exp-mrow {
+  border-bottom: 1px solid var(--table-edge);
+}
+
+.tv-exp-mlist > .tv-exp-mrow:last-child {
+  border-bottom: none;
+}
+
+.tv-exp-mrow:hover {
+  background: var(--table-row-hover);
+}
+
+.tv-exp-mcell {
+  min-width: 0;
+}
+
+.tv-exp-mcell--actions {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* A fact cell's column word: invisible on desktop (the header
+ * row names the column) and seated above the value in the
+ * phone fold, where the header hides. */
+.tv-exp-mlabel {
+  display: none;
+}
+
+/* Phone fold, the Main list layout's own: the header row hides
+ * and each row restacks in one column — the piece leads, its
+ * facts follow with their column words, the actions close the
+ * row. Nothing scrolls sideways, no fact leaves the screen. */
+@media (max-width: 640px) {
+  .tv-exp-mhead {
+    display: none;
+  }
+
+  .tv-exp-mrow,
+  .tv-exp-mrow.tv-exp-arch-cols {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+    row-gap: 0.3rem;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .tv-exp-mlabel {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.1rem;
+  }
+}
+
+/* The item pages' "Known expansions" section keeps its
+ * headerless row form (the SuggestionRow ix variant) — only
+ * its name cell's shrink guard lives here; the row shape is
+ * the shared .tv-ix-row in theme/components.css. */
+.tv-ix-cell-name {
+  min-width: 0;
+}
